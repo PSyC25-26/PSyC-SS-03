@@ -33,12 +33,16 @@ public class Preso {
 
   /**
      * Apellidos del preso.
+     * Este campo es obligatorio.
      */
+   @Column(nullable = false)
   private String apellidos;
 
   /**
      * Fecha de nacimiento del preso.
+     * Este campo es obligatorio.
      */
+   @Column(nullable = false)
   private LocalDate fechaNacimiento;
 
   /**
