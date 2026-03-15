@@ -8,5 +8,9 @@ import com.example.JailQ.Entidades.Preso;
 //
 //}
 public interface PresoDAO extends JpaRepository<Preso, Integer> {
+/**
+ * Interfaz DAO para la entidad {@link Preso}.
+ */
+
 
 }
