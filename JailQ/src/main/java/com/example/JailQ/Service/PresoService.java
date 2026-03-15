@@ -4,7 +4,14 @@ import java.time.LocalDate;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Dao.PresoDAO;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service //indica que esta funcion es un servicio
 public class PresoService {
+
+    @Autowired //Crear una instancia de PresoDAO para usar sus funcionalidades. 
+    private PresoDAO presoDAO;
     public void anadirPreso(Preso nuevoPreso){
         //Compronar que existe el objeto
         if (nuevoPreso == null) {
@@ -41,7 +48,7 @@ public class PresoService {
         else {
             //Si todos los datos son válidos: 
             System.out.println("Preso validado correctamente. Procediendo a guardar...");
-            PresoDAO.save(nuevoPreso); //Falta implementar funcion save dentro de presoDAo
+            presoDAO.save(nuevoPreso);
         }
     }
 }
