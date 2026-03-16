@@ -7,11 +7,44 @@ import com.example.JailQ.Dao.PresoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio para gestionar operaciones sobre {@link Preso}.
+ * 
+ * Esta clase se encarga de validar y guardar objetos Preso en la base de datos
+ * utilizando {@link PresoDAO}. Incluye validaciones de nombre, apellidos, edad,
+ * condena y fechas de ingreso.
+ * 
+ * Anotada con {@link Service} para ser detectada como componente de Spring.
+ */
+
 @Service //indica que esta funcion es un servicio
 public class PresoService {
 
-    @Autowired //Crear una instancia de PresoDAO para usar sus funcionalidades. 
+    /**
+     * DAO para la entidad {@link Preso}.
+     * Crear una instancia de PresoDAO para usar sus funcionalidades. 
+     * 
+     * Se inyecta automáticamente mediante Spring con {@link Autowired}.
+     */
+    @Autowired
     private PresoDAO presoDAO;
+    /**
+     * Añade un nuevo {@link Preso} a la base de datos tras realizar validaciones.
+     * 
+     * Validaciones realizadas:
+     * <ul>
+     *   <li>Compronar que existe el objeto</li>
+     *   <li>Validación de Nombre y Apellidos (con trim para detectar "" también como vacío)</li>
+     *   <li>Validacion de edad</li>
+     *   <li>Comprobacion de condena.</li>
+     *   <li>Validacion de fecha de ingreso -> no puede ser futura y tampoco puede entrar antes de haber nacido</li>
+     * </ul>
+     * 
+     * Mensajes de error se imprimen en consola en caso de datos inválidos.
+     * Si todas las validaciones pasan, el preso se guarda mediante {@link PresoDAO#save(Object)}.
+     * 
+     * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser {@code null}.
+     */
     public void anadirPreso(Preso nuevoPreso){
         //Compronar que existe el objeto
         if (nuevoPreso == null) {
