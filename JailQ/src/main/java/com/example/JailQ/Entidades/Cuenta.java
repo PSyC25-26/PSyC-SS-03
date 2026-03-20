@@ -27,7 +27,7 @@ public class Cuenta {
     /**
      * Tipo de cuenta que define el rol del usuario en el sistema.
      */
-    private TipoCuenta TipoCuenta;
+    private TipoCuenta tipoCuenta;
 
     /**
      * Nombre del usuario propietario de la cuenta.
@@ -77,7 +77,7 @@ public class Cuenta {
      * @return tipo de cuenta del usuario
      */
     public TipoCuenta getTipoCuenta() {
-        return TipoCuenta;
+        return tipoCuenta;
     }
 
     /**
@@ -86,7 +86,7 @@ public class Cuenta {
      * @param tipoCuenta tipo de cuenta a asignar
      */
     public void setTipoCuenta(TipoCuenta tipoCuenta) {
-        TipoCuenta = tipoCuenta;
+        this.tipoCuenta = tipoCuenta;
     }
 
     /**
