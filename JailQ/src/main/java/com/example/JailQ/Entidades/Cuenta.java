@@ -27,6 +27,7 @@ public class Cuenta {
     /**
      * Tipo de cuenta que define el rol del usuario en el sistema.
      */
+    @Column(name = "TipoCuenta", nullable = false)
     private TipoCuenta tipoCuenta;
 
     /**
