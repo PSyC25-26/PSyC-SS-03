@@ -129,4 +129,24 @@ public class CuentaService {
 
         return policias;
     }
+    /**
+ * Verifica si existe una cuenta de tipo POLICIA con username y password correctos.
+ *
+ * @param username nombre de usuario
+ * @param password contraseña
+ * @return la cuenta si es válida, null si no
+ */
+public Cuenta loginPolicia(String username, String password) {
+
+    for (Cuenta cuenta : cuentaDAO.findAll()) {
+        if (cuenta.getUsername().equals(username)
+                && cuenta.getPassword().equals(password)
+                && cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {
+
+            return cuenta;
+        }
+    }
+
+    return null;
+}
 }

@@ -135,4 +135,28 @@ public class CuentaController {
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    /**
+ * Autenticación de policía mediante username y password.
+ *
+ * Endpoint: POST /cuentas/login/policia
+ */
+  @PostMapping("/login/policia")
+    public ResponseEntity<?> loginPolicia(@RequestBody Cuenta cuenta) {
+        try {
+            Cuenta resultado = cuentaService.loginPolicia(
+                    cuenta.getUsername(),
+                    cuenta.getPassword()
+            );
+
+            if (resultado != null) {
+                return new ResponseEntity<>(resultado, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Credenciales incorrectas", HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
