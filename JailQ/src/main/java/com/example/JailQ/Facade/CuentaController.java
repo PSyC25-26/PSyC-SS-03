@@ -7,53 +7,131 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador REST encargado de gestionar las operaciones relacionadas con las cuentas.
+ * 
+ * Expone endpoints HTTP para:
+ * <ul>
+ *   <li>Crear cuentas</li>
+ *   <li>Eliminar cuentas</li>
+ *   <li>Eliminar cuentas de tipo POLICIA</li>
+ *   <li>Obtener listado de cuentas POLICIA</li>
+ * </ul>
+ * 
+ * Actúa como capa intermedia entre el cliente (Postman / GUI)
+ * y la lógica de negocio (CuentaService).
+ * 
+ * Base URL: /cuentas
+ * 
+ * 
+ */
 @RestController
 @RequestMapping("/cuentas")
 public class CuentaController {
 
+    /** Servicio que contiene la lógica de negocio de cuentas */
     @Autowired
     private CuentaService cuentaService;
 
     /**
-     * Endpoint para crear una nueva cuenta.
-     * Se accede enviando un POST a /cuentas/crear
+     * Crea una nueva cuenta en el sistema.
+     *
+     * Endpoint: POST /cuentas/crear
+     *
+     * @param cuenta Objeto cuenta recibido en formato JSON
+     * @return ResponseEntity con:
+     * <ul>
+     *   <li>201 (CREATED) si la cuenta se crea correctamente</li>
+     *   <li>400 (BAD REQUEST) si los datos son inválidos</li>
+     *   <li>500 (INTERNAL SERVER ERROR) si ocurre un error inesperado</li>
+     * </ul>
      */
     @PostMapping("/crear")
     public ResponseEntity<?> crearCuenta(@RequestBody Cuenta cuenta) {
         try {
             Cuenta cuentaGuardada = cuentaService.anadirCuenta(cuenta);
-            // Devuelve un código 201 (Created) si va bien
-            return new ResponseEntity<>(cuentaGuardada, HttpStatus.CREATED); 
+            return new ResponseEntity<>(cuentaGuardada, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            // Devuelve un código 400 (Bad Request) si falla la validación
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // Devuelve un código 500 (Internal Server Error) para otros fallos
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Endpoint para eliminar una cuenta por su ID.
-     * Se accede enviando un DELETE a /cuentas/eliminar/{id}
+     * Elimina una cuenta por su ID.
+     *
+     * Endpoint: DELETE /cuentas/eliminar/{id}
+     *
+     * @param id Identificador de la cuenta
+     * @return ResponseEntity con:
+     * <ul>
+     *   <li>200 (OK) si se elimina correctamente</li>
+     *   <li>404 (NOT FOUND) si no existe la cuenta</li>
+     *   <li>400 (BAD REQUEST) si el ID es inválido</li>
+     *   <li>500 (INTERNAL SERVER ERROR) si ocurre un error</li>
+     * </ul>
      */
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarCuenta(@PathVariable Integer id) {
         try {
             boolean eliminado = cuentaService.eliminarCuenta(id);
-            
+
             if (eliminado) {
-                // Devuelve un código 200 (OK) con un mensaje de éxito
                 return new ResponseEntity<>("Cuenta eliminada correctamente.", HttpStatus.OK);
             } else {
-                // Devuelve un código 404 (Not Found) si el ID no existe en la BBDD
                 return new ResponseEntity<>("No se encontró la cuenta con ID: " + id, HttpStatus.NOT_FOUND);
             }
         } catch (IllegalArgumentException e) {
-            // Devuelve un código 400 (Bad Request) si el ID no es válido
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // Devuelve un código 500 para errores inesperados
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Elimina una cuenta únicamente si es de tipo POLICIA.
+     *
+     * Endpoint: DELETE /cuentas/eliminar/policia/{id}
+     *
+     * @param id Identificador de la cuenta
+     * @return ResponseEntity con:
+     * <ul>
+     *   <li>200 (OK) si se elimina correctamente</li>
+     *   <li>404 (NOT FOUND) si no existe</li>
+     *   <li>400 (BAD REQUEST) si no es policía o ID inválido</li>
+     * </ul>
+     */
+    @DeleteMapping("/eliminar/policia/{id}")
+    public ResponseEntity<?> eliminarCuentaPolicia(@PathVariable Integer id) {
+        try {
+            boolean eliminado = cuentaService.eliminarCuentaPolicia(id);
+
+            if (eliminado) {
+                return new ResponseEntity<>("Cuenta de policía eliminada correctamente.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("No se encontró ninguna cuenta de policía con ID: " + id, HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Obtiene todas las cuentas de tipo POLICIA.
+     *
+     * Endpoint: GET /cuentas/policias
+     *
+     * @return Lista de cuentas de tipo POLICIA
+     * con código 200 (OK)
+     */
+    @GetMapping("/policias")
+    public ResponseEntity<?> obtenerCuentasPolicia() {
+        try {
+            return new ResponseEntity<>(cuentaService.obtenerCuentasPolicia(), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

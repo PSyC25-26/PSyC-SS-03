@@ -2,32 +2,58 @@ package com.example.JailQ.Service;
 
 import com.example.JailQ.Dao.CuentaDAO;
 import com.example.JailQ.Entidades.Cuenta;
+import com.example.JailQ.Entidades.TipoCuenta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Servicio encargado de la lógica de negocio relacionada con las cuentas.
+ * 
+ * Proporciona métodos para:
+ * <ul>
+ *   <li>Crear nuevas cuentas</li>
+ *   <li>Eliminar cuentas</li>
+ *   <li>Eliminar cuentas de tipo POLICIA</li>
+ *   <li>Obtener todas las cuentas de tipo POLICIA</li>
+ * </ul>
+ * 
+ * Este servicio actúa como intermediario entre el controlador (Controller)
+ * y el acceso a datos (DAO).
+ * 
+ * @author Pablo
+ * @version 1.0
+ * @since 2026
+ */
 @Service
 public class CuentaService {
 
+    /** DAO utilizado para acceder a la base de datos de cuentas */
     @Autowired
     private CuentaDAO cuentaDAO;
 
     /**
      * Añade una nueva cuenta tras validar los campos obligatorios.
-     * * @param nuevaCuenta Objeto Cuenta a guardar
+     *
+     * @param nuevaCuenta Objeto Cuenta a guardar
      * @return La cuenta guardada con su ID generado
+     * @throws IllegalArgumentException si los datos son inválidos
      */
     public Cuenta anadirCuenta(Cuenta nuevaCuenta) {
         if (nuevaCuenta == null) {
             throw new IllegalArgumentException("No se ha recibido ningún dato de la cuenta.");
         }
 
-        // Validaciones básicas
         if (nuevaCuenta.getUsername() == null || nuevaCuenta.getUsername().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de usuario (username) es obligatorio.");
         }
+
         if (nuevaCuenta.getPassword() == null || nuevaCuenta.getPassword().trim().isEmpty()) {
             throw new IllegalArgumentException("La contraseña es obligatoria.");
         }
+
         if (nuevaCuenta.getTipoCuenta() == null) {
             throw new IllegalArgumentException("El tipo de cuenta es obligatorio.");
         }
@@ -36,18 +62,18 @@ public class CuentaService {
         return cuentaDAO.save(nuevaCuenta);
     }
 
-
     /**
      * Elimina una cuenta de la base de datos según su ID.
-     * @param id El identificador de la cuenta a eliminar.
-     * @return true si se eliminó correctamente, false si no se encontró.
+     *
+     * @param id El identificador de la cuenta a eliminar
+     * @return true si se eliminó correctamente, false si no se encontró
+     * @throws IllegalArgumentException si el ID es nulo
      */
     public boolean eliminarCuenta(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID de la cuenta no puede ser nulo.");
         }
 
-        // Comprobamos si la cuenta existe en la base de datos antes de intentar borrarla
         if (cuentaDAO.existsById(id)) {
             cuentaDAO.deleteById(id);
             System.out.println("Cuenta con ID " + id + " eliminada correctamente.");
@@ -56,5 +82,51 @@ public class CuentaService {
             System.err.println("No se encontró ninguna cuenta con el ID: " + id);
             return false;
         }
+    }
+
+    /**
+     * Elimina una cuenta únicamente si pertenece al tipo POLICIA.
+     *
+     * @param id Identificador de la cuenta
+     * @return true si la cuenta fue eliminada correctamente
+     * @throws IllegalArgumentException si:
+     * <ul>
+     *   <li>El ID es nulo</li>
+     *   <li>La cuenta no existe</li>
+     *   <li>La cuenta no es de tipo POLICIA</li>
+     * </ul>
+     */
+    public boolean eliminarCuentaPolicia(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID de la cuenta no puede ser nulo.");
+        }
+
+        Cuenta cuenta = cuentaDAO.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró ninguna cuenta con ese ID."));
+
+        if (cuenta.getTipoCuenta() != TipoCuenta.POLICIA) {
+            throw new IllegalArgumentException("La cuenta indicada no pertenece a un policía.");
+        }
+
+        cuentaDAO.deleteById(id);
+        System.out.println("Cuenta de policía con ID " + id + " eliminada correctamente.");
+        return true;
+    }
+
+    /**
+     * Obtiene todas las cuentas de tipo POLICIA almacenadas en la base de datos.
+     *
+     * @return Lista de cuentas de tipo POLICIA
+     */
+    public List<Cuenta> obtenerCuentasPolicia() {
+        List<Cuenta> policias = new ArrayList<>();
+
+        for (Cuenta cuenta : cuentaDAO.findAll()) {
+            if (cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {
+                policias.add(cuenta);
+            }
+        }
+
+        return policias;
     }
 }
