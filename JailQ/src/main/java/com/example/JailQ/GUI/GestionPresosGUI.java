@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import com.example.JailQ.Entidades.Delito;
 
 /**
  * Interfaz Gráfica de Usuario (GUI) para la gestión y registro de presos en el sistema JailQ.
@@ -36,6 +39,7 @@ import javax.swing.SwingUtilities;
 public class GestionPresosGUI extends JFrame {
 
     private JTextField txtNombre, txtApellidos, txtFechaNacimiento, txtCondena, txtFechaIngreso;
+    private JComboBox<Delito> cbDelito;
     private JTextArea txtConsola;
     private final HttpClient httpClient;
 
@@ -53,13 +57,12 @@ public class GestionPresosGUI extends JFrame {
         httpClient = HttpClient.newHttpClient();
 
         setTitle("JailQ - Gestión de Presos");
-        setSize(450, 600);
+        setSize(500, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
 
-        // --- PANEL SUPERIOR: Formulario ---
-        JPanel panelFormulario = new JPanel(new GridLayout(5, 1, 10, 10));
+        JPanel panelFormulario = new JPanel(new GridLayout(6, 1, 10, 10));
         panelFormulario.setBorder(BorderFactory.createTitledBorder("Registrar Nuevo Preso"));
 
         txtNombre = new JTextField();
@@ -67,29 +70,29 @@ public class GestionPresosGUI extends JFrame {
         txtFechaNacimiento = new JTextField();
         txtCondena = new JTextField();
         txtFechaIngreso = new JTextField();
+        cbDelito = new JComboBox<>(Delito.values());
 
         panelFormulario.add(crearCelda("Nombre:", txtNombre));
         panelFormulario.add(crearCelda("Apellidos:", txtApellidos));
         panelFormulario.add(crearCelda("Fecha Nacimiento (AAAA-MM-DD):", txtFechaNacimiento));
         panelFormulario.add(crearCelda("Condena (años):", txtCondena));
         panelFormulario.add(crearCelda("Fecha Ingreso (AAAA-MM-DD):", txtFechaIngreso));
+        panelFormulario.add(crearCeldaEnum("Delito:", cbDelito));
 
-        // --- BOTÓN REGISTRAR ---
         JButton btnAnadir = new JButton("Registrar Preso");
         btnAnadir.addActionListener(e -> enviarPreso());
 
-        // --- PANEL INFERIOR: Consola ---
-        txtConsola = new JTextArea(12, 30); 
+        JPanel panelCentral = new JPanel(new BorderLayout(5, 5));
+        panelCentral.add(panelFormulario, BorderLayout.CENTER);
+        panelCentral.add(btnAnadir, BorderLayout.SOUTH);
+
+        txtConsola = new JTextArea(10, 30);
         txtConsola.setEditable(false);
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Estado del Servidor"));
 
-        JPanel panelCentral = new JPanel(new BorderLayout());
-        panelCentral.add(panelFormulario, BorderLayout.CENTER);
-        panelCentral.add(btnAnadir, BorderLayout.SOUTH);
-
-        add(panelCentral, BorderLayout.NORTH);
-        add(scrollConsola, BorderLayout.SOUTH); 
+        add(panelCentral, BorderLayout.CENTER);
+        add(scrollConsola, BorderLayout.SOUTH);
     }
 
     /**
@@ -109,39 +112,41 @@ public class GestionPresosGUI extends JFrame {
         try {
             String fechaNac = txtFechaNacimiento.getText();
             String fechaIng = txtFechaIngreso.getText();
-            
-            // Validación previa en cliente
-            LocalDate.parse(fechaNac); 
+
+            LocalDate.parse(fechaNac);
             LocalDate.parse(fechaIng);
 
+            Delito delitoSeleccionado = (Delito) cbDelito.getSelectedItem();
+
             String jsonBody = String.format(
-                "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"fechaNacimiento\":\"%s\", \"condena\":%s, \"fechaIngreso\":\"%s\"}",
+                "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"fechaNacimiento\":\"%s\", \"condena\":%s, \"fechaIngreso\":\"%s\", \"delitoPreso\":\"%s\"}",
                 txtNombre.getText(),
                 txtApellidos.getText(),
                 fechaNac,
-                txtCondena.getText().replace(",", "."), 
-                fechaIng
+                txtCondena.getText().replace(",", "."),
+                fechaIng,
+                delitoSeleccionado.name()
             );
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/presos/crear")) 
+                    .uri(URI.create("http://localhost:8080/preso/crear"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200 || response.statusCode() == 201) {
-                txtConsola.setText("✅ ÉXITO: Preso registrado correctamente.\n" + response.body());
+            if (response.statusCode() == 201) {
+                txtConsola.setText("ÉXITO: Preso registrado correctamente.\n" + response.body());
                 limpiarFormulario();
             } else {
-                txtConsola.setText("❌ ERROR (" + response.statusCode() + "):\n" + response.body());
+                txtConsola.setText("ERROR (" + response.statusCode() + "):\n" + response.body());
             }
 
         } catch (DateTimeParseException ex) {
-            txtConsola.setText("⚠️ Formato de fecha incorrecto. Usa AAAA-MM-DD.");
+            txtConsola.setText("Formato de fecha incorrecto. Usa AAAA-MM-DD.");
         } catch (Exception ex) {
-            txtConsola.setText("🚨 Excepción: " + ex.getMessage());
+            txtConsola.setText("Excepción: " + ex.getMessage());
         }
     }
 
@@ -156,6 +161,7 @@ public class GestionPresosGUI extends JFrame {
         txtFechaNacimiento.setText("");
         txtCondena.setText("");
         txtFechaIngreso.setText(LocalDate.now().toString());
+        cbDelito.setSelectedIndex(0);
     }
 
     /**
@@ -168,13 +174,23 @@ public class GestionPresosGUI extends JFrame {
      * @return Un objeto {@link JPanel} configurado con el diseño de celda.
      */
     private JPanel crearCelda(String etiqueta, JTextField campo) {
-        JPanel panel = new JPanel(new GridLayout(2, 1)); 
+        JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
             BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         panel.add(new JLabel(etiqueta));
         panel.add(campo);
+        return panel;
+    }
+    private JPanel crearCeldaEnum(String etiqueta, JComboBox<?> combo) {
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        panel.add(new JLabel(etiqueta));
+        panel.add(combo);
         return panel;
     }
 
