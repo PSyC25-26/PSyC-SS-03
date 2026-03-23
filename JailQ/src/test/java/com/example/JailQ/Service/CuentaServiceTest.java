@@ -21,6 +21,12 @@ import org.springframework.test.context.junit.jupiter.EnabledIf;
 import com.example.JailQ.TestcontainersConfiguration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Clase de pruebas de integración para el servicio {@link CuentaService}.
+ * <p>
+ * Utiliza Testcontainers para levantar una base de datos MySQL efímera
+ * y garantizar el aislamiento de cada prueba.
+ */
 
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest
@@ -32,13 +38,20 @@ public class CuentaServiceTest {
     @Autowired
     private CuentaService cuentaService;
 
+    /**
+     * Configuración inicial que se ejecuta antes de cada test.
+     * Limpia la base de datos para asegurar que los tests sean independientes
+     * y no compartan estado.
+     */
     @BeforeEach
     public void setUp() {
-        // Limpiamos la base de datos antes de cada test para que sean independientes
         cuentaDAO.deleteAll();
     }
 
-    // 1. Test para comprobar que se añade bien una cuenta con todos los datos correctos
+    /**
+     * Verifica que el sistema permite añadir una cuenta correctamente
+     * cuando todos los datos obligatorios son proporcionados.
+     */
     @Test
     void anadirBienCuenta() {
         Cuenta cuentaTest = new Cuenta();
@@ -50,53 +63,53 @@ public class CuentaServiceTest {
 
         Cuenta guardada = cuentaService.anadirCuenta(cuentaTest);
 
-        // Verificamos que se haya generado un ID
         assertNotNull(guardada.getIdCuentas(), "La cuenta guardada debería tener un ID asignado");
-        // Verificamos que esté en la BDD
         assertEquals(1, cuentaDAO.count(), "Debería haber una cuenta guardada en la BD");
     }
 
-    // 2. Test para comprobar que salta nuestra validación si falta el username
+    /**
+     * Verifica que el sistema lanza una {@link IllegalArgumentException}
+     * al intentar añadir una cuenta en la que falta el nombre de usuario.
+     */
     @Test
     void anadirCuentaSinUsername() {
         Cuenta cuentaMala = new Cuenta();
         cuentaMala.setNombre("Paco");
         cuentaMala.setPassword("1234");
         cuentaMala.setTipoCuenta(TipoCuenta.POLICIA);
-        // Dejamos el username intencionadamente nulo
 
-        // assertThrows comprueba que al ejecutar esa función, salte esa excepción concreta
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             cuentaService.anadirCuenta(cuentaMala);
         });
 
-        // Comprobamos que el mensaje de error es exactamente el que programamos
         assertEquals("El nombre de usuario (username) es obligatorio.", exception.getMessage());
-        // Verificamos que la BDD sigue vacía
         assertEquals(0, cuentaDAO.count(), "No se debería haber guardado la cuenta sin username");
     }
 
-    // 3. Test para eliminar una cuenta que existe
+    /**
+     * Verifica que el sistema puede eliminar exitosamente una cuenta
+     * existente utilizando su identificador único.
+     */
     @Test
     void eliminarCuentaExistente() {
-        // Primero preparamos el escenario añadiendo una cuenta
         Cuenta cuentaTest = new Cuenta();
         cuentaTest.setUsername("borrar_user");
         cuentaTest.setPassword("1234");
         cuentaTest.setTipoCuenta(TipoCuenta.POLICIA);
         Cuenta guardada = cuentaService.anadirCuenta(cuentaTest);
 
-        // Ahora intentamos borrarla usando el ID que se le acaba de asignar
         boolean resultado = cuentaService.eliminarCuenta(guardada.getIdCuentas());
 
         assertTrue(resultado, "Debería devolver true al eliminar una cuenta que existe");
         assertEquals(0, cuentaDAO.count(), "La BD debería quedar vacía tras eliminar la cuenta");
     }
 
-    // 4. Test para intentar eliminar una cuenta que NO existe
+    /**
+     * Verifica el comportamiento del sistema al intentar eliminar
+     * una cuenta que no existe en la base de datos.
+     */
     @Test
     void eliminarCuentaNoExistente() {
-        // Intentamos borrar el ID 999 (como la BD se limpia en el setUp, sabemos que no existe)
         boolean resultado = cuentaService.eliminarCuenta(999);
 
         assertFalse(resultado, "Debería devolver false al intentar eliminar una cuenta que no existe");

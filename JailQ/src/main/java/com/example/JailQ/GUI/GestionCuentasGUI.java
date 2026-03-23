@@ -7,6 +7,19 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Interfaz Gráfica de Usuario (GUI) para la gestión de cuentas en el sistema JailQ.
+ * <p>
+ * Esta clase proporciona un formulario basado en Java Swing que permite:
+ * <ul>
+ * <li>Registrar nuevas cuentas con sus datos correspondientes.</li>
+ * <li>Acceder a la ventana secundaria para eliminar cuentas de policía.</li>
+ * <li>Visualizar en una consola integrada las respuestas del servidor.</li>
+ * </ul>
+ */
+
+
+
 public class GestionCuentasGUI extends JFrame {
 
     private JTextField txtNombre, txtApellidos, txtUsername, txtIdBorrar;
@@ -14,6 +27,11 @@ public class GestionCuentasGUI extends JFrame {
     private JComboBox<String> cbTipoCuenta;
     private JTextArea txtConsola;
     private final HttpClient httpClient;
+
+    /**
+     * Constructor de la clase. Inicializa el cliente HTTP y configura
+     * todos los componentes visuales de la ventana (paneles, campos de texto y botones).
+     */
 
     public GestionCuentasGUI() {
         httpClient = HttpClient.newHttpClient();
@@ -83,8 +101,12 @@ public class GestionCuentasGUI extends JFrame {
     }
 
     /**
-     * Simula lo que hacíamos con Postman en POST /cuentas/crear
+     * Recopila los datos del formulario y realiza una petición POST al servidor.
+     * <p>
+     * Construye un objeto JSON con los datos de la cuenta y lo envía al endpoint
+     * {@code /cuentas/crear}. El resultado se muestra en la consola de la interfaz.
      */
+
     private void anadirCuenta() {
         try {
             // 1. Construimos el JSON a mano con los datos de las cajas de texto
@@ -116,8 +138,12 @@ public class GestionCuentasGUI extends JFrame {
     }
 
     /**
-     * Simula lo que hacíamos con Postman en DELETE /cuentas/eliminar/{id}
+     * Recopila el ID de la cuenta a eliminar y realiza una petición DELETE al servidor.
+     * <p>
+     *  Construye la URL con el ID proporcionado y envía una petición DELETE al endpoint
+     * {@code /cuentas/eliminar/{id}}. El resultado se muestra en la consola de la interfaz.
      */
+
     private void eliminarCuenta() {
         String id = txtIdBorrar.getText().trim();
         if (id.isEmpty()) {
@@ -146,6 +172,9 @@ public class GestionCuentasGUI extends JFrame {
         }
     }
 
+    /**
+     * Restablece todos los campos del formulario de creación a su estado inicial (vacíos).
+     */
     private void limpiarFormulario() {
         txtNombre.setText("");
         txtApellidos.setText("");
@@ -153,7 +182,11 @@ public class GestionCuentasGUI extends JFrame {
         txtPassword.setText("");
     }
 
-    // Método principal para arrancar SÓLO la interfaz gráfica
+    /**
+     * Punto de entrada principal de la aplicación GUI.
+     * Inicia la interfaz gráfica en el hilo de despacho de eventos de Swing.
+     * * @param args Argumentos de la línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new GestionCuentasGUI().setVisible(true);
