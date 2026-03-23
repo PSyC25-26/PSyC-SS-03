@@ -7,10 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Delito;
 import com.example.JailQ.Entidades.Preso;
+import com.example.JailQ.TestcontainersConfiguration;
 
+@Import(TestcontainersConfiguration.class)
 @SpringBootTest
 public class PresoServiceTest {
     @Autowired
@@ -34,7 +38,7 @@ public class PresoServiceTest {
         presoTest.setCondena(2);
         presoTest.setFechaNacimiento(LocalDate.of(1990, 1, 1));
         presoTest.setFechaIngreso(LocalDate.now());
-
+        presoTest.setDelitoPreso(Delito.TRAF_PERSONAS);
         presoService.anadirPreso(presoTest);
 
         assertEquals(1, presoDAO.count(), "Debería haber un preso guardado en la BD");
