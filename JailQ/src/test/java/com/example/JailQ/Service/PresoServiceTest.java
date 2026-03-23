@@ -3,6 +3,7 @@ package com.example.JailQ.Service;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,9 @@ public class PresoServiceTest {
         menor.setCondena(2);
         menor.setFechaIngreso(LocalDate.now());
 
+        assertThrows(IllegalArgumentException.class, () -> {
         presoService.anadirPreso(menor);
+    });
 
         //Verificamos que la BDD sigue vacía
         assertEquals(0, presoDAO.count(), "No se debería haber guardado un menor de edad");
