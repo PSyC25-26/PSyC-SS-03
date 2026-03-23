@@ -7,3 +7,9 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 - Port: el que indique Docker
 - Username: myuser
 - Password: secret
+
+Para ejecutar las interfaces de Gestión de cárcel, Gestión de cuentas, Gestión de presos y Eliminación de policía, es necesario:
+
+Iniciar la aplicación Spring Boot.
+Acceder a la ventana/interfaz deseada.
+Ejecutar el archivo .java correspondiente a dicha interfaz.
