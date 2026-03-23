@@ -213,4 +213,10 @@ public class EliminarPoliciaGUI extends JFrame {
         }
         return "";
     }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            EliminarPoliciaGUI gui = new EliminarPoliciaGUI();
+            gui.setVisible(true);
+        });
+    }
 }
