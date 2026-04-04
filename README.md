@@ -2,6 +2,19 @@
 
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
 
+# Componentes clave
+- `src\main\java\com\example` (Carpeta de código principal)
+  - `Dao/` Interfaces para interacción con la base de datos
+  - `Entidades/` Definición de entidades
+  - `Facade/` Controladores RESTful para manejar las peticiones
+  - `GUI/` Interfaces visuales del proyecto
+  - `Service/` Capa de lógica de negocio
+- `src\test\java\com\example\JailQ`(Carpeta de test)
+    - `Service/` Test unitarios
+    - `Integration/` Test de integración
+    - `Performance/` Test de rendimiento
+- **Javadoc**: La documentación de la API es generada mediante el uso de Javadoc.
+
 # Tecnologías
 Java 21 + Spring Boot 4.0.4
 MySQL — base de datos
