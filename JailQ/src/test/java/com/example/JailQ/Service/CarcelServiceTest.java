@@ -1,63 +1,117 @@
 package com.example.JailQ.Service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-
 import com.example.JailQ.Dao.CarcelDAO;
 import com.example.JailQ.Entidades.Carcel;
-import com.example.JailQ.TestcontainersConfiguration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
-public class CarcelServiceTest {
+import java.util.Optional;
+import java.util.List;
+import java.util.Arrays;
 
-    @Autowired
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+/**
+ * Test unitario para {@link CarcelService}.
+ * 
+ * <p>
+ * Utiliza Mockito para simular el comportamiento de {@link CarcelDAO} y probar
+ * la lógica de negocio del servicio sin necesidad de una base de datos real.
+ * </p>
+ * 
+ * <p>
+ * Se comprueba:
+ * <ul>
+ * <li>Adición de cárceles válidas</li>
+ * <li>Validaciones de nombre y capacidad</li>
+ * <li>Eliminación de cárceles existentes y no existentes</li>
+ * <li>Obtención de cárceles por ID (existentes y no existentes)</li>
+ * </ul>
+ * </p>
+ */
+
+class CarcelServiceTest {
+
+    /** Mock del DAO de cárceles */
     private CarcelDAO carcelDAO;
 
-    @Autowired
+    /** Servicio bajo prueba */
     private CarcelService carcelService;
 
+    /**
+     * Configuración antes de cada test.
+     * 
+     * <p>
+     * Se crea un mock de {@link CarcelDAO} y se inyecta en {@link CarcelService}.
+     * </p>
+     */
     @BeforeEach
-    public void setUp() {
-        carcelDAO.deleteAll();
+    void setUp() {
+        // Creamos el mock del DAO
+        carcelDAO = mock(CarcelDAO.class);
+        // Inyectamos el mock en el servicio mediante el constructor
+        carcelService = new CarcelService(carcelDAO);
     }
 
+    /**
+     * Test que verifica la adición de una cárcel válida.
+     * Se comprueba que {@link CarcelDAO#save} se llame una vez.
+     */
     @Test
-    void anadirBienCarcel() {
-        Carcel carcelTest = new Carcel();
-        carcelTest.setNombre("Cárcel Norte");
-        carcelTest.setDescripcion("Centro penitenciario de máxima seguridad");
-        carcelTest.setLocalidad("Bilbao");
-        carcelTest.setCapacidad(500);
+    void testAnadirCarcel_Valida() {
+        Carcel c = new Carcel();
+        c.setNombre("Alcatraz");
+        c.setLocalidad("California");
+        c.setCapacidad(100);
 
-        Carcel guardada = carcelService.anadirCarcel(carcelTest);
+        when(carcelDAO.save(c)).thenReturn(c);
 
-        assertNotNull(guardada.getIdCarcel());
-        assertEquals(1, carcelDAO.count());
+        Carcel result = carcelService.anadirCarcel(c);
+
+        assertEquals("Alcatraz", result.getNombre());
+        verify(carcelDAO, times(1)).save(c);
     }
 
+    /**
+     * Test que verifica que se lanza {@link IllegalArgumentException}
+     * al intentar añadir una cárcel sin nombre.
+     * No debe llamar a {@link CarcelDAO#save}.
+     */
     @Test
-    void anadirCarcelSinNombre() {
-        Carcel carcelMala = new Carcel();
-        carcelMala.setDescripcion("Centro pequeño");
-        carcelMala.setLocalidad("Madrid");
-        carcelMala.setCapacidad(100);
+    void testAnadirCarcel_NombreNulo() {
+        Carcel c = new Carcel();
+        c.setLocalidad("California");
+        c.setCapacidad(100);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            carcelService.anadirCarcel(carcelMala);
-        });
-
-        assertEquals("El nombre de la cárcel es obligatorio.", ex.getMessage());
-        assertEquals(0, carcelDAO.count());
+        assertThrows(IllegalArgumentException.class, () -> carcelService.anadirCarcel(c));
+        verify(carcelDAO, never()).save(any());
     }
 
+    /**
+     * Test que lanza excepción al añadir cárcel con localidad nula.
+     */
     @Test
-    void anadirCarcelCapacidadInvalida() {
+    void testAnadirCarcel_LocalidadNula() {
+        Carcel c = new Carcel();
+        c.setNombre("Cárcel Central");
+        c.setCapacidad(50);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> carcelService.anadirCarcel(c));
+
+        assertEquals("La localidad es obligatoria.", ex.getMessage());
+        verify(carcelDAO, never()).save(any());
+    }
+
+    /**
+     * Test que verifica la validación de capacidad inválida (<=0).
+     * Se comprueba que se lance la excepción correcta y que
+     * {@link CarcelDAO#save} nunca sea llamado.
+     */
+    @Test
+    void testAnadirCarcelCapacidadInvalida() {
         Carcel carcelMala = new Carcel();
         carcelMala.setNombre("Cárcel Sur");
         carcelMala.setDescripcion("Centro penitenciario");
@@ -69,7 +123,120 @@ public class CarcelServiceTest {
         });
 
         assertEquals("La capacidad debe ser un número mayor que cero.", ex.getMessage());
-        assertEquals(0, carcelDAO.count());
+        verify(carcelDAO, never()).save(any());
     }
 
+    /**
+     * Test que lanza excepción al añadir null como cárcel.
+     */
+    @Test
+    void testAnadirCarcel_Null() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> carcelService.anadirCarcel(null));
+
+        assertEquals("No se ha recibido ningún dato de la cárcel.", ex.getMessage());
+        verify(carcelDAO, never()).save(any());
+    }
+
+    /**
+     * Test que verifica la eliminación de una cárcel existente.
+     * {@link CarcelDAO#deleteById} debe ser llamado exactamente una vez.
+     */
+    @Test
+    void testEliminarCarcel_Existe() {
+        when(carcelDAO.existsById(1)).thenReturn(true);
+
+        boolean res = carcelService.eliminarCarcel(1);
+
+        assertTrue(res);
+        verify(carcelDAO, times(1)).deleteById(1);
+    }
+
+    /**
+     * Test que verifica la eliminación de una cárcel inexistente.
+     * {@link CarcelDAO#deleteById} nunca debe ser llamado.
+     */
+    @Test
+    void testEliminarCarcel_NoExiste() {
+        when(carcelDAO.existsById(2)).thenReturn(false);
+
+        boolean res = carcelService.eliminarCarcel(2);
+
+        assertFalse(res);
+        verify(carcelDAO, never()).deleteById(2);
+    }
+
+    /**
+     * Verifica que al intentar eliminar una cárcel con ID nulo
+     * se lance {@link IllegalArgumentException}.
+     */
+    @Test
+    void testEliminarCarcel_IdNulo() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            carcelService.eliminarCarcel(null);
+        });
+        assertEquals("El ID de la cárcel no puede ser nulo.", ex.getMessage());
+    }
+
+    /**
+     * Test que verifica que se lance {@link IllegalArgumentException} al
+     * intentar obtener una cárcel por ID inexistente.
+     */
+    @Test
+    void testObtenerCarcelPorId_NoExiste() {
+        when(carcelDAO.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> carcelService.obtenerCarcelPorId(99));
+    }
+
+    /**
+     * Test que verifica la obtención correcta de una cárcel existente por ID.
+     * Se comprueba que {@link CarcelDAO#findById} sea llamado.
+     */
+    @Test
+    void testObtenerCarcelPorId_Existe() {
+        Carcel c = new Carcel();
+        c.setNombre("Sing Sing");
+        c.setLocalidad("New York");
+        c.setCapacidad(200);
+
+        when(carcelDAO.findById(5)).thenReturn(Optional.of(c));
+
+        Carcel result = carcelService.obtenerCarcelPorId(5);
+
+        assertEquals("Sing Sing", result.getNombre());
+        verify(carcelDAO).findById(5);
+    }
+
+    /**
+     * Verifica que al intentar obtener una cárcel con ID nulo
+     * se lance {@link IllegalArgumentException}.
+     */
+    @Test
+    void testObtenerCarcelPorId_IdNulo() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            carcelService.obtenerCarcelPorId(null);
+        });
+        assertEquals("El ID no puede ser nulo.", ex.getMessage());
+    }
+
+    /**
+     * Test que verifica la obtención de todas las cárceles.
+     */
+    @Test
+    void testObtenerCarceles() {
+        Carcel c1 = new Carcel();
+        c1.setNombre("Alcatraz");
+        Carcel c2 = new Carcel();
+        c2.setNombre("Sing Sing");
+
+        when(carcelDAO.findAll()).thenReturn(Arrays.asList(c1, c2));
+
+        List<Carcel> result = carcelService.obtenerCarceles();
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(c1));
+        assertTrue(result.contains(c2));
+        verify(carcelDAO).findAll();
+    }
 }
