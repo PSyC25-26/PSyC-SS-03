@@ -13,10 +13,10 @@ import java.util.List;
  * 
  * Proporciona métodos para:
  * <ul>
- *   <li>Crear nuevas cárceles</li>
- *   <li>Eliminar cárceles</li>
- *   <li>Obtener todas las cárceles</li>
- *   <li>Obtener una cárcel por su ID</li>
+ * <li>Crear nuevas cárceles</li>
+ * <li>Eliminar cárceles</li>
+ * <li>Obtener todas las cárceles</li>
+ * <li>Obtener una cárcel por su ID</li>
  * </ul>
  * 
  * Este servicio actúa como intermediario entre el controlador (Controller)
@@ -26,8 +26,17 @@ import java.util.List;
 public class CarcelService {
 
     /** DAO utilizado para acceder a la base de datos de cárceles */
+    private final CarcelDAO carcelDAO;
+
+    /**
+     * Constructor del servicio que inyecta el DAO de cárceles.
+     *
+     * @param carcelDAO DAO utilizado para persistir y consultar entidades Carcel
+     */
     @Autowired
-    private CarcelDAO carcelDAO;
+    public CarcelService(CarcelDAO carcelDAO) {
+        this.carcelDAO = carcelDAO;
+    }
 
     /**
      * Añade una nueva cárcel tras validar los campos obligatorios.
