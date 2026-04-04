@@ -1,5 +1,13 @@
 # PSyC-SS-03
 
+Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
+
+# Tecnologías
+Java 21 + Spring Boot 4.0.4
+MySQL — base de datos
+
+# Requisitos previos
+Java 21 o superior y Maven instalado.
 Para utilizar este proyecto debes tener Docker Desktop y MySQL instalado en tu ordenador. Debes tener Docker runneando.
 Para consultar la bd en MySQL debes abrir una conexión a:
 - Connection name: JailQ Docker
@@ -8,8 +16,8 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 - Username: myuser
 - Password: secret
 
-Para ejecutar las interfaces de Gestión de cárcel, Gestión de cuentas, Gestión de presos y Eliminación de policía, es necesario:
+# Páginas y navegación
+Interfaz Vista	Acceso
 
-Iniciar la aplicación Spring Boot.
-Acceder a la ventana/interfaz deseada.
-Ejecutar el archivo .java correspondiente a dicha interfaz.
+
+# Estructura del proyecto
