@@ -14,10 +14,10 @@ import java.util.List;
  * 
  * Proporciona métodos para:
  * <ul>
- *   <li>Crear nuevas cuentas</li>
- *   <li>Eliminar cuentas</li>
- *   <li>Eliminar cuentas de tipo POLICIA</li>
- *   <li>Obtener todas las cuentas de tipo POLICIA</li>
+ * <li>Crear nuevas cuentas</li>
+ * <li>Eliminar cuentas</li>
+ * <li>Eliminar cuentas de tipo POLICIA</li>
+ * <li>Obtener todas las cuentas de tipo POLICIA</li>
  * </ul>
  * 
  * Este servicio actúa como intermediario entre el controlador (Controller)
@@ -30,9 +30,35 @@ import java.util.List;
 @Service
 public class CuentaService {
 
-    /** DAO utilizado para acceder a la base de datos de cuentas */
+    /**
+     * DAO utilizado para acceder a la base de datos de cuentas.
+     * 
+     * <p>
+     * Este campo se declara como <code>private final</code> y se inicializa
+     * mediante
+     * inyección de dependencias a través del constructor. No debe ser modificado
+     * directamente fuera de esta clase.
+     * </p>
+     */
+    private final CuentaDAO cuentaDAO;
+
+    /**
+     * Constructor de {@link CuentaService} que permite inyectar el DAO de cuentas.
+     *
+     * <p>
+     * Se utiliza inyección de dependencias mediante {@link Autowired}, lo que
+     * permite
+     * que Spring proporcione automáticamente la implementación de
+     * {@link CuentaDAO}.
+     * </p>
+     *
+     * @param cuentaDAO DAO utilizado para persistir y consultar entidades
+     *                  {@link Cuenta}
+     */
     @Autowired
-    private CuentaDAO cuentaDAO;
+    public CuentaService(CuentaDAO cuentaDAO) {
+        this.cuentaDAO = cuentaDAO;
+    }
 
     /**
      * Añade una nueva cuenta tras validar los campos obligatorios.
@@ -90,11 +116,11 @@ public class CuentaService {
      * @param id Identificador de la cuenta
      * @return true si la cuenta fue eliminada correctamente
      * @throws IllegalArgumentException si:
-     * <ul>
-     *   <li>El ID es nulo</li>
-     *   <li>La cuenta no existe</li>
-     *   <li>La cuenta no es de tipo POLICIA</li>
-     * </ul>
+     *                                  <ul>
+     *                                  <li>El ID es nulo</li>
+     *                                  <li>La cuenta no existe</li>
+     *                                  <li>La cuenta no es de tipo POLICIA</li>
+     *                                  </ul>
      */
     public boolean eliminarCuentaPolicia(Integer id) {
         if (id == null) {
@@ -129,24 +155,26 @@ public class CuentaService {
 
         return policias;
     }
+
     /**
- * Verifica si existe una cuenta de tipo POLICIA con username y password correctos.
- *
- * @param username nombre de usuario
- * @param password contraseña
- * @return la cuenta si es válida, null si no
- */
-public Cuenta loginPolicia(String username, String password) {
+     * Verifica si existe una cuenta de tipo POLICIA con username y password
+     * correctos.
+     *
+     * @param username nombre de usuario
+     * @param password contraseña
+     * @return la cuenta si es válida, null si no
+     */
+    public Cuenta loginPolicia(String username, String password) {
 
-    for (Cuenta cuenta : cuentaDAO.findAll()) {
-        if (cuenta.getUsername().equals(username)
-                && cuenta.getPassword().equals(password)
-                && cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {
+        for (Cuenta cuenta : cuentaDAO.findAll()) {
+            if (cuenta.getUsername().equals(username)
+                    && cuenta.getPassword().equals(password)
+                    && cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {
 
-            return cuenta;
+                return cuenta;
+            }
         }
-    }
 
-    return null;
-}
+        return null;
+    }
 }
