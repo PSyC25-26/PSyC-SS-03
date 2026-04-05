@@ -20,33 +20,52 @@ import org.springframework.stereotype.Service;
  * Anotada con {@link Service} para ser detectada como componente de Spring.
  */
 
-@Service //indica que esta funcion es un servicio
+@Service // indica que esta funcion es un servicio
 public class PresoService {
 
     /**
-     * DAO para la entidad {@link Preso}.
-     * Crear una instancia de PresoDAO para usar sus funcionalidades. 
-     * 
-     * Se inyecta automáticamente mediante Spring con {@link Autowired}.
+     * DAO utilizado para acceder a la base de datos de presos.
+     * <p>
+     * Se declara como {@code final} para indicar que no puede ser reasignado
+     * tras la inicialización. Todas las operaciones del servicio usarán esta
+     * instancia.
+     * </p>
+     */
+    private final PresoDAO presoDAO;
+
+    /**
+     * DAO utilizado para acceder a la base de datos de presos.
+     * <p>
+     * Se declara como {@code final} para indicar que no puede ser reasignado
+     * tras la inicialización. Todas las operaciones del servicio usarán esta
+     * instancia.
+     * </p>
      */
     @Autowired
-    private PresoDAO presoDAO;
+    public PresoService(PresoDAO presoDAO) {
+        this.presoDAO = presoDAO;
+    }
+
     /**
      * Añade un nuevo {@link Preso} a la base de datos tras realizar validaciones.
      * 
      * Validaciones realizadas:
      * <ul>
-     *   <li>Compronar que existe el objeto</li>
-     *   <li>Validación de Nombre y Apellidos (con trim para detectar "" también como vacío)</li>
-     *   <li>Validacion de edad</li>
-     *   <li>Comprobacion de condena.</li>
-     *   <li>Validacion de fecha de ingreso -> no puede ser futura y tampoco puede entrar antes de haber nacido</li>
+     * <li>Compronar que existe el objeto</li>
+     * <li>Validación de Nombre y Apellidos (con trim para detectar "" también como
+     * vacío)</li>
+     * <li>Validacion de edad</li>
+     * <li>Comprobacion de condena.</li>
+     * <li>Validacion de fecha de ingreso -> no puede ser futura y tampoco puede
+     * entrar antes de haber nacido</li>
      * </ul>
      * 
      * Mensajes de error se imprimen en consola en caso de datos inválidos.
-     * Si todas las validaciones pasan, el preso se guarda mediante {@link PresoDAO#save(Object)}.
+     * Si todas las validaciones pasan, el preso se guarda mediante
+     * {@link PresoDAO#save(Object)}.
      * 
-     * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser {@code null}.
+     * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser
+     *                   {@code null}.
      */
     public Preso anadirPreso(Preso nuevoPreso) {
 
