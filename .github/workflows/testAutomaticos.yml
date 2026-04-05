@@ -22,15 +22,14 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Ejecuta solo los tests en el subdirectorio donde está pom.xml
+      # Ejecuta solo los tests en el subdirectorio JailQ
       - name: Run Tests
         working-directory: JailQ
         run: mvn test
 
-      # Opcional: sube los resultados de los tests
+      # Sube los resultados de los tests
       - name: Upload Test Results
-        working-directory: backend   # <- Mismo subdirectorio
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: target/surefire-reports
+          path: JailQ/target/surefire-reports
