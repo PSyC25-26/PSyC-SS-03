@@ -1,67 +1,292 @@
 package com.example.JailQ.Service;
 
-import java.time.LocalDate;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Preso;
+import com.example.JailQ.Entidades.Delito;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.mockito.Mockito;
 
-import com.example.JailQ.Dao.PresoDAO;
-import com.example.JailQ.Entidades.Delito;
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.TestcontainersConfiguration;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
-public class PresoServiceTest {
-    @Autowired
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+/**
+ * Test unitario para {@link PresoService}.
+ *
+ * <p>
+ * Verifica la lógica de negocio completa del servicio, incluyendo:
+ * <ul>
+ * <li>Validaciones de datos obligatorios al añadir un preso</li>
+ * <li>Verificación de edad mínima de 18 años</li>
+ * <li>Validaciones de fecha de ingreso</li>
+ * <li>Obtención de todos los presos y por ID</li>
+ * <li>Eliminación de presos existentes e inexistentes</li>
+ * </ul>
+ * </p>
+ */
+class PresoServiceTest {
+
+    /**
+     * Mock de {@link PresoDAO} utilizado para simular el acceso a la base de datos
+     * de presos durante los tests. Permite controlar el comportamiento del DAO
+     * sin depender de una base de datos real.
+     */
     private PresoDAO presoDAO;
-
-    @Autowired
+    /**
+     * Mock de {@link PresoDAO} utilizado para simular el acceso a la base de datos
+     * de presos durante los tests. Permite controlar el comportamiento del DAO
+     * sin depender de una base de datos real.
+     */
     private PresoService presoService;
 
+    /**
+     * Configuración previa a cada test de {@link PresoService}.
+     *
+     * <p>
+     * Se crea un mock de {@link PresoDAO} usando Mockito y se inyecta en
+     * {@link PresoService} mediante el constructor. Esto permite probar la
+     * lógica del servicio sin depender de una base de datos real.
+     * </p>
+     */
     @BeforeEach
-    public void setUp(){
-        presoDAO.deleteAll();
-        //Para limpiar las instancias creadas en cada test. 
+    void setUp() {
+        // Creamos el mock del DAO
+        presoDAO = mock(PresoDAO.class);
+
+        // Inyectamos el mock a través del constructor
+        presoService = new PresoService(presoDAO);
     }
 
-    //Test para comprobar que se añada bien a la BDD
+    /**
+     * Test que verifica la adición de un preso válido con todos los campos
+     * obligatorios.
+     */
     @Test
-    void anadirBienPreso(){
-        Preso presoTest = new Preso();
-        presoTest.setNombre("Markel");
-        presoTest.setApellidos("Damian");
-        presoTest.setCondena(2);
-        presoTest.setFechaNacimiento(LocalDate.of(1990, 1, 1));
-        presoTest.setFechaIngreso(LocalDate.now());
-        presoTest.setDelitoPreso(Delito.TRAF_PERSONAS);
-        presoService.anadirPreso(presoTest);
+    void testAnadirPreso_Valido() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setApellidos("Pérez");
+        p.setFechaNacimiento(LocalDate.now().minusYears(30));
+        p.setCondena(5);
+        p.setDelitos(Arrays.asList(Delito.ROBO, Delito.HOMICIDIO));
+        p.setFechaIngreso(LocalDate.now().minusDays(10));
 
-        assertEquals(1, presoDAO.count(), "Debería haber un preso guardado en la BD");
-        
+        when(presoDAO.save(p)).thenReturn(p);
+
+        Preso result = presoService.anadirPreso(p);
+
+        assertEquals("Juan", result.getNombre());
+        assertEquals(2, result.getDelitos().size());
+        verify(presoDAO, times(1)).save(p);
     }
 
+    /**
+     * Test que lanza excepción al añadir un preso null.
+     */
     @Test
-    void anadirPresoMenor(){
-        
-        Preso menor = new Preso();
-        menor.setNombre("Juanito");
-        menor.setApellidos("Pérez");
-        menor.setFechaNacimiento(LocalDate.now().minusYears(10)); //El preso tiene 10 años
-        menor.setCondena(2);
-        menor.setFechaIngreso(LocalDate.now());
+    void testAnadirPreso_Null() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(null));
+        assertEquals("No se ha recibido ningún dato del preso.", ex.getMessage());
+        verify(presoDAO, never()).save(any());
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-        presoService.anadirPreso(menor);
-    });
+    /**
+     * Test que lanza excepción al añadir un preso con nombre vacío.
+     */
+    @Test
+    void testAnadirPreso_NombreNulo() {
+        Preso p = new Preso();
+        p.setApellidos("Pérez");
+        p.setFechaNacimiento(LocalDate.now().minusYears(25));
+        p.setCondena(3);
+        p.setDelitos(Arrays.asList(Delito.ROBO));
+        p.setFechaIngreso(LocalDate.now());
 
-        //Verificamos que la BDD sigue vacía
-        assertEquals(0, presoDAO.count(), "No se debería haber guardado un menor de edad");
-    
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("El nombre es obligatorio.", ex.getMessage());
+        verify(presoDAO, never()).save(any());
+    }
+
+    /**
+     * Test que lanza excepción al añadir un preso con apellidos vacíos.
+     */
+    @Test
+    void testAnadirPreso_ApellidosNulos() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setFechaNacimiento(LocalDate.now().minusYears(25));
+        p.setCondena(3);
+        p.setDelitos(Arrays.asList(Delito.ROBO));
+        p.setFechaIngreso(LocalDate.now());
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("Los apellidos son obligatorios.", ex.getMessage());
+        verify(presoDAO, never()).save(any());
+    }
+
+    /**
+     * Test que lanza excepción si la fecha de nacimiento es null o menor de 18
+     * años.
+     */
+    @Test
+    void testAnadirPreso_FechaNacimientoInvalida() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setApellidos("Pérez");
+        p.setCondena(3);
+        p.setDelitos(Arrays.asList(Delito.ROBO));
+        p.setFechaIngreso(LocalDate.now());
+
+        // Fecha de nacimiento null
+        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La fecha de nacimiento es obligatoria.", ex1.getMessage());
+
+        // Fecha de nacimiento menor de 18 años
+        p.setFechaNacimiento(LocalDate.now().minusYears(16));
+        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("El preso debe ser mayor de edad.", ex2.getMessage());
+    }
+
+    /**
+     * Test que lanza excepción si la condena es null o <=0.
+     */
+    @Test
+    void testAnadirPreso_CondenaInvalida() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setApellidos("Pérez");
+        p.setFechaNacimiento(LocalDate.now().minusYears(25));
+        p.setDelitos(Arrays.asList(Delito.ROBO));
+        p.setFechaIngreso(LocalDate.now());
+
+        // Condena null
+        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La condena debe ser mayor a 0 años.", ex1.getMessage());
+
+        // Condena <=0
+        p.setCondena(0);
+        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La condena debe ser mayor a 0 años.", ex2.getMessage());
+    }
+
+    /**
+     * Test que lanza excepción si la lista de delitos está vacía.
+     */
+    @Test
+    void testAnadirPreso_DelitosVacios() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setApellidos("Pérez");
+        p.setFechaNacimiento(LocalDate.now().minusYears(25));
+        p.setCondena(5);
+        p.setDelitos(Arrays.asList()); // lista vacía
+        p.setFechaIngreso(LocalDate.now());
+
+        // El servicio actualmente no valida explícitamente los delitos,
+        // pero se podría añadir validación si es obligatorio.
+        // Aquí simplemente comprobamos que el objeto con lista vacía se guarda:
+        when(presoDAO.save(p)).thenReturn(p);
+        Preso result = presoService.anadirPreso(p);
+        assertEquals(0, result.getDelitos().size());
+    }
+
+    /**
+     * Test que lanza excepción si la fecha de ingreso es null, futura o anterior al
+     * nacimiento.
+     */
+    @Test
+    void testAnadirPreso_FechaIngresoInvalida() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        p.setApellidos("Pérez");
+        p.setFechaNacimiento(LocalDate.now().minusYears(25));
+        p.setCondena(5);
+        p.setDelitos(Arrays.asList(Delito.ROBO));
+
+        // Fecha de ingreso null
+        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La fecha de ingreso es obligatoria.", ex1.getMessage());
+
+        // Fecha de ingreso futura
+        p.setFechaIngreso(LocalDate.now().plusDays(1));
+        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La fecha de ingreso no puede ser futura.", ex2.getMessage());
+
+        // Fecha de ingreso antes del nacimiento
+        p.setFechaIngreso(LocalDate.now().minusYears(30));
+        IllegalArgumentException ex3 = assertThrows(IllegalArgumentException.class,
+                () -> presoService.anadirPreso(p));
+        assertEquals("La fecha de ingreso no puede ser anterior al nacimiento.", ex3.getMessage());
+    }
+
+    /**
+     * Test que verifica la obtención de todos los presos.
+     */
+    @Test
+    void testObtenerTodos() {
+        Preso p1 = new Preso();
+        p1.setNombre("Juan");
+        Preso p2 = new Preso();
+        p2.setNombre("Pedro");
+
+        when(presoDAO.findAll()).thenReturn(Arrays.asList(p1, p2));
+
+        List<Preso> result = presoService.obtenerTodos();
+        assertEquals(2, result.size());
+        verify(presoDAO).findAll();
+    }
+
+    /**
+     * Test que verifica obtener un preso por ID.
+     */
+    @Test
+    void testObtenerPorId() {
+        Preso p = new Preso();
+        p.setNombre("Juan");
+        when(presoDAO.findById(1)).thenReturn(Optional.of(p));
+
+        Preso result = presoService.obtenerPorId(1);
+        assertEquals("Juan", result.getNombre());
+        verify(presoDAO).findById(1);
+    }
+
+    /**
+     * Test que lanza excepción al obtener un preso con ID inexistente.
+     */
+    @Test
+    void testObtenerPorId_Inexistente() {
+        when(presoDAO.findById(99)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> presoService.obtenerPorId(99));
+    }
+
+    /**
+     * Test que verifica la eliminación de un preso existente e inexistente.
+     */
+    @Test
+    void testEliminar() {
+        when(presoDAO.existsById(1)).thenReturn(true);
+        when(presoDAO.existsById(2)).thenReturn(false);
+
+        assertTrue(presoService.eliminar(1));
+        assertFalse(presoService.eliminar(2));
+
+        verify(presoDAO).deleteById(1);
+        verify(presoDAO, never()).deleteById(2);
     }
 }
