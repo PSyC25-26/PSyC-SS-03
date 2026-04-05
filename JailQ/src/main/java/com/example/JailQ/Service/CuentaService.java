@@ -22,10 +22,6 @@ import java.util.List;
  * 
  * Este servicio actúa como intermediario entre el controlador (Controller)
  * y el acceso a datos (DAO).
- * 
- * @author Pablo
- * @version 1.0
- * @since 2026
  */
 @Service
 public class CuentaService {

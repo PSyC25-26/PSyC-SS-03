@@ -33,8 +33,6 @@ import com.example.JailQ.Entidades.Delito;
  * <li>Definir la condena en años.</li>
  * <li>Enviar la información mediante una petición HTTP POST al backend.</li>
  * </ul>
- * * @author Adrián Baz/Grupo 3
- * @version 1.0
  */
 public class GestionPresosGUI extends JFrame {
 
