@@ -1,8 +1,14 @@
 # PSyC-SS-03
+## Tabla de contenidos
+- [Descripción](#Descripción)
+- [Componentes clave](#Componentes clave)
+- [Tecnologías](#Tecnologías)
+- [Requisitos previos](#Requisitos previos)
 
+## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
 
-# Componentes clave
+## Componentes clave
 - `src\main\java\com\example` (Carpeta de código principal)
   - `Dao/` Interfaces para interacción con la base de datos
   - `Entidades/` Definición de entidades
@@ -15,11 +21,12 @@ Software de gestión para cárceles, que proporciona información sobre cárcele
     - `Performance/` Test de rendimiento
 - **Javadoc**: La documentación de la API es generada mediante el uso de Javadoc.
 
-# Tecnologías
+## Tecnologías
 Java 21 + Spring Boot 4.0.4
 MySQL — base de datos
+Mockito, JUnit5 y JaCoCo
 
-# Requisitos previos
+## Requisitos previos
 Java 21 o superior y Maven instalado.
 Para utilizar este proyecto debes tener Docker Desktop y MySQL instalado en tu ordenador. Debes tener Docker runneando.
 Para consultar la bd en MySQL debes abrir una conexión a:
@@ -29,8 +36,4 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 - Username: myuser
 - Password: secret
 
-# Páginas y navegación
-Interfaz Vista	Acceso
 
-
-# Estructura del proyecto
