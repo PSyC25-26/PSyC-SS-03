@@ -18,6 +18,7 @@ import java.util.List;
  * <li>Eliminar cuentas</li>
  * <li>Eliminar cuentas de tipo POLICIA</li>
  * <li>Obtener todas las cuentas de tipo POLICIA</li>
+ * <li>Iniciar sesión como POLICIA</li>
  * </ul>
  * 
  * Este servicio actúa como intermediario entre el controlador (Controller)
@@ -31,9 +32,8 @@ public class CuentaService {
      * 
      * <p>
      * Este campo se declara como <code>private final</code> y se inicializa
-     * mediante
-     * inyección de dependencias a través del constructor. No debe ser modificado
-     * directamente fuera de esta clase.
+     * mediante inyección de dependencias a través del constructor.
+     * No debe ser modificado directamente fuera de esta clase.
      * </p>
      */
     private final CuentaDAO cuentaDAO;
@@ -43,8 +43,7 @@ public class CuentaService {
      *
      * <p>
      * Se utiliza inyección de dependencias mediante {@link Autowired}, lo que
-     * permite
-     * que Spring proporcione automáticamente la implementación de
+     * permite que Spring proporcione automáticamente la implementación de
      * {@link CuentaDAO}.
      * </p>
      *
@@ -57,11 +56,13 @@ public class CuentaService {
     }
 
     /**
-     * Añade una nueva cuenta tras validar los campos obligatorios.
+     * Añade una nueva cuenta tras validar los campos obligatorios y comprobar
+     * que no exista ya otra cuenta con el mismo username.
      *
      * @param nuevaCuenta Objeto Cuenta a guardar
      * @return La cuenta guardada con su ID generado
-     * @throws IllegalArgumentException si los datos son inválidos
+     * @throws IllegalArgumentException si los datos son inválidos o si el username
+     *                                  ya está en uso
      */
     public Cuenta anadirCuenta(Cuenta nuevaCuenta) {
         if (nuevaCuenta == null) {
@@ -78,6 +79,13 @@ public class CuentaService {
 
         if (nuevaCuenta.getTipoCuenta() == null) {
             throw new IllegalArgumentException("El tipo de cuenta es obligatorio.");
+        }
+
+        String usernameLimpio = nuevaCuenta.getUsername().trim();
+        nuevaCuenta.setUsername(usernameLimpio);
+
+        if (cuentaDAO.existsByUsername(usernameLimpio)) {
+            throw new IllegalArgumentException("Ya existe una cuenta con ese nombre de usuario.");
         }
 
         System.out.println("Cuenta validada correctamente. Procediendo a guardar...");
