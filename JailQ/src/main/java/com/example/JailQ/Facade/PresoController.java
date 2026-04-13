@@ -1,12 +1,18 @@
 package com.example.JailQ.Facade;
 
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Service.PresoService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.JailQ.Entidades.Preso;
+import com.example.JailQ.Service.PresoService;
 
 /**
  * Controlador REST encargado de gestionar las operaciones relacionadas con los presos.
@@ -59,11 +65,11 @@ public class PresoController {
         /**
      * Obtiene todos los presos registrados.
      *
-     * Endpoint: GET /preso
+     * Endpoint: GET /preso/todos
      *
      * @return lista de presos con código 200 (OK)
      */
-    @GetMapping
+    @GetMapping("/todos")
     public ResponseEntity<?> obtenerPresos() {
         try {
             return new ResponseEntity<>(presoService.obtenerTodos(), HttpStatus.OK);

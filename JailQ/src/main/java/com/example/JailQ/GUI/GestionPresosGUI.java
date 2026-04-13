@@ -117,7 +117,7 @@ public class GestionPresosGUI extends JFrame {
             Delito delitoSeleccionado = (Delito) cbDelito.getSelectedItem();
 
             String jsonBody = String.format(
-                "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"fechaNacimiento\":\"%s\", \"condena\":%s, \"fechaIngreso\":\"%s\", \"delitoPreso\":\"%s\"}",
+                "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"fechaNacimiento\":\"%s\", \"condena\":%s, \"fechaIngreso\":\"%s\", \"delitos\":[\"%s\"]}",
                 txtNombre.getText(),
                 txtApellidos.getText(),
                 fechaNac,
