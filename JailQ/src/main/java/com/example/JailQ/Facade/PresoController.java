@@ -14,22 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Service.PresoService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Controlador REST encargado de gestionar las operaciones relacionadas con los presos.
- * 
- * Expone endpoints HTTP para:
+ * * Expone endpoints HTTP para:
  * <ul>
- *   <li>Crear presos</li>
- *   <li>Obtener todos los presos</li>
- *   <li>Obtener un preso por ID</li>
- *   <li>Eliminar un preso</li>
+ * <li>Crear presos</li>
+ * <li>Obtener todos los presos</li>
+ * <li>Obtener un preso por ID</li>
+ * <li>Eliminar un preso</li>
  * </ul>
- * 
- * Base URL: /preso
+ * * Base URL: /preso
  */
 @RestController
 @RequestMapping("/preso")
 public class PresoController {
+
+    /** Logger para registrar eventos y errores en el controlador */
+    private static final Logger logger = LoggerFactory.getLogger(PresoController.class);
 
     /** Servicio que contiene la lógica de negocio de presos */
     @Autowired
@@ -43,26 +47,29 @@ public class PresoController {
      * @param preso objeto Preso recibido en formato JSON
      * @return ResponseEntity con:
      * <ul>
-     *   <li>201 (CREATED) si se crea correctamente</li>
-     *   <li>400 (BAD REQUEST) si los datos son inválidos</li>
-     *   <li>500 (INTERNAL SERVER ERROR) si ocurre un error inesperado</li>
+     * <li>201 (CREATED) si se crea correctamente</li>
+     * <li>400 (BAD REQUEST) si los datos son inválidos</li>
+     * <li>500 (INTERNAL SERVER ERROR) si ocurre un error inesperado</li>
      * </ul>
      */
     @PostMapping("/crear")
     public ResponseEntity<?> crearPreso(@RequestBody Preso preso) {
+        logger.info("Recibida petición POST en /preso/crear para el preso: {}", preso.getNombre());
         try {
             Preso guardado = presoService.anadirPreso(preso);
             return new ResponseEntity<>(guardado, HttpStatus.CREATED);
 
         } catch (IllegalArgumentException e) {
+            logger.warn("Petición rechazada al crear preso (400 Bad Request): {}", e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
+            logger.error("Error interno (500) al crear el preso: {}", e.getMessage(), e);
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-        /**
+    /**
      * Obtiene todos los presos registrados.
      *
      * Endpoint: GET /preso/todos
@@ -71,10 +78,12 @@ public class PresoController {
      */
     @GetMapping("/todos")
     public ResponseEntity<?> obtenerPresos() {
+        logger.info("Recibida petición GET en /preso/todos");
         try {
             return new ResponseEntity<>(presoService.obtenerTodos(), HttpStatus.OK);
 
         } catch (Exception e) {
+            logger.error("Error interno (500) al obtener la lista de presos: {}", e.getMessage(), e);
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,13 +98,16 @@ public class PresoController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPresoPorId(@PathVariable Integer id) {
+        logger.info("Recibida petición GET en /preso/{} para obtener preso por ID", id);
         try {
             return new ResponseEntity<>(presoService.obtenerPorId(id), HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
+            logger.warn("Preso no encontrado (404 Not Found) para el ID {}: {}", id, e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 
         } catch (Exception e) {
+            logger.error("Error interno (500) al obtener el preso con ID {}: {}", id, e.getMessage(), e);
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -110,19 +122,23 @@ public class PresoController {
      */
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarPreso(@PathVariable Integer id) {
+        logger.info("Recibida petición DELETE en /preso/eliminar/{}", id);
         try {
             boolean eliminado = presoService.eliminar(id);
 
             if (eliminado) {
                 return new ResponseEntity<>("Preso eliminado correctamente.", HttpStatus.OK);
             } else {
+                logger.warn("No se pudo eliminar, preso no encontrado con ID: {}", id);
                 return new ResponseEntity<>("No se encontró el preso con ID: " + id, HttpStatus.NOT_FOUND);
             }
 
         } catch (IllegalArgumentException e) {
+            logger.warn("Petición rechazada al eliminar preso (400 Bad Request): {}", e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
+            logger.error("Error interno (500) al eliminar el preso con ID {}: {}", id, e.getMessage(), e);
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -11,23 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Servicio encargado de la lógica de negocio relacionada con las cárceles.
- * 
- * Proporciona métodos para:
+ * * Proporciona métodos para:
  * <ul>
  * <li>Crear nuevas cárceles</li>
  * <li>Eliminar cárceles</li>
  * <li>Obtener todas las cárceles</li>
  * <li>Obtener una cárcel por su ID</li>
  * </ul>
- * 
- * Este servicio actúa como intermediario entre el controlador (Controller)
+ * * Este servicio actúa como intermediario entre el controlador (Controller)
  * y el acceso a datos (DAO).
  */
 @Service
 public class CarcelService {
+
+    /** Logger para registrar eventos y errores en el servicio */
+    private static final Logger logger = LoggerFactory.getLogger(CarcelService.class);
+
+
 
     /** DAO utilizado para acceder a la base de datos de cárceles */
     private final CarcelDAO carcelDAO;
@@ -88,7 +94,8 @@ public class CarcelService {
             throw new IllegalArgumentException("La capacidad debe ser un número mayor que cero.");
         }
 
-        System.out.println("Cárcel validada correctamente. Procediendo a guardar...");
+        // Cambio: System.out por logger.info
+        logger.info("Cárcel validada correctamente. Procediendo a guardar...");
         return carcelDAO.save(nuevaCarcel);
     }
 
@@ -106,10 +113,12 @@ public class CarcelService {
 
         if (carcelDAO.existsById(id)) {
             carcelDAO.deleteById(id);
-            System.out.println("Cárcel con ID " + id + " eliminada correctamente.");
+            // Cambio: System.out por logger.info con parámetro {}
+            logger.info("Cárcel con ID {} eliminada correctamente.", id);
             return true;
         } else {
-            System.err.println("No se encontró ninguna cárcel con el ID: " + id);
+            // Cambio: System.err por logger.error o warn según prioridad de los apuntes
+            logger.warn("No se encontró ninguna cárcel con el ID: {}", id);
             return false;
         }
     }

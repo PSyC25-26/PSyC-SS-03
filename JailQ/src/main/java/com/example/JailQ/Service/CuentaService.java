@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Servicio encargado de la lógica de negocio relacionada con las cuentas.
- * 
- * Proporciona métodos para:
+ * * Proporciona métodos para:
  * <ul>
  * <li>Crear nuevas cuentas</li>
  * <li>Eliminar cuentas</li>
@@ -20,17 +22,18 @@ import java.util.List;
  * <li>Obtener todas las cuentas de tipo POLICIA</li>
  * <li>Iniciar sesión como POLICIA</li>
  * </ul>
- * 
- * Este servicio actúa como intermediario entre el controlador (Controller)
+ * * Este servicio actúa como intermediario entre el controlador (Controller)
  * y el acceso a datos (DAO).
  */
 @Service
 public class CuentaService {
 
+    /** Logger para registrar eventos y errores en el servicio */
+    private static final Logger logger = LoggerFactory.getLogger(CuentaService.class);
+
     /**
      * DAO utilizado para acceder a la base de datos de cuentas.
-     * 
-     * <p>
+     * * <p>
      * Este campo se declara como <code>private final</code> y se inicializa
      * mediante inyección de dependencias a través del constructor.
      * No debe ser modificado directamente fuera de esta clase.
@@ -48,7 +51,7 @@ public class CuentaService {
      * </p>
      *
      * @param cuentaDAO DAO utilizado para persistir y consultar entidades
-     *                  {@link Cuenta}
+     * {@link Cuenta}
      */
     @Autowired
     public CuentaService(CuentaDAO cuentaDAO) {
@@ -62,7 +65,7 @@ public class CuentaService {
      * @param nuevaCuenta Objeto Cuenta a guardar
      * @return La cuenta guardada con su ID generado
      * @throws IllegalArgumentException si los datos son inválidos o si el username
-     *                                  ya está en uso
+     * ya está en uso
      */
     public Cuenta anadirCuenta(Cuenta nuevaCuenta) {
         if (nuevaCuenta == null) {
@@ -88,7 +91,7 @@ public class CuentaService {
             throw new IllegalArgumentException("Ya existe una cuenta con ese nombre de usuario.");
         }
 
-        System.out.println("Cuenta validada correctamente. Procediendo a guardar...");
+        logger.info("Cuenta validada correctamente. Procediendo a guardar...");
         return cuentaDAO.save(nuevaCuenta);
     }
 
@@ -106,10 +109,10 @@ public class CuentaService {
 
         if (cuentaDAO.existsById(id)) {
             cuentaDAO.deleteById(id);
-            System.out.println("Cuenta con ID " + id + " eliminada correctamente.");
+            logger.info("Cuenta con ID {} eliminada correctamente.", id);
             return true;
         } else {
-            System.err.println("No se encontró ninguna cuenta con el ID: " + id);
+            logger.warn("No se encontró ninguna cuenta con el ID: {}", id);
             return false;
         }
     }
@@ -120,11 +123,11 @@ public class CuentaService {
      * @param id Identificador de la cuenta
      * @return true si la cuenta fue eliminada correctamente
      * @throws IllegalArgumentException si:
-     *                                  <ul>
-     *                                  <li>El ID es nulo</li>
-     *                                  <li>La cuenta no existe</li>
-     *                                  <li>La cuenta no es de tipo POLICIA</li>
-     *                                  </ul>
+     * <ul>
+     * <li>El ID es nulo</li>
+     * <li>La cuenta no existe</li>
+     * <li>La cuenta no es de tipo POLICIA</li>
+     * </ul>
      */
     public boolean eliminarCuentaPolicia(Integer id) {
         if (id == null) {
@@ -139,7 +142,7 @@ public class CuentaService {
         }
 
         cuentaDAO.deleteById(id);
-        System.out.println("Cuenta de policía con ID " + id + " eliminada correctamente.");
+        logger.info("Cuenta de policía con ID {} eliminada correctamente.", id);
         return true;
     }
 

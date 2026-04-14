@@ -12,18 +12,22 @@ import com.example.JailQ.Dao.CarcelDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Servicio para gestionar operaciones sobre {@link Preso}.
- * 
- * Esta clase se encarga de validar y guardar objetos Preso en la base de datos
+ * * Esta clase se encarga de validar y guardar objetos Preso en la base de datos
  * utilizando {@link PresoDAO}. Incluye validaciones de nombre, apellidos, edad,
  * condena y fechas de ingreso.
- * 
- * Anotada con {@link Service} para ser detectada como componente de Spring.
+ * * Anotada con {@link Service} para ser detectada como componente de Spring.
  */
 
 @Service // indica que esta funcion es un servicio
 public class PresoService {
+
+    /** Logger para registrar eventos y errores en el servicio */
+    private static final Logger logger = LoggerFactory.getLogger(PresoService.class);
 
     /**
      * DAO utilizado para acceder a la base de datos de presos.
@@ -63,8 +67,7 @@ public class PresoService {
 
     /**
      * Añade un nuevo {@link Preso} a la base de datos tras realizar validaciones.
-     * 
-     * Validaciones realizadas:
+     * * Validaciones realizadas:
      * <ul>
      * <li>Compronar que existe el objeto</li>
      * <li>Validación de Nombre y Apellidos (con trim para detectar "" también como
@@ -74,13 +77,11 @@ public class PresoService {
      * <li>Validacion de fecha de ingreso -> no puede ser futura y tampoco puede
      * entrar antes de haber nacido</li>
      * </ul>
-     * 
-     * Mensajes de error se imprimen en consola en caso de datos inválidos.
+     * * Mensajes de error se imprimen en consola en caso de datos inválidos.
      * Si todas las validaciones pasan, el preso se guarda mediante
      * {@link PresoDAO#save(Object)}.
-     * 
-     * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser
-     *                   {@code null}.
+     * * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser
+     * {@code null}.
      */
     public Preso anadirPreso(Preso nuevoPreso) {
 
@@ -139,7 +140,7 @@ public class PresoService {
         // 2. Asignamos la cárcel completa (con nombre, localidad, etc.) al preso
         nuevoPreso.setCarcel(carcelCompleta);
 
-        System.out.println("Guardando preso en: " + carcelCompleta.getNombre());
+        logger.info("Guardando preso en: {}", carcelCompleta.getNombre());
         
         // 3. Guardamos y devolvemos el objeto (ahora con todos los datos)
         return presoDAO.save(nuevoPreso);
@@ -176,9 +177,11 @@ public class PresoService {
      */
     public boolean eliminar(Integer id) {
         if (!presoDAO.existsById(id)) {
+            logger.warn("No se encontró ningún preso con el ID: {}", id);
             return false;
         }
         presoDAO.deleteById(id);
+        logger.info("Preso con ID {} eliminado correctamente.", id);
         return true;
     }
 
