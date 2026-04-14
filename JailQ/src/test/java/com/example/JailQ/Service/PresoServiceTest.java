@@ -1,13 +1,16 @@
 package com.example.JailQ.Service;
 
 import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Dao.CarcelDAO;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Carcel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +38,18 @@ class PresoServiceTest {
 
     /**
      * Mock de {@link PresoDAO} utilizado para simular el acceso a la base de datos
-     * de presos durante los tests. Permite controlar el comportamiento del DAO
-     * sin depender de una base de datos real.
+     * de presos durante los tests.
      */
     private PresoDAO presoDAO;
+
     /**
-     * Mock de {@link PresoDAO} utilizado para simular el acceso a la base de datos
-     * de presos durante los tests. Permite controlar el comportamiento del DAO
-     * sin depender de una base de datos real.
+     * Mock de {@link CarcelDAO} utilizado para simular el acceso a la base de datos
+     * de cárceles durante los tests.
+     */
+    private CarcelDAO carcelDAO;
+
+    /**
+     * Servicio a testear.
      */
     private PresoService presoService;
 
@@ -56,12 +63,17 @@ class PresoServiceTest {
      * </p>
      */
     @BeforeEach
-    void setUp() {
-        // Creamos el mock del DAO
+    void setUp() throws Exception {
         presoDAO = mock(PresoDAO.class);
+        carcelDAO = mock(CarcelDAO.class);
 
         // Inyectamos el mock a través del constructor
         presoService = new PresoService(presoDAO);
+
+        // Inyección manual del carcelDAO, porque el servicio no lo recibe por constructor
+        Field field = PresoService.class.getDeclaredField("carcelDAO");
+        field.setAccessible(true);
+        field.set(presoService, carcelDAO);
     }
 
     /**
@@ -78,12 +90,20 @@ class PresoServiceTest {
         p.setDelitos(Arrays.asList(Delito.ROBO, Delito.HOMICIDIO));
         p.setFechaIngreso(LocalDate.now().minusDays(10));
 
+        Carcel carcel = new Carcel();
+        carcel.setIdCarcel(1);
+        carcel.setNombre("Martutene");
+        p.setCarcel(carcel);
+
+        when(carcelDAO.findById(1)).thenReturn(Optional.of(carcel));
         when(presoDAO.save(p)).thenReturn(p);
 
         Preso result = presoService.anadirPreso(p);
 
         assertEquals("Juan", result.getNombre());
         assertEquals(2, result.getDelitos().size());
+        assertNotNull(result.getCarcel());
+        verify(carcelDAO, times(1)).findById(1);
         verify(presoDAO, times(1)).save(p);
     }
 
@@ -184,7 +204,8 @@ class PresoServiceTest {
     }
 
     /**
-     * Test que lanza excepción si la lista de delitos está vacía.
+     * Test que comprueba que una lista de delitos vacía no falla si el resto de
+     * datos son válidos.
      */
     @Test
     void testAnadirPreso_DelitosVacios() {
@@ -193,15 +214,22 @@ class PresoServiceTest {
         p.setApellidos("Pérez");
         p.setFechaNacimiento(LocalDate.now().minusYears(25));
         p.setCondena(5);
-        p.setDelitos(Arrays.asList()); // lista vacía
+        p.setDelitos(Arrays.asList());
         p.setFechaIngreso(LocalDate.now());
 
-        // El servicio actualmente no valida explícitamente los delitos,
-        // pero se podría añadir validación si es obligatorio.
-        // Aquí simplemente comprobamos que el objeto con lista vacía se guarda:
+        Carcel carcel = new Carcel();
+        carcel.setIdCarcel(1);
+        carcel.setNombre("Martutene");
+        p.setCarcel(carcel);
+
+        when(carcelDAO.findById(1)).thenReturn(Optional.of(carcel));
         when(presoDAO.save(p)).thenReturn(p);
+
         Preso result = presoService.anadirPreso(p);
+
         assertEquals(0, result.getDelitos().size());
+        verify(carcelDAO, times(1)).findById(1);
+        verify(presoDAO, times(1)).save(p);
     }
 
     /**
