@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.JailQ.Entidades.Carcel;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Dao.CarcelDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,19 @@ public class PresoService {
      * </p>
      */
     private final PresoDAO presoDAO;
+
+    /**
+    * DAO utilizado para acceder a la base de datos de cárceles.
+    * <p>
+    * Se declara como {@code final} para indicar que no puede ser reasignado
+    * tras la inicialización. Todas las operaciones del servicio usarán esta
+    * instancia.
+    * </p>
+    */
+    @Autowired
+    private CarcelDAO carcelDAO;
+
+
 
     /**
      * DAO utilizado para acceder a la base de datos de presos.
@@ -112,6 +127,21 @@ public class PresoService {
             throw new IllegalArgumentException("La fecha de ingreso no puede ser anterior al nacimiento.");
         }
 
+
+        if (nuevoPreso.getCarcel() == null || nuevoPreso.getCarcel().getIdCarcel() == null) {
+            throw new IllegalArgumentException("La cárcel es obligatoria.");
+        }
+
+        // 1. Buscamos la cárcel completa en la base de datos usando el ID
+        Carcel carcelCompleta = carcelDAO.findById(nuevoPreso.getCarcel().getIdCarcel())
+                .orElseThrow(() -> new IllegalArgumentException("No existe ninguna cárcel con ese ID."));
+
+        // 2. Asignamos la cárcel completa (con nombre, localidad, etc.) al preso
+        nuevoPreso.setCarcel(carcelCompleta);
+
+        System.out.println("Guardando preso en: " + carcelCompleta.getNombre());
+        
+        // 3. Guardamos y devolvemos el objeto (ahora con todos los datos)
         return presoDAO.save(nuevoPreso);
     }
 

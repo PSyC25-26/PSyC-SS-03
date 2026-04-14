@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import org.jspecify.annotations.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,6 +18,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 /**
  * Entidad que representa a un preso dentro del sistema.
@@ -86,6 +90,14 @@ public class Preso {
     */
    @Column(nullable = false)
    private LocalDate fechaIngreso;
+
+   /**
+   * Cárcel en la que se encuentra el preso.
+   * Relación de muchos a uno (muchos presos pueden estar en una cárcel).
+   */
+   @ManyToOne
+   @JoinColumn(name = "id_carcel", nullable = false)
+   private Carcel carcel;
 
    /**
     * Obtiene el identificador del preso.
@@ -246,4 +258,32 @@ public class Preso {
       this.fechaIngreso = fechaIngreso;
    }
 
+   /**
+   * Obtiene la cárcel a la que pertenece el preso.
+   * @return Objeto Carcel
+   */
+   public Carcel getCarcel() {
+         return carcel;
+   }
+
+  /**
+   * Asigna una cárcel al preso.
+   * @param carcel Objeto Carcel a asignar
+   */
+   public void setCarcel(Carcel carcel) {
+         this.carcel = carcel;
+   }
+
+
+   /**
+     * Permite que Jackson reciba un ID numérico en el JSON y lo asocie a la cárcel.
+     * Esto habilita el uso de "carcel": 1 en el Body de la petición.
+     */
+    @JsonProperty("carcel")
+    public void setCarcelById(Integer id) {
+        if (id != null) {
+            this.carcel = new Carcel();
+            this.carcel.setIdCarcel(id);
+        }
+    }
 }

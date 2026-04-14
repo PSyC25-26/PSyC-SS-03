@@ -2,16 +2,21 @@ package com.example.JailQ.Service;
 
 import com.example.JailQ.Dao.CarcelDAO;
 import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Preso;
+import com.example.JailQ.Dao.PresoDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.Optional;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import org.springframework.test.util.ReflectionTestUtils;
+
+
 
 /**
  * Test unitario para {@link CarcelService}.
@@ -38,6 +43,9 @@ class CarcelServiceTest {
     /** Mock del DAO de cárceles */
     private CarcelDAO carcelDAO;
 
+    /** Mock del DAO de presos */
+    private PresoDAO presoDAO;
+
     /** Servicio bajo prueba */
     private CarcelService carcelService;
 
@@ -52,8 +60,9 @@ class CarcelServiceTest {
     void setUp() {
         // Creamos el mock del DAO
         carcelDAO = mock(CarcelDAO.class);
+        presoDAO = mock(PresoDAO.class);
         // Inyectamos el mock en el servicio mediante el constructor
-        carcelService = new CarcelService(carcelDAO);
+        carcelService = new CarcelService(carcelDAO, presoDAO);
     }
 
     /**
@@ -239,5 +248,46 @@ class CarcelServiceTest {
         assertTrue(result.contains(c1));
         assertTrue(result.contains(c2));
         verify(carcelDAO).findAll();
+    }
+
+
+    /**
+     * Test que verifica la obtención de la ocupación de una cárcel específica.
+     */
+    @Test
+    void testObtenerOcupacionDeCarcelEspecifica() {
+        // 1. Preparamos una cárcel simulada
+        Carcel carcelSimulada = new Carcel();
+        carcelSimulada.setIdCarcel(1);
+        carcelSimulada.setNombre("Cárcel Mock");
+
+        // 2. Le decimos a Mockito cómo comportarse cuando se le pregunte
+        when(carcelDAO.findById(1)).thenReturn(Optional.of(carcelSimulada));
+        when(presoDAO.countByCarcel(carcelSimulada)).thenReturn(3L);
+
+        // 3. Ejecutamos la función a testear
+        long ocupacion = carcelService.obtenerOcupacionDeCarcel(1);
+
+        // 4. Verificamos que el resultado es correcto y que se llamaron a las funciones
+        assertEquals(3L, ocupacion, "La cárcel debería tener exactamente 3 presos");
+        verify(carcelDAO).findById(1);
+        verify(presoDAO).countByCarcel(carcelSimulada);
+    }
+
+    /**
+    * Test que verifica que se lance {@link IllegalArgumentException} al
+    * intentar obtener la ocupación de una cárcel inexistente.
+    */
+    @Test
+    void testObtenerOcupacionDeCarcelNoExistente() {
+        // Le decimos a Mockito que simule que no encuentra la cárcel 9999
+        when(carcelDAO.findById(9999)).thenReturn(Optional.empty());
+
+        // Verificamos que salte nuestra excepción
+        IllegalArgumentException excepcion = assertThrows(IllegalArgumentException.class, () -> {
+            carcelService.obtenerOcupacionDeCarcel(9999);
+        });
+
+        assertEquals("No se encontró ninguna cárcel con ese ID.", excepcion.getMessage());
     }
 }

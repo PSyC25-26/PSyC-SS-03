@@ -7,6 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+
 /**
  * Controlador REST encargado de gestionar las operaciones relacionadas con las cárceles.
  * 
@@ -118,6 +123,71 @@ public class CarcelController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Endpoint para obtener el recuento de presos por cada cárcel.
+     * Método: GET
+     * URL: /carcel/ocupacion
+     */
+    @GetMapping("/ocupacion")
+    public ResponseEntity<?> obtenerOcupacion() {
+        try {
+            Map<String, Long> datosOcupacion = carcelService.obtenerOcupacionPorCarcel();
+            return new ResponseEntity<>(datosOcupacion, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al calcular la ocupación: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Endpoint para obtener la ocupación de una cárcel específica.
+     * URL: GET /carcel/{id}/ocupacion
+     * * @param id El ID de la cárcel a consultar
+     * @return Cantidad de presos o error si no existe
+     */
+    @GetMapping("/{id}/ocupacion")
+    public ResponseEntity<?> obtenerOcupacionEspecifica(@PathVariable Integer id) {
+        try {
+            long ocupacion = carcelService.obtenerOcupacionDeCarcel(id);
+            return new ResponseEntity<>(ocupacion, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            // Si el ID no existe, devolvemos un 404 Not Found con el mensaje del service
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al buscar la ocupación: " + e.getMessage(), 
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint para obtener todas las estadísticas de las cárceles en una sola llamada.
+     * URL: GET /carcel/estadisticas-completas
+     */
+    @GetMapping("/estadisticas-completas")
+    public ResponseEntity<?> obtenerEstadisticasCompletas() {
+        try {
+            List<Map<String, Object>> listaEstadisticas = new ArrayList<>();
+            // Obtenemos todas las cárceles usando el método que ya tenéis en el servicio
+            List<Carcel> todasLasCarceles = carcelService.obtenerCarceles();
+
+            for (Carcel carcel : todasLasCarceles) {
+                long ocupacion = carcelService.obtenerOcupacionDeCarcel(carcel.getIdCarcel());
+                
+                Map<String, Object> datos = new HashMap<>();
+                datos.put("id", carcel.getIdCarcel());
+                datos.put("nombre", carcel.getNombre());
+                datos.put("capacidad", carcel.getCapacidad());
+                datos.put("ocupacion", ocupacion);
+                
+                listaEstadisticas.add(datos);
+            }
+            return new ResponseEntity<>(listaEstadisticas, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error interno: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
