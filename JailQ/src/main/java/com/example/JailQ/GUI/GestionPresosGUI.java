@@ -1,56 +1,33 @@
 package com.example.JailQ.GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
+import javax.swing.*;
 import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Carcel;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Interfaz Gráfica de Usuario (GUI) para la gestión y registro de presos en el sistema JailQ.
- * <p>
- * Esta clase proporciona un formulario basado en Swing que permite:
- * <ul>
- * <li>Introducir datos personales del preso (nombre, apellidos).</li>
- * <li>Especificar fechas clave mediante formato ISO (AAAA-MM-DD).</li>
- * <li>Definir la condena en años.</li>
- * <li>Enviar la información mediante una petición HTTP POST al backend.</li>
- * </ul>
- */
 public class GestionPresosGUI extends JFrame {
 
-    private JTextField txtNombre, txtApellidos, txtFechaNacimiento, txtCondena, txtFechaIngreso;
-    private JComboBox<Delito> cbDelito;
+    private JTextField txtNombre, txtApellidos, txtFechaNacimiento, txtCondena;
+    private JComboBox<String> cbCarcel;
     private JTextArea txtConsola;
     private final HttpClient httpClient;
+    private JList<Delito> listaDelitos;
+    
+    //Diccionario para guardar Nombre -> ID de la cárcel
+    private Map<String, Integer> mapaCarceles = new HashMap<>();
 
-    /**
-     * Constructor de la clase; Inicializa el cliente HTTP y configura todos los componentes
-     * visuales de la interfaz, incluyendo:
-     * <ul>
-     * <li>El panel de formulario con celdas personalizadas.</li>
-     * <li>El botón de registro con su lógica de envío.</li>
-     * <li>La consola inferior para la visualización de respuestas del servidor.</li>
-     * </ul>
-     * Nota: la interfaz no está implementada con el backend, lo que causa errores lógicos al intentar añadir cualquier preso.
-     */
     public GestionPresosGUI() {
         httpClient = HttpClient.newHttpClient();
 
@@ -67,15 +44,22 @@ public class GestionPresosGUI extends JFrame {
         txtApellidos = new JTextField();
         txtFechaNacimiento = new JTextField();
         txtCondena = new JTextField();
-        txtFechaIngreso = new JTextField();
-        cbDelito = new JComboBox<>(Delito.values());
+
+        cbCarcel = new JComboBox<>();
+        //Cargamos las cárceles desde la base de datos al iniciar
+        cargarCarcelesDesdeBD();
+
+        listaDelitos = new JList<>(Delito.values());
+        listaDelitos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane scrollDelitos = new JScrollPane(listaDelitos);
+        scrollDelitos.setPreferredSize(new Dimension(0, 150));
 
         panelFormulario.add(crearCelda("Nombre:", txtNombre));
         panelFormulario.add(crearCelda("Apellidos:", txtApellidos));
         panelFormulario.add(crearCelda("Fecha Nacimiento (AAAA-MM-DD):", txtFechaNacimiento));
         panelFormulario.add(crearCelda("Condena (años):", txtCondena));
-        panelFormulario.add(crearCelda("Fecha Ingreso (AAAA-MM-DD):", txtFechaIngreso));
-        panelFormulario.add(crearCeldaEnum("Delito:", cbDelito));
+        panelFormulario.add(crearCeldaPanel("Cárcel (Cargada de BD):", cbCarcel));
+        panelFormulario.add(crearCeldaPanel("Delito:", scrollDelitos));
 
         JButton btnAnadir = new JButton("Registrar Preso");
         btnAnadir.addActionListener(e -> enviarPreso());
@@ -84,7 +68,7 @@ public class GestionPresosGUI extends JFrame {
         panelCentral.add(panelFormulario, BorderLayout.CENTER);
         panelCentral.add(btnAnadir, BorderLayout.SOUTH);
 
-        txtConsola = new JTextArea(10, 30);
+        txtConsola = new JTextArea(5, 30);
         txtConsola.setEditable(false);
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Estado del Servidor"));
@@ -94,37 +78,57 @@ public class GestionPresosGUI extends JFrame {
     }
 
     /**
-     * Recopila los datos del formulario y realiza una petición POST asíncrona al servidor.
-     * <p>
-     * El proceso sigue estos pasos:
-     * <ol>
-     * <li>Valida el formato de las fechas introducidas.</li>
-     * <li>Construye un cuerpo JSON con los datos del preso.</li>
-     * <li>Envía la petición a {@code http://localhost:8080/presos/crear}.</li>
-     * <li>Muestra el resultado (éxito o error) en la consola de la GUI.</li>
-     * </ol>
-     * * @throws DateTimeParseException Si el formato de las fechas no es AAAA-MM-DD.
-     * @throws Exception Para cualquier otro error durante la comunicación HTTP.
+     * Hace un GET a /carcel para obtener las cárceles reales
      */
+    private void cargarCarcelesDesdeBD() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/carcel"))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                // Convertimos el JSON en una lista de objetos Carcel
+                List<Carcel> carceles = mapper.readValue(response.body(), new TypeReference<List<Carcel>>(){});
+                
+                cbCarcel.removeAllItems();
+                for (Carcel c : carceles) {
+                    cbCarcel.addItem(c.getNombre());
+                    mapaCarceles.put(c.getNombre(), c.getIdCarcel());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("No se pudieron cargar las cárceles: " + e.getMessage());
+            cbCarcel.addItem("Error al cargar datos");
+        }
+    }
+
     private void enviarPreso() {
         try {
-            String fechaNac = txtFechaNacimiento.getText();
-            String fechaIng = txtFechaIngreso.getText();
+            String nombreCarcel = (String) cbCarcel.getSelectedItem();
+            Integer idCarcel = mapaCarceles.get(nombreCarcel);
 
-            LocalDate.parse(fechaNac);
-            LocalDate.parse(fechaIng);
+            if (idCarcel == null) {
+                txtConsola.setText("Error: Selecciona una cárcel válida.");
+                return;
+            }
 
-            Delito delitoSeleccionado = (Delito) cbDelito.getSelectedItem();
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("nombre", txtNombre.getText());
+            jsonMap.put("apellidos", txtApellidos.getText());
+            jsonMap.put("fechaNacimiento", txtFechaNacimiento.getText());
+            jsonMap.put("fechaIngreso", LocalDate.now().toString());
+            jsonMap.put("condena", Double.parseDouble(txtCondena.getText().replace(",", ".")));
+            jsonMap.put("delitos", listaDelitos.getSelectedValuesList());
+            
+            //Se enviamos el ID como Integer, que es lo que espera el Backend
+            jsonMap.put("carcel", idCarcel);
 
-            String jsonBody = String.format(
-                "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"fechaNacimiento\":\"%s\", \"condena\":%s, \"fechaIngreso\":\"%s\", \"delitos\":[\"%s\"]}",
-                txtNombre.getText(),
-                txtApellidos.getText(),
-                fechaNac,
-                txtCondena.getText().replace(",", "."),
-                fechaIng,
-                delitoSeleccionado.name()
-            );
+            String jsonBody = mapper.writeValueAsString(jsonMap);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/preso/crear"))
@@ -134,43 +138,27 @@ public class GestionPresosGUI extends JFrame {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 201) {
-                txtConsola.setText("ÉXITO: Preso registrado correctamente.\n" + response.body());
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                txtConsola.setText("ÉXITO: Preso registrado.\n" + response.body());
                 limpiarFormulario();
             } else {
-                txtConsola.setText("ERROR (" + response.statusCode() + "):\n" + response.body());
+                txtConsola.setText("ERROR " + response.statusCode() + ":\n" + response.body());
             }
 
-        } catch (DateTimeParseException ex) {
-            txtConsola.setText("Formato de fecha incorrecto. Usa AAAA-MM-DD.");
         } catch (Exception ex) {
-            txtConsola.setText("Excepción: " + ex.getMessage());
+            txtConsola.setText("Error: " + ex.getMessage());
         }
     }
 
-    /**
-     * Restablece todos los campos del formulario a su estado inicial.
-     * <p>
-     * Limpia los campos de texto y establece la fecha de ingreso a la fecha actual del sistema.
-     */
     private void limpiarFormulario() {
         txtNombre.setText("");
         txtApellidos.setText("");
         txtFechaNacimiento.setText("");
         txtCondena.setText("");
-        txtFechaIngreso.setText(LocalDate.now().toString());
-        cbDelito.setSelectedIndex(0);
+        if (cbCarcel.getItemCount() > 0) cbCarcel.setSelectedIndex(0);
+        listaDelitos.clearSelection();
     }
 
-    /**
-     * Crea un panel contenedor para un campo de entrada con un diseño estandarizado.
-     * <p>
-     * La celda consta de una etiqueta sobre un campo de texto, con bordes definidos 
-     * para mejorar la legibilidad del formulario.
-     * * @param etiqueta El texto descriptivo que aparecerá sobre el campo.
-     * @param campo El componente {@link JTextField} donde el usuario escribe.
-     * @return Un objeto {@link JPanel} configurado con el diseño de celda.
-     */
     private JPanel crearCelda(String etiqueta, JTextField campo) {
         JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -181,24 +169,18 @@ public class GestionPresosGUI extends JFrame {
         panel.add(campo);
         return panel;
     }
-    private JPanel crearCeldaEnum(String etiqueta, JComboBox<?> combo) {
+
+    private JPanel crearCeldaPanel(String etiqueta, javax.swing.JComponent componente) {
         JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
             BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         panel.add(new JLabel(etiqueta));
-        panel.add(combo);
+        panel.add(componente);
         return panel;
     }
 
-    /**
-     * Punto de entrada principal de la aplicación GUI.
-     * <p>
-     * Inicia la interfaz de usuario en el hilo de despacho de eventos de Swing 
-     * para garantizar la seguridad de los hilos.
-     * * @param args Argumentos de la línea de comandos (no utilizados).
-     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new GestionPresosGUI().setVisible(true));
     }
