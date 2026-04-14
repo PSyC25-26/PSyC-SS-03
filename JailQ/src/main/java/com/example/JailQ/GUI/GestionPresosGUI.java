@@ -73,8 +73,20 @@ public class GestionPresosGUI extends JFrame {
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Estado del Servidor"));
 
+        // ── Botón Volver ──────────────────────────────────────────────────────
+        JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnVolver.addActionListener(e -> dispose());
+ 
+        JPanel panelSur = new JPanel(new BorderLayout(5, 5));
+        panelSur.add(scrollConsola, BorderLayout.CENTER);
+        panelSur.add(btnVolver, BorderLayout.SOUTH);
+ 
         add(panelCentral, BorderLayout.CENTER);
-        add(scrollConsola, BorderLayout.SOUTH);
+        add(panelSur,     BorderLayout.SOUTH);
+		
     }
 
     /**
@@ -179,9 +191,5 @@ public class GestionPresosGUI extends JFrame {
         panel.add(new JLabel(etiqueta));
         panel.add(componente);
         return panel;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GestionPresosGUI().setVisible(true));
     }
 }

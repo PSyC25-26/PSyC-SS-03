@@ -22,7 +22,7 @@ import java.net.http.HttpResponse;
 
 public class GestionCuentasGUI extends JFrame {
 
-    private JTextField txtNombre, txtApellidos, txtUsername, txtIdBorrar;
+    private JTextField txtNombre, txtApellidos, txtUsername;
     private JPasswordField txtPassword;
     private JComboBox<String> cbTipoCuenta;
     private JTextArea txtConsola;
@@ -76,13 +76,12 @@ public class GestionCuentasGUI extends JFrame {
         JPanel panelBorrar = new JPanel(new FlowLayout());
         panelBorrar.setBorder(BorderFactory.createTitledBorder("Eliminar Cuenta"));
         
-        panelBorrar.add(new JLabel("ID Cuenta a borrar:"));
-        txtIdBorrar = new JTextField(5);
-        panelBorrar.add(txtIdBorrar);
-        
-        JButton btnBorrar = new JButton("Eliminar");
-        btnBorrar.addActionListener(e -> eliminarCuenta());
-        panelBorrar.add(btnBorrar);
+        JButton btnAbrirEliminar = new JButton("Eliminar Policía");
+        btnAbrirEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnAbrirEliminar.setFocusPainted(false);
+        btnAbrirEliminar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnAbrirEliminar.addActionListener(e -> new EliminarPoliciaGUI().setVisible(true));
+        panelBorrar.add(btnAbrirEliminar);
 
         // --- PANEL INFERIOR: Consola de resultados ---
         txtConsola = new JTextArea(10, 30);
@@ -91,13 +90,23 @@ public class GestionCuentasGUI extends JFrame {
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
-        // Añadir todo a la ventana principal
+	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnVolver.addActionListener(e -> dispose());
+ 
+        // ── Composición de la ventana ─────────────────────────────────────────
         JPanel panelNorte = new JPanel(new BorderLayout());
         panelNorte.add(panelFormulario, BorderLayout.NORTH);
-        panelNorte.add(panelBorrar, BorderLayout.SOUTH);
-
+        panelNorte.add(panelBorrar,     BorderLayout.SOUTH);
+ 
+        JPanel panelSur = new JPanel(new BorderLayout(5, 5));
+        panelSur.add(scrollConsola, BorderLayout.CENTER);
+        panelSur.add(btnVolver,     BorderLayout.SOUTH);
+ 
         add(panelNorte, BorderLayout.NORTH);
-        add(scrollConsola, BorderLayout.CENTER);
+        add(panelSur,   BorderLayout.CENTER);
     }
 
     /**
@@ -138,41 +147,6 @@ public class GestionCuentasGUI extends JFrame {
     }
 
     /**
-     * Recopila el ID de la cuenta a eliminar y realiza una petición DELETE al servidor.
-     * <p>
-     *  Construye la URL con el ID proporcionado y envía una petición DELETE al endpoint
-     * {@code /cuentas/eliminar/{id}}. El resultado se muestra en la consola de la interfaz.
-     */
-
-    private void eliminarCuenta() {
-        String id = txtIdBorrar.getText().trim();
-        if (id.isEmpty()) {
-            txtConsola.setText("⚠️ Por favor, introduce un ID válido.");
-            return;
-        }
-
-        try {
-            // Preparamos la petición DELETE
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/cuentas/eliminar/" + id))
-                    .DELETE()
-                    .build();
-
-            // Enviamos la petición
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
-            if (response.statusCode() == 200) {
-                txtConsola.setText("✅ ÉXITO (200): " + response.body());
-                txtIdBorrar.setText("");
-            } else {
-                txtConsola.setText("❌ ERROR (" + response.statusCode() + "):\n" + response.body());
-            }
-        } catch (Exception ex) {
-            txtConsola.setText("⚠️ Excepción: " + ex.getMessage() + "\n¿Está encendido el servidor Spring Boot?");
-        }
-    }
-
-    /**
      * Restablece todos los campos del formulario de creación a su estado inicial (vacíos).
      */
     private void limpiarFormulario() {
@@ -182,14 +156,4 @@ public class GestionCuentasGUI extends JFrame {
         txtPassword.setText("");
     }
 
-    /**
-     * Punto de entrada principal de la aplicación GUI.
-     * Inicia la interfaz gráfica en el hilo de despacho de eventos de Swing.
-     * * @param args Argumentos de la línea de comandos (no utilizados).
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new GestionCuentasGUI().setVisible(true);
-        });
-    }
 }

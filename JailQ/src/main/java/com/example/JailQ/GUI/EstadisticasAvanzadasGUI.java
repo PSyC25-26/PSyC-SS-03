@@ -148,8 +148,4 @@ public class EstadisticasAvanzadasGUI extends JFrame {
             return nombre;
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new EstadisticasAvanzadasGUI().setVisible(true));
-    }
 }

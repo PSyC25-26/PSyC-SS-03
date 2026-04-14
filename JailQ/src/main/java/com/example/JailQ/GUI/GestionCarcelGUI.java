@@ -79,17 +79,42 @@ public class GestionCarcelGUI extends JFrame {
         panelFormulario.add(new JLabel("")); // celda vacía para alineación
         panelFormulario.add(btnAnadir);
 
+        JPanel panelEstadisticas = new JPanel(new FlowLayout());
+        panelEstadisticas.setBorder(BorderFactory.createTitledBorder("Estadísticas"));
+
+JButton btnEstadisticas = new JButton("Ver Estadísticas");
+btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnEstadisticas.setFocusPainted(false);
+        btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnEstadisticas.addActionListener(e -> new EstadisticasAvanzadasGUI().setVisible(true));
+        panelEstadisticas.add(btnEstadisticas);
+
         // Consola inferior
         txtConsola = new JTextArea(10, 30);
         txtConsola.setEditable(false);
         txtConsola.setLineWrap(true);
         txtConsola.setWrapStyleWord(true);
 
+
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
-        add(panelFormulario, BorderLayout.NORTH);
-        add(scrollConsola, BorderLayout.CENTER);
+	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnVolver.addActionListener(e -> dispose());
+ 
+        JPanel panelInferior = new JPanel(new BorderLayout(5, 5));
+        panelInferior.add(scrollConsola, BorderLayout.CENTER);
+        panelInferior.add(btnVolver, BorderLayout.SOUTH);
+ 
+        JPanel panelNorte = new JPanel(new BorderLayout());
+        panelNorte.add(panelFormulario,   BorderLayout.NORTH);
+        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);
+
+        add(panelNorte,    BorderLayout.NORTH);
+        add(panelInferior, BorderLayout.CENTER);
     }
 
     /**
@@ -146,16 +171,5 @@ public class GestionCarcelGUI extends JFrame {
         txtDescripcion.setText("");
         txtLocalidad.setText("");
         txtCapacidad.setText("");
-    }
-
-    /**
-     * Punto de entrada principal de la aplicación.
-     *
-     * <p>Inicia la interfaz en el hilo de eventos de Swing para garantizar la seguridad en la manipulación de componentes gráficos.
-     *
-     * @param args Argumentos de línea de comandos (no utilizados).
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GestionCarcelGUI().setVisible(true));
     }
 }

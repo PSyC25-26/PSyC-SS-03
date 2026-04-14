@@ -92,6 +92,16 @@
             <scope>test</scope>
         </dependency>
 
+		<!-- JUnitPerf: performance testing con JUnit 5.
+			Ejecutar con: mvn -Pperformance integration-test
+			Informe: target/junitperf/report.html -->
+		<dependency>
+			<groupId>com.github.noconnor</groupId>
+			<artifactId>junitperf-junit5</artifactId>
+			<version>1.37.0</version>
+			<scope>test</scope>
+		</dependency>
+
         <!-- Assertions Library -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -123,6 +133,7 @@
 			<plugin>
     			<groupId>org.jacoco</groupId>
     			<artifactId>jacoco-maven-plugin</artifactId>
+				<!-- puede ser por la versión -->
     			<version>0.8.11</version> <executions>
     			    <execution>
     			        <goals>
@@ -140,5 +151,33 @@
 			</plugin>
 		</plugins>
 	</build>
-
+		<profiles>
+    <!-- Uso: mvn -Pperformance integration-test
+         Informe: target/junitperf/report.html -->
+    <profile>
+        <id>performance</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <configuration>
+                        <includes>
+                            <include>**/Performance/**</include>
+                        </includes>
+                        <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
 </project>
