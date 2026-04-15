@@ -58,7 +58,7 @@ public class GestionPresosGUI extends JFrame {
         panelFormulario.add(crearCelda("Apellidos:", txtApellidos));
         panelFormulario.add(crearCelda("Fecha Nacimiento (AAAA-MM-DD):", txtFechaNacimiento));
         panelFormulario.add(crearCelda("Condena (años):", txtCondena));
-        panelFormulario.add(crearCeldaPanel("Cárcel (Cargada de BD):", cbCarcel));
+        panelFormulario.add(crearCeldaPanel("Cárcel:", cbCarcel));
         panelFormulario.add(crearCeldaPanel("Delito:", scrollDelitos));
 
         JButton btnAnadir = new JButton("Registrar Preso");
