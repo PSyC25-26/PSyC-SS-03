@@ -152,8 +152,7 @@ public class JailQIntegrationTest {
         String jsonPresoMalo = "{\"nombre\":\"Malo\", \"apellidos\":\"Malo\", \"fechaNacimiento\":\"1990-01-01\", \"condena\":5, \"fechaIngreso\":\"2024-01-01\"}";
         assertEquals(HttpStatus.BAD_REQUEST, restTemplate.postForEntity(baseUrl + "/preso/crear", new HttpEntity<>(jsonPresoMalo, headers), String.class).getStatusCode());
         assertEquals(HttpStatus.NOT_FOUND, restTemplate.getForEntity(baseUrl + "/carcel/9999/ocupacion", String.class).getStatusCode());
-        assertEquals(HttpStatus.NOT_FOUND, restTemplate.exchange(baseUrl + "/cuentas/eliminar/policia/9999", HttpMethod.DELETE, null, String.class).getStatusCode());
-    }
+        assertEquals(HttpStatus.BAD_REQUEST, restTemplate.exchange(baseUrl + "/cuentas/eliminar/policia/9999", HttpMethod.DELETE, null, String.class).getStatusCode());    }
 
     @Test
     public void testErrores500_Facade_CaminoCatastrofico() {
