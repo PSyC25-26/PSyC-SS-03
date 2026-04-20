@@ -36,4 +36,6 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 - Username: myuser
 - Password: secret
 
+## Uso de tests de rendimiento e integración
+- Para ejecutar el comando mvn clean install -U se debe primero ejecutar la ventana principal en pararelo e insertar como mínimo una cárcel y un preso.
 
