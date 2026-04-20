@@ -116,6 +116,13 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -134,7 +141,13 @@
     			<groupId>org.jacoco</groupId>
     			<artifactId>jacoco-maven-plugin</artifactId>
 				<!-- puede ser por la versión -->
-    			<version>0.8.13</version> <executions>
+    			<version>0.8.13</version> 
+				<configuration>
+                    <excludes>
+                        <exclude>com/example/JailQ/GUI/**</exclude>
+                    </excludes>
+                </configuration>
+				<executions>
     			    <execution>
     			        <goals>
     			            <goal>prepare-agent</goal>
