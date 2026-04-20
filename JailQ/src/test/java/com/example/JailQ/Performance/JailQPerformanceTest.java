@@ -117,4 +117,51 @@ public class JailQPerformanceTest {
         httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         Assumptions.assumeTrue(false, "Fallo intencionado: 10 000 exec/s imposible en HTTP real");
     }
+
+    
+    // ── TEST 5 — Percentiles · PASA ────────────────────────────────────────
+    // GET /carcel con requisitos de percentiles p90, p95, p99.
+    // Umbrales holgados para garantizar que pasa con el servidor local.
+
+    @Test
+    @JUnitPerfTest(threads = 10, durationMs = 5000, warmUpMs = 1000)
+    @JUnitPerfTestRequirement(
+        percentiles = "90:300,95:400,99:500",
+        executionsPerSec = 5,
+        allowedErrorPercentage = 0.1f
+    )
+    public void testGetCarceles_Percentiles_Correcto() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/carcel"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+                httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new RuntimeException("Respuesta inesperada: " + response.statusCode());
+        }
+    }
+
+    // ── TEST 6 — Percentiles · FALLA intencionadamente ─────────────────────
+    // GET /preso/todos con requisitos de percentiles imposibles (1 ms).
+    // Ninguna petición HTTP real puede cumplir ese umbral → el test falla.
+
+    @Test
+    @JUnitPerfTest(threads = 10, durationMs = 5000, warmUpMs = 1000)
+    @JUnitPerfTestRequirement(
+        percentiles = "90:1,95:1,99:1",
+        executionsPerSec = 5,
+        allowedErrorPercentage = 0.1f
+    )
+    public void testGetPresos_Percentiles_Fallido() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/preso/todos"))
+                .GET()
+                .build();
+
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        Assumptions.assumeTrue(false, "Fallo intencionado: 10 000 exec/s imposible en HTTP real");
+    }
 }
