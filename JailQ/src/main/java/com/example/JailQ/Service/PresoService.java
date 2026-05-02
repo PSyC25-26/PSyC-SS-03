@@ -184,6 +184,13 @@ public class PresoService {
         return true;
     }
 
+    /**
+     * Traslada el preso de una cárcel a otra seleccionada
+     * 
+     * @param idPreso
+     * @param nombreCarcel
+     * @throws IllegalArgumenException si la carcel seleccionada no existe
+     */    
     public void trasladarPreso(Integer idPreso, String nombreCarcel) {
     Preso preso = presoDAO.findById(idPreso)
         .orElseThrow(() -> new IllegalArgumentException("Preso no encontrado"));
