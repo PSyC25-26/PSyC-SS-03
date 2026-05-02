@@ -31,7 +31,7 @@ public class ListadoPresosGUI extends JFrame {
     private DefaultTableModel modelo;
     private final HttpClient httpClient;
     
-    // URLs ajustadas según los controladores del backend
+    //URLs ajustadas según los controladores del backend
     private final String BASE_URL = "http://localhost:8080/preso";
     private final String CARCEL_URL = "http://localhost:8080/carcel";
 
@@ -44,7 +44,6 @@ public class ListadoPresosGUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // 1er CAMBIO: Configuración de la tabla (Sustituimos Delito por Cárcel)
         String[] columnas = {"ID", "Nombre", "Apellidos", "Condena", "Cárcel"};
         modelo = new DefaultTableModel(columnas, 0) {
             @Override
@@ -55,7 +54,6 @@ public class ListadoPresosGUI extends JFrame {
         tablaPresos = new JTable(modelo);
         JScrollPane scrollPane = new JScrollPane(tablaPresos);
 
-        // Panel de botones
         JPanel panelBotones = new JPanel();
         JButton btnActualizar = new JButton("Actualizar Lista");
         JButton btnTrasladar = new JButton("Trasladar Preso");
@@ -98,25 +96,19 @@ public class ListadoPresosGUI extends JFrame {
         }
     }
 
-    /**
-     * Extrae los datos del JSON ignorando la anidación del objeto "carcel".
-     */
+
     private void actualizarTabla(String json) {
         modelo.setRowCount(0);
         
-        // 1. Limpiamos el JSON conservando inteligentemente solo el NOMBRE de la cárcel
         String jsonLimpio = json.replaceAll("\"carcel\"\\s*:\\s*\\{[^}]*\"nombre\"\\s*:\\s*\"([^\"]+)\"[^}]*\\}", "\"carcel\":\"$1\"");
-        // (Fallback por si alguna cárcel viniera sin nombre)
         jsonLimpio = jsonLimpio.replaceAll("\"carcel\"\\s*:\\s*\\{[^}]*\\}", "\"carcel\":\"N/A\"");
 
-        // 2. Separamos cada preso (buscamos lo que hay entre llaves)
         Pattern pattern = Pattern.compile("\\{(.*?)\\}");
         Matcher matcher = pattern.matcher(jsonLimpio);
 
         while (matcher.find()) {
             String objeto = matcher.group(1);
             
-            // Extraemos los valores usando el nuevo método extraerValor
             String id = extraerValor(objeto, "idPreso");
             if (id.equals("N/A")) id = extraerValor(objeto, "id");
             
@@ -124,7 +116,6 @@ public class ListadoPresosGUI extends JFrame {
             String apellidos = extraerValor(objeto, "apellidos");
             String condena = extraerValor(objeto, "condena");
             
-            // AHORA extraemos directamente la cárcel en lugar del delito
             String carcel = extraerValor(objeto, "carcel"); 
 
             if (!nombre.equals("N/A")) {
@@ -133,16 +124,11 @@ public class ListadoPresosGUI extends JFrame {
         }
     }
 
-    /**
-     * Extrae un valor simple evitando colisionar con datos de objetos anidados.
-     */
     private String extraerValor(String texto, String campo) {
-        // Busca el campo y captura el valor hasta la próxima coma o cierre de comilla
         Pattern p = Pattern.compile("\"" + campo + "\"\\s*:\\s*\"?([^,\"}]+)\"?");
         Matcher m = p.matcher(texto);
         if (m.find()) {
             String valor = m.group(1).trim();
-            // Limpiamos posibles comillas residuales
             return valor.replace("\"", "");
         }
         return "N/A";
@@ -158,7 +144,6 @@ public class ListadoPresosGUI extends JFrame {
         String idPreso = modelo.getValueAt(fila, 0).toString();
         String nombrePreso = modelo.getValueAt(fila, 1).toString();
         
-        // 2do CAMBIO: Obtenemos la cárcel actual de la columna 4 para usarla de predeterminada
         String carcelActual = modelo.getValueAt(fila, 4).toString();
 
         if (idPreso.equals("N/A")) {
@@ -179,7 +164,7 @@ public class ListadoPresosGUI extends JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 carceles.toArray(),
-                carcelActual // <-- Aplicado el 2do cambio: se selecciona la actual por defecto
+                carcelActual
         );
 
         if (carcelDestino != null) {
@@ -190,7 +175,6 @@ public class ListadoPresosGUI extends JFrame {
     private List<String> obtenerNombresCarceles() {
         List<String> nombres = new ArrayList<>();
         try {
-            // URL corregida: el controlador responde en /carcel
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(CARCEL_URL))
                     .GET()
@@ -210,7 +194,6 @@ public class ListadoPresosGUI extends JFrame {
 
     private void ejecutarTraslado(String idPreso, String nombreCarcel) {
         try {
-            // Codificación segura de la URL para evitar errores con espacios o tildes
             String carcelCodificada = URLEncoder.encode(nombreCarcel, StandardCharsets.UTF_8);
             String urlFinal = BASE_URL + "/trasladar/" + idPreso + "/" + carcelCodificada;
 
@@ -223,7 +206,7 @@ public class ListadoPresosGUI extends JFrame {
 
             if (response.statusCode() == 200) {
                 JOptionPane.showMessageDialog(this, "Traslado exitoso a " + nombreCarcel);
-                cargarPresos(); // Esto refresca la tabla con la nueva cárcel
+                cargarPresos();
             } else {
                 JOptionPane.showMessageDialog(this, "Error en el traslado: " + response.body());
             }
