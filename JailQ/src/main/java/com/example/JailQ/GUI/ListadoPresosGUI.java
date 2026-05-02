@@ -3,9 +3,13 @@ package com.example.JailQ.GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,28 +22,34 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * Interfaz de listado de presos con soporte para JSON anidado (relación Carcel).
+ */
 public class ListadoPresosGUI extends JFrame {
 
     private JTable tablaPresos;
     private DefaultTableModel modelo;
     private final HttpClient httpClient;
+    
+    // URLs ajustadas según los controladores del backend
     private final String BASE_URL = "http://localhost:8080/preso";
+    private final String CARCEL_URL = "http://localhost:8080/carcel";
 
     public ListadoPresosGUI() {
         httpClient = HttpClient.newHttpClient();
 
         setTitle("JailQ - Listado de Presos");
-        setSize(800, 400);
+        setSize(900, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // Configuración de la tabla
-        String[] columnas = {"ID", "Nombre", "Apellidos", "Condena", "Delito"};
+        // 1er CAMBIO: Configuración de la tabla (Sustituimos Delito por Cárcel)
+        String[] columnas = {"ID", "Nombre", "Apellidos", "Condena", "Cárcel"};
         modelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Evita que el usuario edite la tabla directamente
+                return false;
             }
         };
         tablaPresos = new JTable(modelo);
@@ -48,14 +58,19 @@ public class ListadoPresosGUI extends JFrame {
         // Panel de botones
         JPanel panelBotones = new JPanel();
         JButton btnActualizar = new JButton("Actualizar Lista");
+        JButton btnTrasladar = new JButton("Trasladar Preso");
         JButton btnEliminar = new JButton("Eliminar Seleccionado");
-        btnEliminar.setBackground(new Color(255, 100, 100)); // Un tono rojo suave
+        
+        btnTrasladar.setBackground(new Color(100, 200, 255));
+        btnEliminar.setBackground(new Color(255, 100, 100));
 
         panelBotones.add(btnActualizar);
+        panelBotones.add(btnTrasladar);
         panelBotones.add(btnEliminar);
 
         // Eventos
         btnActualizar.addActionListener(e -> cargarPresos());
+        btnTrasladar.addActionListener(e -> trasladarPresoSeleccionado());
         btnEliminar.addActionListener(e -> eliminarPresoSeleccionado());
 
         add(scrollPane, BorderLayout.CENTER);
@@ -65,22 +80,18 @@ public class ListadoPresosGUI extends JFrame {
         cargarPresos();
     }
 
-    /**
-     * Realiza una petición GET al servidor para obtener el JSON de presos.
-     */
     private void cargarPresos() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/todos"))
                     .GET()
                     .build();
-
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
+            
             if (response.statusCode() == 200) {
                 actualizarTabla(response.body());
             } else {
-                JOptionPane.showMessageDialog(this, "Error al obtener presos: " + response.statusCode());
+                JOptionPane.showMessageDialog(this, "Error del servidor: " + response.statusCode());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error de conexión: " + ex.getMessage());
@@ -88,81 +99,166 @@ public class ListadoPresosGUI extends JFrame {
     }
 
     /**
-     * Procesa el JSON recibido y rellena el modelo de la tabla.
-     * Nota: Se usa Regex simple para no añadir dependencias externas de JSON.
+     * Extrae los datos del JSON ignorando la anidación del objeto "carcel".
      */
-private void actualizarTabla(String json) {
-    modelo.setRowCount(0); // Limpiar tabla
+    private void actualizarTabla(String json) {
+        modelo.setRowCount(0);
+        
+        // 1. Limpiamos el JSON conservando inteligentemente solo el NOMBRE de la cárcel
+        String jsonLimpio = json.replaceAll("\"carcel\"\\s*:\\s*\\{[^}]*\"nombre\"\\s*:\\s*\"([^\"]+)\"[^}]*\\}", "\"carcel\":\"$1\"");
+        // (Fallback por si alguna cárcel viniera sin nombre)
+        jsonLimpio = jsonLimpio.replaceAll("\"carcel\"\\s*:\\s*\\{[^}]*\\}", "\"carcel\":\"N/A\"");
 
-    //Separamos el JSON en bloques de presos (cada bloque empieza con { y termina con })
-    Pattern presoPattern = Pattern.compile("\\{(.*?)\\}");
-    Matcher presoMatcher = presoPattern.matcher(json);
+        // 2. Separamos cada preso (buscamos lo que hay entre llaves)
+        Pattern pattern = Pattern.compile("\\{(.*?)\\}");
+        Matcher matcher = pattern.matcher(jsonLimpio);
 
-    while (presoMatcher.find()) {
-        String datosPreso = presoMatcher.group(1);
+        while (matcher.find()) {
+            String objeto = matcher.group(1);
+            
+            // Extraemos los valores usando el nuevo método extraerValor
+            String id = extraerValor(objeto, "idPreso");
+            if (id.equals("N/A")) id = extraerValor(objeto, "id");
+            
+            String nombre = extraerValor(objeto, "nombre");
+            String apellidos = extraerValor(objeto, "apellidos");
+            String condena = extraerValor(objeto, "condena");
+            
+            // AHORA extraemos directamente la cárcel en lugar del delito
+            String carcel = extraerValor(objeto, "carcel"); 
 
-
-    String id = extraerCampo(datosPreso, "id(?:Preso)?");
-    String nombre = extraerCampo(datosPreso, "nombre");
-    String apellidos = extraerCampo(datosPreso, "apellidos");
-    String condena = extraerCampo(datosPreso, "condena");
-
-    String delito = "N/A";
-    Pattern pDelito = Pattern.compile("\"delitos\"\\s*:\\s*\\[\\s*\"(.*?)\"");
-    Matcher mDelito = pDelito.matcher(datosPreso);
-    if (mDelito.find()) {
-        delito = mDelito.group(1);
+            if (!nombre.equals("N/A")) {
+                modelo.addRow(new Object[]{id, nombre, apellidos, condena, carcel});
+            }
+        }
     }
-
-    if (nombre != null) {
-        modelo.addRow(new Object[]{id, nombre, apellidos, condena, delito});
-    }
-    }
-}
-
-/**
- * Método auxiliar para buscar un campo específico dentro de un fragmento de JSON
- */
-private String extraerCampo(String texto, String nombreCampo) {
-    Pattern p = Pattern.compile("\"" + nombreCampo + "\":\"?(.*?)\"?[,}]");
-    Matcher m = p.matcher(texto);
-    if (m.find()) {
-        return m.group(1);
-    }
-    return "N/A";
-}
 
     /**
-     * Obtiene el ID de la fila seleccionada y envía una petición DELETE.
+     * Extrae un valor simple evitando colisionar con datos de objetos anidados.
      */
-    private void eliminarPresoSeleccionado() {
+    private String extraerValor(String texto, String campo) {
+        // Busca el campo y captura el valor hasta la próxima coma o cierre de comilla
+        Pattern p = Pattern.compile("\"" + campo + "\"\\s*:\\s*\"?([^,\"}]+)\"?");
+        Matcher m = p.matcher(texto);
+        if (m.find()) {
+            String valor = m.group(1).trim();
+            // Limpiamos posibles comillas residuales
+            return valor.replace("\"", "");
+        }
+        return "N/A";
+    }
+
+    private void trasladarPresoSeleccionado() {
         int fila = tablaPresos.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un preso de la lista.");
+            JOptionPane.showMessageDialog(this, "Selecciona un preso para trasladar.");
             return;
         }
 
-        String id = modelo.getValueAt(fila, 0).toString();
-        int confirm = JOptionPane.showConfirmDialog(this, 
-                "¿Estás seguro de eliminar al preso con ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        String idPreso = modelo.getValueAt(fila, 0).toString();
+        String nombrePreso = modelo.getValueAt(fila, 1).toString();
+        
+        // 2do CAMBIO: Obtenemos la cárcel actual de la columna 4 para usarla de predeterminada
+        String carcelActual = modelo.getValueAt(fila, 4).toString();
 
+        if (idPreso.equals("N/A")) {
+            JOptionPane.showMessageDialog(this, "El preso seleccionado no tiene un ID válido para operar.");
+            return;
+        }
+
+        List<String> carceles = obtenerNombresCarceles();
+        if (carceles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se pudieron cargar las cárceles de destino.");
+            return;
+        }
+
+        String carcelDestino = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecciona la cárcel de destino para " + nombrePreso + ":",
+                "Trasladar Preso",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                carceles.toArray(),
+                carcelActual // <-- Aplicado el 2do cambio: se selecciona la actual por defecto
+        );
+
+        if (carcelDestino != null) {
+            ejecutarTraslado(idPreso, carcelDestino);
+        }
+    }
+
+    private List<String> obtenerNombresCarceles() {
+        List<String> nombres = new ArrayList<>();
+        try {
+            // URL corregida: el controlador responde en /carcel
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(CARCEL_URL))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            Pattern p = Pattern.compile("\"nombre\"\\s*:\\s*\"(.*?)\"");
+            Matcher m = p.matcher(response.body());
+            while (m.find()) {
+                nombres.add(m.group(1));
+            }
+        } catch (Exception ex) {
+            System.err.println("Error obteniendo cárceles: " + ex.getMessage());
+        }
+        return nombres;
+    }
+
+    private void ejecutarTraslado(String idPreso, String nombreCarcel) {
+        try {
+            // Codificación segura de la URL para evitar errores con espacios o tildes
+            String carcelCodificada = URLEncoder.encode(nombreCarcel, StandardCharsets.UTF_8);
+            String urlFinal = BASE_URL + "/trasladar/" + idPreso + "/" + carcelCodificada;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlFinal))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JOptionPane.showMessageDialog(this, "Traslado exitoso a " + nombreCarcel);
+                cargarPresos(); // Esto refresca la tabla con la nueva cárcel
+            } else {
+                JOptionPane.showMessageDialog(this, "Error en el traslado: " + response.body());
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error de red: " + ex.getMessage());
+        }
+    }
+
+    private void eliminarPresoSeleccionado() {
+        int fila = tablaPresos.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un preso para eliminar.");
+            return;
+        }
+        
+        String id = modelo.getValueAt(fila, 0).toString();
+        if (id.equals("N/A")) return;
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar preso con ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + "/eliminar/" + id))
                         .DELETE()
                         .build();
-
+                
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200 || response.statusCode() == 204) {
-                    JOptionPane.showMessageDialog(this, "Preso eliminado correctamente.");
-                    cargarPresos(); // Refrescar lista
+                
+                if (response.statusCode() == 200) {
+                    cargarPresos();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se pudo eliminar: " + response.body());
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }

@@ -4,16 +4,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.JailQ.Entidades.Carcel;
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Dao.PresoDAO;
-import com.example.JailQ.Dao.CarcelDAO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Preso;
 
 /**
  * Servicio para gestionar operaciones sobre {@link Preso}.
@@ -184,5 +183,16 @@ public class PresoService {
         logger.info("Preso con ID {} eliminado correctamente.", id);
         return true;
     }
+
+    public void trasladarPreso(Integer idPreso, String nombreCarcel) {
+    Preso preso = presoDAO.findById(idPreso)
+        .orElseThrow(() -> new IllegalArgumentException("Preso no encontrado"));
+
+    Carcel destino = carcelDAO.findByNombre(nombreCarcel)
+        .orElseThrow(() -> new IllegalArgumentException("La cárcel seleccionada no existe"));
+
+    preso.setCarcel(destino);
+    presoDAO.save(preso);
+}
 
 }

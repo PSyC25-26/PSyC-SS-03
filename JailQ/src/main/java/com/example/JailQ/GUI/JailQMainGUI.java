@@ -1,14 +1,35 @@
 package com.example.JailQ.GUI;
  
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
  
 /**
  * Ventana principal del sistema JailQ.
@@ -147,7 +168,7 @@ public class JailQMainGUI extends JFrame {
  
         btnPresos   = crearBotonModulo("👤", "Gestión de Presos",
                 "Registrar, consultar y eliminar internos",
-                () -> abrirVentana(new GestionPresosGUI()));
+                () -> mostrarMenuPresos());
  
         grid.add(btnCuentas);
         grid.add(btnCarceles);
@@ -390,5 +411,31 @@ public class JailQMainGUI extends JFrame {
                 lblEstado.setForeground(conectado ? new Color(0, 128, 0) : new Color(180, 30, 30));
             });
         }).start();
+    }
+    private void mostrarMenuPresos() {
+        String[] opciones = {"Crear nuevo preso", "Listado / Modificar / Eliminar", "Cancelar"};
+
+        int seleccion = JOptionPane.showOptionDialog(
+                this,
+                "Seleccione la operación que desea realizar en el módulo de presos:",
+                "Gestión de Presos",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        switch (seleccion) {
+            case 0: // Crear nuevo preso
+                abrirVentana(new GestionPresosGUI());
+                break;
+            case 1: // Listado / Modificar / Eliminar
+                abrirVentana(new ListadoPresosGUI());
+                break;
+            default:
+                // Si pulsa cancelar o cierra la ventana, no hace nada y vuelve al main
+                break;
+        }
     }
 }
