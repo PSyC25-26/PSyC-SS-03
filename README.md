@@ -27,12 +27,9 @@ MySQL — base de datos
 Mockito, JUnit5 y JaCoCo
 
 ## Requisitos_previos
-Java 21 o superior y Maven instalado.
-Para utilizar este proyecto debes tener Docker Desktop y MySQL instalado en tu ordenador. Debes tener Docker runneando.
+Para utilizar este proyecto debes tener Docker Desktop, Maven, Java 25 y MySQL instalado en tu ordenador. Debes tener Docker runneando.
 Para consultar la bd en MySQL debes abrir una conexión a:
-- Connection name: JailQ Docker
-- Hostname: 127.0.0.1
-- Port: el que indique Docker
+- Port: 3307
 - Username: myuser
 - Password: secret
 
