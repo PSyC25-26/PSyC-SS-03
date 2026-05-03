@@ -4,9 +4,9 @@
 - [Componentes_clave](#Componentes_clave)
 - [Tecnologías](#Tecnologías)
 - [Requisitos_previos](#Requisitos_previos)
-- [Para ejecutar la aplicación por primera vez - How to](#Para ejecutar la aplicación por primera vez - How to)
-- [Para usar la aplicación](#Para usar la aplicación)
-- [Para ejecutar los test](#Para ejecutar los test)
+- [How_to-Primera_ejecución](#How_to-Primera_ejecución)
+- [Para_usar_la_aplicación](#Para_usar_la_aplicación)
+- [Para_ejecutar_los_test](#Para_ejecutar_los_test)
 
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
@@ -36,7 +36,7 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 - Username: myuser
 - Password: secret
 
-## Para ejecutar la aplicación por primera vez - How to
+## How_to-Primera_ejecución
 1. Clone el repositorio
 git clone https://github.com/PSyC25-26/PSyC-SS-03.git PSyC-SS-03
 
@@ -47,7 +47,7 @@ De esta manera se crearán los contenedores pertinentes y se hará conexión con
 
 5. Debe aparecer automaticamente la ventana principal de la aplicación: "JailQ - Sistema de Gestión Penitenciaria"
 
-## Para usar la aplicación
+## Para_usar_la_aplicación
 1. Ejecute la aplicación. Debe aparecer la ventana principal ("JailQ - Sistema de Gestión Penitenciaria")
 2. Cree una cuenta de usuario:
 - Acceda a "Gestión de cuentas".
@@ -81,7 +81,7 @@ Seleccione un preso de la lista y pulse "Trasladar Preso". A continuación se mo
 ### Salir de la aplicación
 Al finalizar, en el menú principal, pulse "cerrar sesión". Esto le devolverá a al menu inicial.
 
-## Para ejecutar los test
+## Para_ejecutar_los_test
 Se proporciona el comando para ejecutar los test:
 mvn test
 
