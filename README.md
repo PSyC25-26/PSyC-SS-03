@@ -1,12 +1,12 @@
 # PSyC-SS-03
 ## Tabla de contenidos
 - [Descripción](#Descripción)
-- [Componentes_clave](#Componentes_clave)
+- [Componentes clave](#Componentes_clave)
 - [Tecnologías](#Tecnologías)
-- [Requisitos_previos](#Requisitos_previos)
-- [How_to-Primera_ejecución](#How_to-Primera_ejecución)
-- [Para_usar_la_aplicación](#Para_usar_la_aplicación)
-- [Para_ejecutar_los_test](#Para_ejecutar_los_test)
+- [Requisitos previos](#Requisitos_previos)
+- [How to-Primera ejecución](#How_to-Primera_ejecución)
+- [Para usar la aplicación](#Para_usar_la_aplicación)
+- [Para ejecutar los test](#Para_ejecutar_los_test)
 
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
