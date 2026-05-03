@@ -4,6 +4,9 @@
 - [Componentes_clave](#Componentes_clave)
 - [Tecnologías](#Tecnologías)
 - [Requisitos_previos](#Requisitos_previos)
+- [Para ejecutar la aplicación por primera vez - How to](#Para ejecutar la aplicación por primera vez - How to)
+- [Para usar la aplicación](#Para usar la aplicación)
+- [Para ejecutar los test](#Para ejecutar los test)
 
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
