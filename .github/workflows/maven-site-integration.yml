@@ -42,6 +42,46 @@ jobs:
             sleep 3
           done
 
+      - name: Seed database (Carcel, Cuenta, Preso)
+        run: |
+          echo "Creating initial test data..."
+
+          docker exec mysql-container mysql -umyuser -psecret mydatabase <<'EOF'
+
+          -- CARCEL
+          INSERT INTO carcel (id_carcel, nombre, descripcion, localidad, capacidad)
+          VALUES (1, 'Carcel Central', 'Centro penitenciario principal', 'Bilbao', 500);
+
+          -- CUENTA
+          INSERT INTO cuenta (id_cuentas, tipo_cuenta, nombre, apellidos, username, password)
+          VALUES (1, 'POLICIA', 'Admin', 'Sistema', 'admin', 'admin123');
+
+          -- PRESO
+          INSERT INTO preso (
+              id_preso,
+              nombre,
+              apellidos,
+              fecha_nacimiento,
+              condena,
+              fecha_ingreso,
+              id_carcel
+          )
+          VALUES (
+              1,
+              'Juan',
+              'Pérez',
+              '1990-01-01',
+              10,
+              '2024-01-01',
+              1
+          );
+
+          -- DELITOS
+          INSERT INTO preso_delitos (preso_id, delito)
+          VALUES (1, 'ROBO');
+
+          EOF
+
       - name: Install tools (Doxygen + Graphviz + Pandoc)
         run: |
           sudo apt-get update
