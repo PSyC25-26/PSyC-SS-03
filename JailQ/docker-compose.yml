@@ -22,23 +22,6 @@ services:
       retries: 5
     command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
 
-  #spring-app:
-    #build: .
-    #container_name: spring-boot-app
-    #restart: unless-stopped
-    #depends_on:
-      #mysql:
-        #condition: service_healthy
-    #environment:
-      #JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
-      #SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true
-      #SPRING_DATASOURCE_USERNAME: myuser
-      #SPRING_DATASOURCE_PASSWORD: secret
-      #SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      #SPRING_JPA_SHOW_SQL: "true"
-    #ports:
-      #- "8081:8080"
-
 volumes:
   mysql_data:
     driver: local
