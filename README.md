@@ -82,7 +82,14 @@ Seleccione un preso de la lista y pulse "Trasladar Preso". A continuación se mo
 Al finalizar, en el menú principal, pulse "cerrar sesión". Esto le devolverá a al menu inicial.
 
 ## Para_ejecutar_los_test
-Se proporciona el comando para ejecutar los test:
-`mvn test`
 Para ejecutar los test se debe primero ejecutar la ventana principal en pararelo e insertar como mínimo una cárcel y un preso. Esto también debe hacerse a la hora de ejecutar cualquier comando que ejecute los test (como `mvn clean install -U`).
+
+Se proporciona el comando para ejecutar los test:
+1. Tests unitarios (unicamente los unitarios): `mvn test`
+2. Tests específicos: `mvn -Dtest=CarcelServiceTest,CuentaLoginTest test`
+3. Tests de integración: `mvn -Pintegration integration-test`
+4. Test de performance: `mvn -Pperformance integration-test`
+
+Para conseguir el reporte de covertura de JaCoCo: `mvn clean test jacoco:report`
+Para visualizar los test de JaCoCo dirijase a la carpeta: *target/site/jacoco/index.html*
 
