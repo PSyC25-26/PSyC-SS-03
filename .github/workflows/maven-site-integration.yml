@@ -33,7 +33,7 @@ jobs:
           cache: maven
 
       - name: Start MySQL via Docker Compose
-        run: docker compose -f JailQ/docker-compose.yml up -d mysql
+        run: docker compose up -d mysql
 
       - name: Wait for MySQL
         run: |
