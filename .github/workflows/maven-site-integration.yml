@@ -1,0 +1,88 @@
+name: Maven Build, Tests, Performance & Docs
+
+on:
+  push:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 18-23/2 * * *'
+    - cron: '0 0-6/2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3307/mydatabase?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: secret
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Start MySQL via Docker Compose
+        run: docker compose up -d mysql
+
+      - name: Wait for MySQL
+        run: |
+          echo "Waiting for MySQL..."
+          until docker exec mysql-container mysqladmin ping -h 127.0.0.1 -uroot -pverysecret --silent; do
+            sleep 3
+          done
+
+      - name: Install tools (Doxygen + Graphviz + Pandoc)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz pandoc
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
+      - name: Run Unit tests + JaCoCo
+        run: mvn test jacoco:report
+
+      - name: Run Integration Tests + Sonar
+        run: |
+          mvn -Pintegration integration-test \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=aitanagf
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Run Performance Tests
+        run: mvn -Pperformance integration-test
+
+      - name: Generate Maven Site
+        run: mvn site
+
+      - name: Copy performance reports
+        run: mvn -Pperformance resources:copy-resources@copy-perf-report
+
+      - name: Generate docs folder
+        run: |
+          mkdir -p docs/site
+          mkdir -p docs/doxygen
+          pandoc README.md -o docs/index.html
+          cp -r target/site/* docs/site/ || true
+          cp -r target/doxygen/* docs/doxygen/ || true
+
+      - name: Commit and push docs
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add -f docs
+          git commit -m "Update docs [CI skip]" || echo "No changes"
+          git push
