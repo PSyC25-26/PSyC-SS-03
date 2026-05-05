@@ -12,6 +12,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: JailQ
 
     env:
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3307/mydatabase?useSSL=false&allowPublicKeyRetrieval=true
