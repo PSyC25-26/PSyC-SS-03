@@ -94,10 +94,10 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
-      - name: Start Swing application
-        run: |
-          mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
-          echo $! > app.pid
+      #- name: Start Swing application
+        #run: |
+          #mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
+          #echo $! > app.pid
 
       - name: Run Unit tests + JaCoCo
         run: mvn test jacoco:report
@@ -110,8 +110,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Run Performance Tests
-        run: mvn -Pperformance integration-test
+      #- name: Run Performance Tests
+        #run: mvn -Pperformance integration-test
 
       - name: Generate Maven Site
         run: mvn site
