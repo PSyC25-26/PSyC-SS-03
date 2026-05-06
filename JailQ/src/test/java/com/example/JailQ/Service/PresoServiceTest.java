@@ -1,24 +1,30 @@
 package com.example.JailQ.Service;
 
-import com.example.JailQ.Dao.PresoDAO;
-import com.example.JailQ.Dao.CarcelDAO;
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Entidades.Delito;
-import com.example.JailQ.Entidades.Carcel;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Preso;
 
 /**
  * Test unitario para {@link PresoService}.
@@ -316,5 +322,27 @@ class PresoServiceTest {
 
         verify(presoDAO).deleteById(1);
         verify(presoDAO, never()).deleteById(2);
+    }
+
+    /*
+    *Test que verifica que el traslado de preso a otra cárcel se realiza exitosamente
+     */
+
+    @Test
+    void testTrasladarPreso(){
+        Preso p = new Preso();
+        p.setNombre("Markel");
+        
+        Carcel carcel1 = new Carcel();
+        carcel1.setIdCarcel(1);
+        carcel1.setNombre("Martutene");
+        p.setCarcelById(1);
+
+        Carcel carcel2 = new Carcel();
+        carcel2.setIdCarcel(2);
+        carcel2.setNombre("Alcatraz");
+
+        presoService.trasladarPreso(1, "Alcatraz");
+        assertTrue(p.getCarcel().getIdCarcel()==2);
     }
 }
