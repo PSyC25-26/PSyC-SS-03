@@ -85,11 +85,14 @@ Al finalizar, en el menú principal, pulse "cerrar sesión". Esto le devolverá 
 Para ejecutar los test se debe primero ejecutar la ventana principal en pararelo e insertar como mínimo una cárcel y un preso. Esto también debe hacerse a la hora de ejecutar cualquier comando que ejecute los test (como `mvn clean install -U`).
 
 Se proporciona el comando para ejecutar los test:
-1. Tests unitarios: `mvn test`
-2. Tests específicos: `mvn -Dtest=CarcelServiceTest,CuentaLoginTest test`
-3. Tests de integración: `mvn -Pintegration integration-test`
-4. Test de performance: `mvn -Pperformance integration-test`
+1. Tests: `mvn test`
+3. Tests específicos: `mvn -Dtest=CarcelServiceTest,CuentaLoginTest test`
+4. Test unitarios: `mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test`
+5. Test de integración: `mvn -Dtest=JailQIntegrationTest test`
+6. Test de performance: `mvn -Dtest=JailQPerformanceTest test`
 
 Para conseguir el reporte de covertura de JaCoCo: `mvn clean test jacoco:report`
 Para visualizar los test de JaCoCo dirijase a la carpeta: *target/site/jacoco/index.html*
+
+Al tener una aplicación con interfaz gráfica generada con JSwing no hemos podido generar contenedores de manera natural. Esto nos ha afectado en el docker-compose.yml, donde no hemos podido crear el contenedor para la aplicación y en el workflow implementado, ya que los test necesitan que se ejecute la ventana principal mientras se lanzan. Se ha dejado el código correspondiente comentado.
 
