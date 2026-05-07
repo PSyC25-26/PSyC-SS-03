@@ -1,0 +1,115 @@
+<h1 id="psyc-ss-03">PSyC-SS-03</h1>
+<h2 id="tabla-de-contenidos">Tabla de contenidos</h2>
+<ul>
+<li><a href="#Descripción">Descripción</a></li>
+<li><a href="#Componentes_clave">Componentes clave</a></li>
+<li><a href="#Tecnologías">Tecnologías</a></li>
+<li><a href="#Requisitos_previos">Requisitos previos</a></li>
+<li><a href="#How_to-Primera_ejecución">How to-Primera
+ejecución</a></li>
+<li><a href="#Para_usar_la_aplicación">Para usar la aplicación</a></li>
+<li><a href="#Para_ejecutar_los_test">Para ejecutar los test</a></li>
+</ul>
+<h2 id="descripción">Descripción</h2>
+<p>Software de gestión para cárceles, que proporciona información sobre
+cárceles y presos a distintos agentes (policía, familias,…), además de
+permitir filtrar presos y trasladarlos entre cárceles.</p>
+<h2 id="componentes_clave">Componentes_clave</h2>
+<ul>
+<li><code>src\main\java\com\example</code> (Carpeta de código principal)
+<ul>
+<li><code>Dao/</code> Interfaces para interacción con la base de
+datos</li>
+<li><code>Entidades/</code> Definición de entidades</li>
+<li><code>Facade/</code> Controladores RESTful para manejar las
+peticiones</li>
+<li><code>GUI/</code> Interfaces visuales del proyecto</li>
+<li><code>Service/</code> Capa de lógica de negocio</li>
+</ul></li>
+<li><code>src\test\java\com\example\JailQ</code>(Carpeta de test)
+<ul>
+<li><code>Service/</code> Test unitarios</li>
+<li><code>Integration/</code> Test de integración</li>
+<li><code>Performance/</code> Test de rendimiento</li>
+</ul></li>
+<li><strong>Javadoc</strong>: La documentación de la API es generada
+mediante el uso de Javadoc.</li>
+</ul>
+<h2 id="tecnologías">Tecnologías</h2>
+<p>Java 21 + Spring Boot 4.0.4 MySQL — base de datos Mockito, JUnit5 y
+JaCoCo</p>
+<h2 id="requisitos_previos">Requisitos_previos</h2>
+<p>Para utilizar este proyecto debes tener Docker Desktop, Maven, Java
+25 y MySQL instalado en tu ordenador. Debes tener Docker runneando. Para
+consultar la bd en MySQL debes abrir una conexión a: - Port: 3307 -
+Username: myuser - Password: secret</p>
+<h2 id="how_to-primera_ejecución">How_to-Primera_ejecución</h2>
+<ol type="1">
+<li><p>Clone el repositorio
+<code>git clone https://github.com/PSyC25-26/PSyC-SS-03.git PSyC-SS-03</code></p></li>
+<li><p>Habra Docker Desktop</p></li>
+<li><p>Ejecute la aplicación mediante Spring Boot Dashboard –&gt;
+<strong>con.example.JailQ.JailQApplication</strong> De esta manera se
+crearán los contenedores pertinentes y se hará conexión con la
+BD</p></li>
+<li><p>Debe aparecer automaticamente la ventana principal de la
+aplicación: <em>JailQ - Sistema de Gestión Penitenciaria</em></p></li>
+</ol>
+<h2 id="para_usar_la_aplicación">Para_usar_la_aplicación</h2>
+<ol type="1">
+<li>Ejecute la aplicación. Debe aparecer la ventana principal <em>JailQ
+- Sistema de Gestión Penitenciaria</em></li>
+<li>Cree una cuenta de usuario:</li>
+</ol>
+<ul>
+<li>Acceda a <em>Gestión de cuentas</em></li>
+<li>Inserte sus datos y pulse “Añadir cuenta”</li>
+<li>Pulse “Volver al Menú Principal”</li>
+</ul>
+<ol start="4" type="1">
+<li>Pulse el boton “iniciar sesión”. Inserte su Username y
+Password.</li>
+<li>Al iniciar sesión, vemos que ahora podemos entrar a las secciones de
+<em>Gestión de Cárceles</em> y <em>Gestión de Presos</em> ### Gestión de
+Cárceles Mediante esta interfaz podemos crear cárceles y ver las
+estadisticas sobre cárceles. #### Añadir una carcel Para añadir una
+carcel rellene los datos sobre la carcel y pulse “Añadir Cárcel” ####
+Consultar estadísticas</li>
+</ol>
+<ul>
+<li>Para consultar las estádisticas pulse “Ver Estadísticas”</li>
+<li>Se visualizará una nueva ventana <em>JailQ - Ocupación
+detallada</em></li>
+<li>Seleccione la cárcel de la que se desea ver las estadísticas. Las
+estadísticas se visualizarán en la ventana. ### Gestión de Presos
+Mediante esta interfaz podemos crear un nuevo preso, listar presos,
+modificar presos o trasladar presos. #### Crear nuevo preso</li>
+<li>Pulse “Crear nuevo preso”</li>
+<li>Verá la ventana <em>JailQ- Gestión de Presos</em></li>
+<li>Rellene los datos pertinentes y pulse “Registrar Preso”. Se
+registrará el preso en la base de datos. #### Listar/modificar/trasladar
+preso</li>
+<li>Pulse “Listado/modificar/eliminar”</li>
+<li>Se visualizará una nueva ventana <em>JailQ - Listado de Presos</em>.
+En esta ventana se ve una lista de los presos en la base de datos. #####
+Para eliminar un preso Seleccione un preso de la lista y pulse “Eliminar
+seleccionado” ##### Para actualizar la lista Pulse “Actualizar Lista”
+##### Para trasladar un preso Seleccione un preso de la lista y pulse
+“Trasladar Preso”. A continuación se mostrará una ventana en la que se
+podrá seleccionar la cárcel a la que se trasladará el preso. ### Salir
+de la aplicación Al finalizar, en el menú principal, pulse “cerrar
+sesión”. Esto le devolverá a al menu inicial.</li>
+</ul>
+<h2 id="para_ejecutar_los_test">Para_ejecutar_los_test</h2>
+<p>Para ejecutar los test se debe primero ejecutar la ventana principal
+en pararelo e insertar como mínimo una cárcel y un preso. Esto también
+debe hacerse a la hora de ejecutar cualquier comando que ejecute los
+test (como <code>mvn clean install -U</code>).</p>
+<p>Se proporciona el comando para ejecutar los test: 1. Tests unitarios:
+<code>mvn test</code> 2. Tests específicos:
+<code>mvn -Dtest=CarcelServiceTest,CuentaLoginTest test</code> 3. Tests
+de integración: <code>mvn -Pintegration integration-test</code> 4. Test
+de performance: <code>mvn -Pperformance integration-test</code></p>
+<p>Para conseguir el reporte de covertura de JaCoCo:
+<code>mvn clean test jacoco:report</code> Para visualizar los test de
+JaCoCo dirijase a la carpeta: <em>target/site/jacoco/index.html</em></p>
