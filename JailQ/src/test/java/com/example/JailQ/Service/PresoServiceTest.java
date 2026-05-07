@@ -327,22 +327,24 @@ class PresoServiceTest {
     /*
     *Test que verifica que el traslado de preso a otra cárcel se realiza exitosamente
      */
+@Test
+void testTrasladarPresoFunciona() {
 
-    @Test
-    void testTrasladarPreso(){
-        Preso p = new Preso();
-        p.setNombre("Markel");
-        
-        Carcel carcel1 = new Carcel();
-        carcel1.setIdCarcel(1);
-        carcel1.setNombre("Martutene");
-        p.setCarcelById(1);
+    Carcel alcatraz = new Carcel();
+    alcatraz.setNombre("Alcatraz");
+    carcelDAO.save(alcatraz);
 
-        Carcel carcel2 = new Carcel();
-        carcel2.setIdCarcel(2);
-        carcel2.setNombre("Alcatraz");
+    Preso p = new Preso();
+    p.setNombre("Markel");
+    p.setApellidos("Baz");
+    p.setFechaNacimiento(LocalDate.of(1990, 1, 1));
 
-        presoService.trasladarPreso(1, "Alcatraz");
-        assertTrue(p.getCarcel().getIdCarcel()==2);
+    Preso presoEnBD = presoDAO.save(p);
+
+    presoService.trasladarPreso(presoEnBD.getId(), "Alcatraz");
+
+    Preso resultado = presoDAO.findById(presoEnBD.getId()).orElseThrow();
+    
+    assertEquals("Alcatraz", resultado.getCarcel().getNombre());
     }
 }
