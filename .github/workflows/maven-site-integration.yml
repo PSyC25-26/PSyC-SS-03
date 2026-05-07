@@ -125,7 +125,7 @@ jobs:
         run: |
           mkdir -p docs/site
           mkdir -p docs/doxygen
-          pandoc README.md -o docs/index.html
+          pandoc ../README.md -o docs/index.html
           cp -r target/site/* docs/site/ || true
           cp -r target/doxygen/* docs/doxygen/ || true
 
