@@ -325,26 +325,26 @@ class PresoServiceTest {
     }
 
     /*
-    *Test que verifica que el traslado de preso a otra cárcel se realiza exitosamente
+    *Test que verifica que el traslado de un preso a otra cárcel se realiza exitosamente
      */
-@Test
-void testTrasladarPresoFunciona() {
+    @Test
+    void testTrasladarPreso() {
+        //EL mock devuelve un preso al guardar
+        when(presoDAO.save(any(Preso.class))).thenAnswer(i -> i.getArguments()[0]);
 
-    Carcel alcatraz = new Carcel();
-    alcatraz.setNombre("Alcatraz");
-    carcelDAO.save(alcatraz);
+        Preso p = new Preso();
+        p.setId(1);
+        p.setNombre("Markel");
+        when(presoDAO.findById(1)).thenReturn(Optional.of(p)); //Cuando busque al preso (findById) el mock ahora se configura para devolverlo
 
-    Preso p = new Preso();
-    p.setNombre("Markel");
-    p.setApellidos("Baz");
-    p.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+        Carcel alcatraz = new Carcel();
+        alcatraz.setNombre("Alcatraz");
+        when(carcelDAO.findByNombre("Alcatraz")).thenReturn(Optional.of(alcatraz));
 
-    Preso presoEnBD = presoDAO.save(p);
+        presoService.trasladarPreso(1, "Alcatraz");
 
-    presoService.trasladarPreso(presoEnBD.getId(), "Alcatraz");
+        assertEquals("Alcatraz", p.getCarcel().getNombre());
 
-    Preso resultado = presoDAO.findById(presoEnBD.getId()).orElseThrow();
-    
-    assertEquals("Alcatraz", resultado.getCarcel().getNombre());
+        //verify(presoDAO).save(p); //Para confirmar que el mock guarda al preso.
     }
 }
