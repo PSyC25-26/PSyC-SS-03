@@ -117,7 +117,9 @@ jobs:
         run: mvn site
 
       - name: Copy performance reports
-        run: mvn -Pperformance resources:copy-resources@copy-perf-report
+        run: |
+          mkdir -p docs/performance
+          cp -r target/junitperf/* docs/performance/ || true
 
       - name: Generate docs folder
         run: |
