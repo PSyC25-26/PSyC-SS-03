@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Facade</a> &gt; <span class="el_source">CuentaController.java</span></div><h1>CuentaController.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Facade;
+
+import com.example.JailQ.Entidades.Cuenta;
+import com.example.JailQ.Service.CuentaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Controlador REST encargado de gestionar las operaciones relacionadas con las cuentas.
+ * * Expone endpoints HTTP para:
+ * &lt;ul&gt;
+ * &lt;li&gt;Crear cuentas&lt;/li&gt;
+ * &lt;li&gt;Eliminar cuentas&lt;/li&gt;
+ * &lt;li&gt;Eliminar cuentas de tipo POLICIA&lt;/li&gt;
+ * &lt;li&gt;Obtener listado de cuentas POLICIA&lt;/li&gt;
+ * &lt;/ul&gt;
+ * * Actúa como capa intermedia entre el cliente (Postman / GUI)
+ * y la lógica de negocio (CuentaService).
+ * * Base URL: /cuentas
+ * * */
+@RestController
+@RequestMapping(&quot;/cuentas&quot;)
+<span class="nc" id="L28">public class CuentaController {</span>
+
+    /** Logger para registrar eventos y errores en el controlador */
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(CuentaController.class);</span>
+
+    /** Servicio que contiene la lógica de negocio de cuentas */
+    @Autowired
+    private CuentaService cuentaService;
+
+    /**
+     * Crea una nueva cuenta en el sistema.
+     *
+     * Endpoint: POST /cuentas/crear
+     *
+     * @param cuenta Objeto cuenta recibido en formato JSON
+     * @return ResponseEntity con:
+     * &lt;ul&gt;
+     * &lt;li&gt;201 (CREATED) si la cuenta se crea correctamente&lt;/li&gt;
+     * &lt;li&gt;400 (BAD REQUEST) si los datos son inválidos&lt;/li&gt;
+     * &lt;li&gt;500 (INTERNAL SERVER ERROR) si ocurre un error inesperado&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    @PostMapping(&quot;/crear&quot;)
+    public ResponseEntity&lt;?&gt; crearCuenta(@RequestBody Cuenta cuenta) {
+<span class="nc" id="L52">        logger.info(&quot;Recibida petición POST en /cuentas/crear para la cuenta: {}&quot;, cuenta.getUsername());</span>
+        try {
+<span class="nc" id="L54">            Cuenta cuentaGuardada = cuentaService.anadirCuenta(cuenta);</span>
+<span class="nc" id="L55">            return new ResponseEntity&lt;&gt;(cuentaGuardada, HttpStatus.CREATED);</span>
+<span class="nc" id="L56">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L57">            logger.warn(&quot;Petición rechazada al crear cuenta (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L58">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L59">        } catch (Exception e) {</span>
+<span class="nc" id="L60">            logger.error(&quot;Error interno (500) al crear la cuenta: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L61">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Elimina una cuenta por su ID.
+     *
+     * Endpoint: DELETE /cuentas/eliminar/{id}
+     *
+     * @param id Identificador de la cuenta
+     * @return ResponseEntity con:
+     * &lt;ul&gt;
+     * &lt;li&gt;200 (OK) si se elimina correctamente&lt;/li&gt;
+     * &lt;li&gt;404 (NOT FOUND) si no existe la cuenta&lt;/li&gt;
+     * &lt;li&gt;400 (BAD REQUEST) si el ID es inválido&lt;/li&gt;
+     * &lt;li&gt;500 (INTERNAL SERVER ERROR) si ocurre un error&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    @DeleteMapping(&quot;/eliminar/{id}&quot;)
+    public ResponseEntity&lt;?&gt; eliminarCuenta(@PathVariable Integer id) {
+<span class="nc" id="L81">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/{}&quot;, id);</span>
+        try {
+<span class="nc" id="L83">            boolean eliminado = cuentaService.eliminarCuenta(id);</span>
+
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (eliminado) {</span>
+<span class="nc" id="L86">                return new ResponseEntity&lt;&gt;(&quot;Cuenta eliminada correctamente.&quot;, HttpStatus.OK);</span>
+            } else {
+<span class="nc" id="L88">                logger.warn(&quot;No se pudo eliminar, cuenta no encontrada con ID: {}&quot;, id);</span>
+<span class="nc" id="L89">                return new ResponseEntity&lt;&gt;(&quot;No se encontró la cuenta con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
+            }
+<span class="nc" id="L91">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L92">            logger.warn(&quot;Petición rechazada al eliminar cuenta (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L93">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L94">        } catch (Exception e) {</span>
+<span class="nc" id="L95">            logger.error(&quot;Error interno (500) al eliminar la cuenta con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L96">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Elimina una cuenta únicamente si es de tipo POLICIA.
+     *
+     * Endpoint: DELETE /cuentas/eliminar/policia/{id}
+     *
+     * @param id Identificador de la cuenta
+     * @return ResponseEntity con:
+     * &lt;ul&gt;
+     * &lt;li&gt;200 (OK) si se elimina correctamente&lt;/li&gt;
+     * &lt;li&gt;404 (NOT FOUND) si no existe&lt;/li&gt;
+     * &lt;li&gt;400 (BAD REQUEST) si no es policía o ID inválido&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    @DeleteMapping(&quot;/eliminar/policia/{id}&quot;)
+    public ResponseEntity&lt;?&gt; eliminarCuentaPolicia(@PathVariable Integer id) {
+<span class="nc" id="L115">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/policia/{}&quot;, id);</span>
+        try {
+<span class="nc" id="L117">            boolean eliminado = cuentaService.eliminarCuentaPolicia(id);</span>
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (eliminado) {</span>
+<span class="nc" id="L120">                return new ResponseEntity&lt;&gt;(&quot;Cuenta de policía eliminada correctamente.&quot;, HttpStatus.OK);</span>
+            } else {
+<span class="nc" id="L122">                logger.warn(&quot;No se pudo eliminar, cuenta de policía no encontrada con ID: {}&quot;, id);</span>
+<span class="nc" id="L123">                return new ResponseEntity&lt;&gt;(&quot;No se encontró ninguna cuenta de policía con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
+            }
+<span class="nc" id="L125">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L126">            logger.warn(&quot;Petición rechazada al eliminar cuenta de policía (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L127">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L128">        } catch (Exception e) {</span>
+<span class="nc" id="L129">            logger.error(&quot;Error interno (500) al eliminar la cuenta de policía con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L130">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Obtiene todas las cuentas de tipo POLICIA.
+     *
+     * Endpoint: GET /cuentas/policias
+     *
+     * @return Lista de cuentas de tipo POLICIA
+     * con código 200 (OK)
+     */
+    @GetMapping(&quot;/policias&quot;)
+    public ResponseEntity&lt;?&gt; obtenerCuentasPolicia() {
+<span class="nc" id="L144">        logger.info(&quot;Recibida petición GET en /cuentas/policias&quot;);</span>
+        try {
+<span class="nc" id="L146">            return new ResponseEntity&lt;&gt;(cuentaService.obtenerCuentasPolicia(), HttpStatus.OK);</span>
+<span class="nc" id="L147">        } catch (Exception e) {</span>
+<span class="nc" id="L148">            logger.error(&quot;Error interno (500) al obtener la lista de policías: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L149">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+    
+    /**
+     * Autenticación de policía mediante username y password.
+     *
+     * Endpoint: POST /cuentas/login/policia
+     */
+    @PostMapping(&quot;/login/policia&quot;)
+    public ResponseEntity&lt;?&gt; loginPolicia(@RequestBody Cuenta cuenta) {
+<span class="nc" id="L160">        logger.info(&quot;Recibida petición POST en /cuentas/login/policia para el usuario: {}&quot;, cuenta.getUsername());</span>
+        try {
+<span class="nc" id="L162">            Cuenta resultado = cuentaService.loginPolicia(</span>
+<span class="nc" id="L163">                    cuenta.getUsername(),</span>
+<span class="nc" id="L164">                    cuenta.getPassword()</span>
+            );
+
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            if (resultado != null) {</span>
+<span class="nc" id="L168">                return new ResponseEntity&lt;&gt;(resultado, HttpStatus.OK);</span>
+            } else {
+<span class="nc" id="L170">                logger.warn(&quot;Intento de login fallido (401 Unauthorized) para el usuario: {}&quot;, cuenta.getUsername());</span>
+<span class="nc" id="L171">                return new ResponseEntity&lt;&gt;(&quot;Credenciales incorrectas&quot;, HttpStatus.UNAUTHORIZED);</span>
+            }
+
+<span class="nc" id="L174">        } catch (Exception e) {</span>
+<span class="nc" id="L175">            logger.error(&quot;Error interno (500) durante el login del usuario {}: {}&quot;, cuenta.getUsername(), e.getMessage(), e);</span>
+<span class="nc" id="L176">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

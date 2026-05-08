@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JailQ,com.example.JailQ.Entidades,TipoCuenta,0,21,0,0,0,4,0,1,0,1
+JailQ,com.example.JailQ.Entidades,Delito,0,75,0,0,0,13,0,1,0,1
+JailQ,com.example.JailQ.Entidades,Preso,15,74,2,2,5,29,3,19,2,18
+JailQ,com.example.JailQ.Entidades,Carcel,3,35,0,0,1,15,1,10,1,10
+JailQ,com.example.JailQ.Entidades,Cuenta,21,24,0,0,9,10,6,7,6,7
+JailQ,com.example.JailQ.Service,CuentaService,5,197,3,31,1,47,3,22,0,8
+JailQ,com.example.JailQ.Service,PresoService,20,211,4,26,1,47,7,19,3,8
+JailQ,com.example.JailQ.Service,CarcelService,33,139,5,17,7,32,5,15,1,8
+JailQ,com.example.JailQ,JailQApplication,20,0,0,0,7,0,3,0,3,0
+JailQ,com.example.JailQ.Facade,CuentaController,263,0,6,0,51,0,10,0,7,0
+JailQ,com.example.JailQ.Facade,CarcelController,357,0,4,0,67,0,11,0,9,0
+JailQ,com.example.JailQ.Facade,PresoController,251,0,2,0,46,0,8,0,7,0

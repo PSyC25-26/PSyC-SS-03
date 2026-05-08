@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PresoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Service</a> &gt; <span class="el_source">PresoService.java</span></div><h1>PresoService.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Preso;
+
+/**
+ * Servicio para gestionar operaciones sobre {@link Preso}.
+ * * Esta clase se encarga de validar y guardar objetos Preso en la base de datos
+ * utilizando {@link PresoDAO}. Incluye validaciones de nombre, apellidos, edad,
+ * condena y fechas de ingreso.
+ * * Anotada con {@link Service} para ser detectada como componente de Spring.
+ */
+
+@Service // indica que esta funcion es un servicio
+public class PresoService {
+
+    /** Logger para registrar eventos y errores en el servicio */
+<span class="fc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(PresoService.class);</span>
+
+    /**
+     * DAO utilizado para acceder a la base de datos de presos.
+     * &lt;p&gt;
+     * Se declara como {@code final} para indicar que no puede ser reasignado
+     * tras la inicialización. Todas las operaciones del servicio usarán esta
+     * instancia.
+     * &lt;/p&gt;
+     */
+    private final PresoDAO presoDAO;
+
+    /**
+    * DAO utilizado para acceder a la base de datos de cárceles.
+    * &lt;p&gt;
+    * Se declara como {@code final} para indicar que no puede ser reasignado
+    * tras la inicialización. Todas las operaciones del servicio usarán esta
+    * instancia.
+    * &lt;/p&gt;
+    */
+    @Autowired
+    private CarcelDAO carcelDAO;
+
+
+
+    /**
+     * DAO utilizado para acceder a la base de datos de presos.
+     * &lt;p&gt;
+     * Se declara como {@code final} para indicar que no puede ser reasignado
+     * tras la inicialización. Todas las operaciones del servicio usarán esta
+     * instancia.
+     * &lt;/p&gt;
+     */
+    @Autowired
+<span class="fc" id="L63">    public PresoService(PresoDAO presoDAO) {</span>
+<span class="fc" id="L64">        this.presoDAO = presoDAO;</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Añade un nuevo {@link Preso} a la base de datos tras realizar validaciones.
+     * * Validaciones realizadas:
+     * &lt;ul&gt;
+     * &lt;li&gt;Compronar que existe el objeto&lt;/li&gt;
+     * &lt;li&gt;Validación de Nombre y Apellidos (con trim para detectar &quot;&quot; también como
+     * vacío)&lt;/li&gt;
+     * &lt;li&gt;Validacion de edad&lt;/li&gt;
+     * &lt;li&gt;Comprobacion de condena.&lt;/li&gt;
+     * &lt;li&gt;Validacion de fecha de ingreso -&gt; no puede ser futura y tampoco puede
+     * entrar antes de haber nacido&lt;/li&gt;
+     * &lt;/ul&gt;
+     * * Mensajes de error se imprimen en consola en caso de datos inválidos.
+     * Si todas las validaciones pasan, el preso se guarda mediante
+     * {@link PresoDAO#save(Object)}.
+     * * @param nuevoPreso El objeto {@link Preso} a añadir. No puede ser
+     * {@code null}.
+     */
+    public Preso anadirPreso(Preso nuevoPreso) {
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (nuevoPreso == null) {</span>
+<span class="fc" id="L88">            throw new IllegalArgumentException(&quot;No se ha recibido ningún dato del preso.&quot;);</span>
+        }
+
+<span class="fc" id="L91">        LocalDate fechaActual = LocalDate.now();</span>
+
+        // Validación de nombre
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        if (nuevoPreso.getNombre() == null || nuevoPreso.getNombre().trim().isEmpty()) {</span>
+<span class="fc" id="L95">            throw new IllegalArgumentException(&quot;El nombre es obligatorio.&quot;);</span>
+        }
+
+        // Validación de apellidos
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">        if (nuevoPreso.getApellidos() == null || nuevoPreso.getApellidos().trim().isEmpty()) {</span>
+<span class="fc" id="L100">            throw new IllegalArgumentException(&quot;Los apellidos son obligatorios.&quot;);</span>
+        }
+
+        // Validación de fecha de nacimiento
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (nuevoPreso.getFechaNacimiento() == null) {</span>
+<span class="fc" id="L105">            throw new IllegalArgumentException(&quot;La fecha de nacimiento es obligatoria.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (nuevoPreso.getFechaNacimiento().plusYears(18).isAfter(fechaActual)) {</span>
+<span class="fc" id="L109">            throw new IllegalArgumentException(&quot;El preso debe ser mayor de edad.&quot;);</span>
+        }
+
+        // Validación de condena
+<span class="fc bfc" id="L113" title="All 4 branches covered.">        if (nuevoPreso.getCondena() == null || nuevoPreso.getCondena() &lt;= 0) {</span>
+<span class="fc" id="L114">            throw new IllegalArgumentException(&quot;La condena debe ser mayor a 0 años.&quot;);</span>
+        }
+
+        // Validación de fecha de ingreso
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (nuevoPreso.getFechaIngreso() == null) {</span>
+<span class="fc" id="L119">            throw new IllegalArgumentException(&quot;La fecha de ingreso es obligatoria.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (nuevoPreso.getFechaIngreso().isAfter(fechaActual)) {</span>
+<span class="fc" id="L123">            throw new IllegalArgumentException(&quot;La fecha de ingreso no puede ser futura.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (nuevoPreso.getFechaIngreso().isBefore(nuevoPreso.getFechaNacimiento())) {</span>
+<span class="fc" id="L127">            throw new IllegalArgumentException(&quot;La fecha de ingreso no puede ser anterior al nacimiento.&quot;);</span>
+        }
+
+
+<span class="pc bpc" id="L131" title="2 of 4 branches missed.">        if (nuevoPreso.getCarcel() == null || nuevoPreso.getCarcel().getIdCarcel() == null) {</span>
+<span class="nc" id="L132">            throw new IllegalArgumentException(&quot;La cárcel es obligatoria.&quot;);</span>
+        }
+
+        // 1. Buscamos la cárcel completa en la base de datos usando el ID
+<span class="fc" id="L136">        Carcel carcelCompleta = carcelDAO.findById(nuevoPreso.getCarcel().getIdCarcel())</span>
+<span class="pc" id="L137">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No existe ninguna cárcel con ese ID.&quot;));</span>
+
+        // 2. Asignamos la cárcel completa (con nombre, localidad, etc.) al preso
+<span class="fc" id="L140">        nuevoPreso.setCarcel(carcelCompleta);</span>
+
+<span class="fc" id="L142">        logger.info(&quot;Guardando preso en: {}&quot;, carcelCompleta.getNombre());</span>
+        
+        // 3. Guardamos y devolvemos el objeto (ahora con todos los datos)
+<span class="fc" id="L145">        return presoDAO.save(nuevoPreso);</span>
+    }
+
+    /**
+     * Obtiene todos los presos almacenados en la base de datos.
+     *
+     * @return lista de presos
+     */
+    public List&lt;Preso&gt; obtenerTodos() {
+<span class="fc" id="L154">        List&lt;Preso&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L155">        presoDAO.findAll().forEach(lista::add);</span>
+<span class="fc" id="L156">        return lista;</span>
+    }
+
+    /**
+     * Obtiene un preso según su ID.
+     *
+     * @param id identificador del preso
+     * @return el preso encontrado
+     * @throws IllegalArgumentException si no existe
+     */
+    public Preso obtenerPorId(Integer id) {
+<span class="fc" id="L167">        return presoDAO.findById(id)</span>
+<span class="fc" id="L168">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ningún preso con ese ID.&quot;));</span>
+    }
+
+    /**
+     * Elimina un preso según su ID.
+     *
+     * @param id identificador del preso
+     * @return true si se eliminó correctamente, false si no existe
+     */
+    public boolean eliminar(Integer id) {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        if (!presoDAO.existsById(id)) {</span>
+<span class="fc" id="L179">            logger.warn(&quot;No se encontró ningún preso con el ID: {}&quot;, id);</span>
+<span class="fc" id="L180">            return false;</span>
+        }
+<span class="fc" id="L182">        presoDAO.deleteById(id);</span>
+<span class="fc" id="L183">        logger.info(&quot;Preso con ID {} eliminado correctamente.&quot;, id);</span>
+<span class="fc" id="L184">        return true;</span>
+    }
+
+    /**
+     * Traslada el preso de una cárcel a otra seleccionada
+     * 
+     * @param idPreso
+     * @param nombreCarcel
+     * @throws IllegalArgumenException si la carcel seleccionada no existe
+     */    
+    public void trasladarPreso(Integer idPreso, String nombreCarcel) {
+<span class="fc" id="L195">    Preso preso = presoDAO.findById(idPreso)</span>
+<span class="pc" id="L196">        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Preso no encontrado&quot;));</span>
+
+<span class="fc" id="L198">    Carcel destino = carcelDAO.findByNombre(nombreCarcel)</span>
+<span class="pc" id="L199">        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;La cárcel seleccionada no existe&quot;));</span>
+
+<span class="fc" id="L201">    preso.setCarcel(destino);</span>
+<span class="fc" id="L202">    presoDAO.save(preso);</span>
+<span class="fc" id="L203">}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
