@@ -99,8 +99,8 @@ jobs:
           mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
           echo $! > app.pid
 
-      #- name: Run Unit tests + JaCoCo
-        #run: mvn test jacoco:report
+      - name: Run Unit tests + JaCoCo
+        run: mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test jacoco:report
 
       #- name: Run Integration Tests + Sonar
         #run: |
