@@ -98,7 +98,7 @@ public class FiltrarPresosPorDelitoGUI extends JFrame {
         comboDelitos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         comboDelitos.setPreferredSize(new Dimension(190, 30));
 
-        botonFiltrar = new JButton("🔍 Filtrar");
+        botonFiltrar = new JButton("Filtrar");
         botonFiltrar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         botonFiltrar.setFocusPainted(false);
         botonFiltrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
