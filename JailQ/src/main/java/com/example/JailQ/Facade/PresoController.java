@@ -204,4 +204,33 @@ public ResponseEntity<?> filtrarPresosPorDelito(@PathVariable String delito) {
         return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+/**
+ * Modifica la condena de un preso.
+ *
+ * Endpoint: POST /preso/modificar-condena/{id}/{nuevaCondena}
+ *
+ * @param id identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado o error correspondiente
+ */
+@PostMapping("/modificar-condena/{id}/{nuevaCondena}")
+public ResponseEntity<?> modificarCondena(
+        @PathVariable Integer id,
+        @PathVariable Integer nuevaCondena) {
+
+    logger.info("Recibida petición POST en /preso/modificar-condena/{}/{}", id, nuevaCondena);
+
+    try {
+        Preso actualizado = presoService.modificarCondena(id, nuevaCondena);
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
+
+    } catch (IllegalArgumentException e) {
+        logger.warn("Petición rechazada al modificar condena: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+    } catch (Exception e) {
+        logger.error("Error interno (500) al modificar condena del preso con ID {}: {}", id, e.getMessage(), e);
+        return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 }

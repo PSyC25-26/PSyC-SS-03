@@ -223,4 +223,29 @@ public List<Preso> filtrarPorDelito(Delito delito) {
 
     return presosFiltrados;
 }
+/**
+ * Modifica la condena de un preso existente.
+ *
+ * @param idPreso identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado
+ */
+public Preso modificarCondena(Integer idPreso, Integer nuevaCondena) {
+    if (idPreso == null) {
+        throw new IllegalArgumentException("El ID del preso no puede ser nulo.");
+    }
+
+    if (nuevaCondena == null || nuevaCondena <= 0) {
+        throw new IllegalArgumentException("La condena debe ser mayor que 0.");
+    }
+
+    Preso preso = presoDAO.findById(idPreso)
+            .orElseThrow(() -> new IllegalArgumentException("No se encontró ningún preso con ese ID."));
+
+    preso.setCondena(nuevaCondena);
+
+    logger.info("Condena del preso con ID {} modificada a {} años.", idPreso, nuevaCondena);
+
+    return presoDAO.save(preso);
+}
 }
