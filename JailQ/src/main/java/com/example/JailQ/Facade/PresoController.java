@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.JailQ.Entidades.Delito;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Service.PresoService;
 
@@ -171,4 +172,36 @@ public class PresoController {
             return new ResponseEntity<>("Error interno del servidor al procesar el traslado", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    /**
+ * Filtra presos por delito.
+ *
+ * Endpoint: GET /preso/filtrar/delito/{delito}
+ *
+ * Ejemplo:
+ * GET /preso/filtrar/delito/ROBO
+ *
+ * @param delito delito por el que se quiere filtrar
+ * @return lista de presos que contienen ese delito
+ */
+@GetMapping("/filtrar/delito/{delito}")
+public ResponseEntity<?> filtrarPresosPorDelito(@PathVariable String delito) {
+    logger.info("Recibida petición GET en /preso/filtrar/delito/{}", delito);
+
+    try {
+        Delito delitoEnum = Delito.valueOf(delito.toUpperCase());
+
+        return new ResponseEntity<>(
+                presoService.filtrarPorDelito(delitoEnum),
+                HttpStatus.OK
+        );
+
+    } catch (IllegalArgumentException e) {
+        logger.warn("Delito no válido al filtrar presos: {}", delito);
+        return new ResponseEntity<>("Delito no válido: " + delito, HttpStatus.BAD_REQUEST);
+
+    } catch (Exception e) {
+        logger.error("Error interno (500) al filtrar presos por delito {}: {}", delito, e.getMessage(), e);
+        return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 }

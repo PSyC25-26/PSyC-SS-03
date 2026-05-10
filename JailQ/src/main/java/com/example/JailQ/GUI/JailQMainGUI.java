@@ -412,30 +412,41 @@ public class JailQMainGUI extends JFrame {
             });
         }).start();
     }
-    private void mostrarMenuPresos() {
-        String[] opciones = {"Crear nuevo preso", "Listado / Modificar / Eliminar", "Cancelar"};
+   private void mostrarMenuPresos() {
+    String[] opciones = {
+            "Crear nuevo preso",
+            "Listado / Modificar / Eliminar",
+            "Filtrar presos por delito",
+            "Cancelar"
+    };
 
-        int seleccion = JOptionPane.showOptionDialog(
-                this,
-                "Seleccione la operación que desea realizar en el módulo de presos:",
-                "Gestión de Presos",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                opciones,
-                opciones[0]
-        );
+    int seleccion = JOptionPane.showOptionDialog(
+            this,
+            "Seleccione la operación que desea realizar en el módulo de presos:",
+            "Gestión de Presos",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+    );
 
-        switch (seleccion) {
-            case 0: // Crear nuevo preso
-                abrirVentana(new GestionPresosGUI());
-                break;
-            case 1: // Listado / Modificar / Eliminar
-                abrirVentana(new ListadoPresosGUI());
-                break;
-            default:
-                // Si pulsa cancelar o cierra la ventana, no hace nada y vuelve al main
-                break;
-        }
+    switch (seleccion) {
+        case 0: // Crear nuevo preso
+            abrirVentana(new GestionPresosGUI());
+            break;
+
+        case 1: // Listado / Modificar / Eliminar
+            abrirVentana(new ListadoPresosGUI());
+            break;
+
+        case 2: // Filtrar presos por delito
+            abrirVentana(new FiltrarPresosPorDelitoGUI());
+            break;
+
+        default:
+            // Si pulsa cancelar o cierra la ventana, no hace nada
+            break;
     }
+}
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.JailQ.Dao.CarcelDAO;
 import com.example.JailQ.Dao.PresoDAO;
 import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Delito;
 import com.example.JailQ.Entidades.Preso;
 
 /**
@@ -201,5 +202,25 @@ public class PresoService {
     preso.setCarcel(destino);
     presoDAO.save(preso);
 }
+    /**
+ * Filtra los presos por un delito concreto.
+ *
+ * @param delito delito por el que se quiere filtrar
+ * @return lista de presos que contienen ese delito
+ */
+public List<Preso> filtrarPorDelito(Delito delito) {
+    if (delito == null) {
+        throw new IllegalArgumentException("El delito no puede ser nulo.");
+    }
 
+    List<Preso> presosFiltrados = new ArrayList<>();
+
+    for (Preso preso : presoDAO.findAll()) {
+        if (preso.getDelitos() != null && preso.getDelitos().contains(delito)) {
+            presosFiltrados.add(preso);
+        }
+    }
+
+    return presosFiltrados;
+}
 }
