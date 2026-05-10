@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.JailQ.Entidades.Delito;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Service.PresoService;
 
@@ -29,10 +30,10 @@ import com.example.JailQ.Service.PresoService;
  */
 @RestController
 @RequestMapping(&quot;/preso&quot;)
-<span class="nc" id="L32">public class PresoController {</span>
+<span class="nc" id="L33">public class PresoController {</span>
 
     /** Logger para registrar eventos y errores en el controlador */
-<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(PresoController.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(PresoController.class);</span>
 
     /** Servicio que contiene la lógica de negocio de presos */
     @Autowired
@@ -53,18 +54,18 @@ import com.example.JailQ.Service.PresoService;
      */
     @PostMapping(&quot;/crear&quot;)
     public ResponseEntity&lt;?&gt; crearPreso(@RequestBody Preso preso) {
-<span class="nc" id="L56">        logger.info(&quot;Recibida petición POST en /preso/crear para el preso: {}&quot;, preso.getNombre());</span>
+<span class="nc" id="L57">        logger.info(&quot;Recibida petición POST en /preso/crear para el preso: {}&quot;, preso.getNombre());</span>
         try {
-<span class="nc" id="L58">            Preso guardado = presoService.anadirPreso(preso);</span>
-<span class="nc" id="L59">            return new ResponseEntity&lt;&gt;(guardado, HttpStatus.CREATED);</span>
+<span class="nc" id="L59">            Preso guardado = presoService.anadirPreso(preso);</span>
+<span class="nc" id="L60">            return new ResponseEntity&lt;&gt;(guardado, HttpStatus.CREATED);</span>
 
-<span class="nc" id="L61">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L62">            logger.warn(&quot;Petición rechazada al crear preso (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L63">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L62">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L63">            logger.warn(&quot;Petición rechazada al crear preso (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L64">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L65">        } catch (Exception e) {</span>
-<span class="nc" id="L66">            logger.error(&quot;Error interno (500) al crear el preso: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L67">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L66">        } catch (Exception e) {</span>
+<span class="nc" id="L67">            logger.error(&quot;Error interno (500) al crear el preso: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L68">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -77,13 +78,13 @@ import com.example.JailQ.Service.PresoService;
      */
     @GetMapping(&quot;/todos&quot;)
     public ResponseEntity&lt;?&gt; obtenerPresos() {
-<span class="nc" id="L80">        logger.info(&quot;Recibida petición GET en /preso/todos&quot;);</span>
+<span class="nc" id="L81">        logger.info(&quot;Recibida petición GET en /preso/todos&quot;);</span>
         try {
-<span class="nc" id="L82">            return new ResponseEntity&lt;&gt;(presoService.obtenerTodos(), HttpStatus.OK);</span>
+<span class="nc" id="L83">            return new ResponseEntity&lt;&gt;(presoService.obtenerTodos(), HttpStatus.OK);</span>
 
-<span class="nc" id="L84">        } catch (Exception e) {</span>
-<span class="nc" id="L85">            logger.error(&quot;Error interno (500) al obtener la lista de presos: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L86">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L86">            logger.error(&quot;Error interno (500) al obtener la lista de presos: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L87">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -97,17 +98,17 @@ import com.example.JailQ.Service.PresoService;
      */
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;?&gt; obtenerPresoPorId(@PathVariable Integer id) {
-<span class="nc" id="L100">        logger.info(&quot;Recibida petición GET en /preso/{} para obtener preso por ID&quot;, id);</span>
+<span class="nc" id="L101">        logger.info(&quot;Recibida petición GET en /preso/{} para obtener preso por ID&quot;, id);</span>
         try {
-<span class="nc" id="L102">            return new ResponseEntity&lt;&gt;(presoService.obtenerPorId(id), HttpStatus.OK);</span>
+<span class="nc" id="L103">            return new ResponseEntity&lt;&gt;(presoService.obtenerPorId(id), HttpStatus.OK);</span>
 
-<span class="nc" id="L104">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L105">            logger.warn(&quot;Preso no encontrado (404 Not Found) para el ID {}: {}&quot;, id, e.getMessage());</span>
-<span class="nc" id="L106">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L105">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L106">            logger.warn(&quot;Preso no encontrado (404 Not Found) para el ID {}: {}&quot;, id, e.getMessage());</span>
+<span class="nc" id="L107">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
 
-<span class="nc" id="L108">        } catch (Exception e) {</span>
-<span class="nc" id="L109">            logger.error(&quot;Error interno (500) al obtener el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L110">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L109">        } catch (Exception e) {</span>
+<span class="nc" id="L110">            logger.error(&quot;Error interno (500) al obtener el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L111">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -121,24 +122,24 @@ import com.example.JailQ.Service.PresoService;
      */
     @DeleteMapping(&quot;/eliminar/{id}&quot;)
     public ResponseEntity&lt;?&gt; eliminarPreso(@PathVariable Integer id) {
-<span class="nc" id="L124">        logger.info(&quot;Recibida petición DELETE en /preso/eliminar/{}&quot;, id);</span>
+<span class="nc" id="L125">        logger.info(&quot;Recibida petición DELETE en /preso/eliminar/{}&quot;, id);</span>
         try {
-<span class="nc" id="L126">            boolean eliminado = presoService.eliminar(id);</span>
+<span class="nc" id="L127">            boolean eliminado = presoService.eliminar(id);</span>
 
-<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (eliminado) {</span>
-<span class="nc" id="L129">                return new ResponseEntity&lt;&gt;(&quot;Preso eliminado correctamente.&quot;, HttpStatus.OK);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (eliminado) {</span>
+<span class="nc" id="L130">                return new ResponseEntity&lt;&gt;(&quot;Preso eliminado correctamente.&quot;, HttpStatus.OK);</span>
             } else {
-<span class="nc" id="L131">                logger.warn(&quot;No se pudo eliminar, preso no encontrado con ID: {}&quot;, id);</span>
-<span class="nc" id="L132">                return new ResponseEntity&lt;&gt;(&quot;No se encontró el preso con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L132">                logger.warn(&quot;No se pudo eliminar, preso no encontrado con ID: {}&quot;, id);</span>
+<span class="nc" id="L133">                return new ResponseEntity&lt;&gt;(&quot;No se encontró el preso con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
             }
 
-<span class="nc" id="L135">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L136">            logger.warn(&quot;Petición rechazada al eliminar preso (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L137">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L136">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L137">            logger.warn(&quot;Petición rechazada al eliminar preso (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L138">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L139">        } catch (Exception e) {</span>
-<span class="nc" id="L140">            logger.error(&quot;Error interno (500) al eliminar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L141">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L140">        } catch (Exception e) {</span>
+<span class="nc" id="L141">            logger.error(&quot;Error interno (500) al eliminar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L142">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -153,23 +154,55 @@ import com.example.JailQ.Service.PresoService;
      */
     @PostMapping(&quot;/trasladar/{id}/{nombreCarcel}&quot;)
     public ResponseEntity&lt;?&gt; trasladarPreso(@PathVariable Integer id, @PathVariable String nombreCarcel) {
-<span class="nc" id="L156">        logger.info(&quot;Recibida petición POST en /preso/trasladar/{}/{}&quot;, id, nombreCarcel);</span>
+<span class="nc" id="L157">        logger.info(&quot;Recibida petición POST en /preso/trasladar/{}/{}&quot;, id, nombreCarcel);</span>
         try {
             // Llamada al servicio para ejecutar la lógica de negocio del traslado
-<span class="nc" id="L159">            presoService.trasladarPreso(id, nombreCarcel);</span>
+<span class="nc" id="L160">            presoService.trasladarPreso(id, nombreCarcel);</span>
             
-<span class="nc" id="L161">            logger.info(&quot;Traslado exitoso: Preso ID {} enviado a {}&quot;, id, nombreCarcel);</span>
-<span class="nc" id="L162">            return new ResponseEntity&lt;&gt;(&quot;Traslado realizado correctamente a &quot; + nombreCarcel, HttpStatus.OK);</span>
+<span class="nc" id="L162">            logger.info(&quot;Traslado exitoso: Preso ID {} enviado a {}&quot;, id, nombreCarcel);</span>
+<span class="nc" id="L163">            return new ResponseEntity&lt;&gt;(&quot;Traslado realizado correctamente a &quot; + nombreCarcel, HttpStatus.OK);</span>
 
-<span class="nc" id="L164">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L165">        } catch (IllegalArgumentException e) {</span>
             // Se lanza si el preso no existe o la cárcel es inválida
-<span class="nc" id="L166">            logger.warn(&quot;Petición de traslado rechazada (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L167">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L167">            logger.warn(&quot;Petición de traslado rechazada (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L168">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L169">        } catch (Exception e) {</span>
-<span class="nc" id="L170">            logger.error(&quot;Error interno (500) al trasladar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L171">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor al procesar el traslado&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L170">        } catch (Exception e) {</span>
+<span class="nc" id="L171">            logger.error(&quot;Error interno (500) al trasladar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L172">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor al procesar el traslado&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
+    /**
+ * Filtra presos por delito.
+ *
+ * Endpoint: GET /preso/filtrar/delito/{delito}
+ *
+ * Ejemplo:
+ * GET /preso/filtrar/delito/ROBO
+ *
+ * @param delito delito por el que se quiere filtrar
+ * @return lista de presos que contienen ese delito
+ */
+@GetMapping(&quot;/filtrar/delito/{delito}&quot;)
+public ResponseEntity&lt;?&gt; filtrarPresosPorDelito(@PathVariable String delito) {
+<span class="nc" id="L188">    logger.info(&quot;Recibida petición GET en /preso/filtrar/delito/{}&quot;, delito);</span>
+
+    try {
+<span class="nc" id="L191">        Delito delitoEnum = Delito.valueOf(delito.toUpperCase());</span>
+
+<span class="nc" id="L193">        return new ResponseEntity&lt;&gt;(</span>
+<span class="nc" id="L194">                presoService.filtrarPorDelito(delitoEnum),</span>
+                HttpStatus.OK
+        );
+
+<span class="nc" id="L198">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L199">        logger.warn(&quot;Delito no válido al filtrar presos: {}&quot;, delito);</span>
+<span class="nc" id="L200">        return new ResponseEntity&lt;&gt;(&quot;Delito no válido: &quot; + delito, HttpStatus.BAD_REQUEST);</span>
+
+<span class="nc" id="L202">    } catch (Exception e) {</span>
+<span class="nc" id="L203">        logger.error(&quot;Error interno (500) al filtrar presos por delito {}: {}&quot;, delito, e.getMessage(), e);</span>
+<span class="nc" id="L204">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
