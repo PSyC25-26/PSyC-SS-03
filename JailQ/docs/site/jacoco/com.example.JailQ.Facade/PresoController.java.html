@@ -204,5 +204,34 @@ public ResponseEntity&lt;?&gt; filtrarPresosPorDelito(@PathVariable String delit
 <span class="nc" id="L204">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 }
+/**
+ * Modifica la condena de un preso.
+ *
+ * Endpoint: POST /preso/modificar-condena/{id}/{nuevaCondena}
+ *
+ * @param id identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado o error correspondiente
+ */
+@PostMapping(&quot;/modificar-condena/{id}/{nuevaCondena}&quot;)
+public ResponseEntity&lt;?&gt; modificarCondena(
+        @PathVariable Integer id,
+        @PathVariable Integer nuevaCondena) {
+
+<span class="nc" id="L221">    logger.info(&quot;Recibida petición POST en /preso/modificar-condena/{}/{}&quot;, id, nuevaCondena);</span>
+
+    try {
+<span class="nc" id="L224">        Preso actualizado = presoService.modificarCondena(id, nuevaCondena);</span>
+<span class="nc" id="L225">        return new ResponseEntity&lt;&gt;(actualizado, HttpStatus.OK);</span>
+
+<span class="nc" id="L227">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L228">        logger.warn(&quot;Petición rechazada al modificar condena: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L229">        return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+
+<span class="nc" id="L231">    } catch (Exception e) {</span>
+<span class="nc" id="L232">        logger.error(&quot;Error interno (500) al modificar condena del preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L233">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

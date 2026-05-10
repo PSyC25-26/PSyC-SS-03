@@ -223,5 +223,30 @@ public List&lt;Preso&gt; filtrarPorDelito(Delito delito) {
 
 <span class="nc" id="L224">    return presosFiltrados;</span>
 }
+/**
+ * Modifica la condena de un preso existente.
+ *
+ * @param idPreso identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado
+ */
+public Preso modificarCondena(Integer idPreso, Integer nuevaCondena) {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">    if (idPreso == null) {</span>
+<span class="nc" id="L235">        throw new IllegalArgumentException(&quot;El ID del preso no puede ser nulo.&quot;);</span>
+    }
+
+<span class="nc bnc" id="L238" title="All 4 branches missed.">    if (nuevaCondena == null || nuevaCondena &lt;= 0) {</span>
+<span class="nc" id="L239">        throw new IllegalArgumentException(&quot;La condena debe ser mayor que 0.&quot;);</span>
+    }
+
+<span class="nc" id="L242">    Preso preso = presoDAO.findById(idPreso)</span>
+<span class="nc" id="L243">            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ningún preso con ese ID.&quot;));</span>
+
+<span class="nc" id="L245">    preso.setCondena(nuevaCondena);</span>
+
+<span class="nc" id="L247">    logger.info(&quot;Condena del preso con ID {} modificada a {} años.&quot;, idPreso, nuevaCondena);</span>
+
+<span class="nc" id="L249">    return presoDAO.save(preso);</span>
+}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
