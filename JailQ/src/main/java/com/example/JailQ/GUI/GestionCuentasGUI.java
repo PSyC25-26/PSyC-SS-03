@@ -26,7 +26,7 @@ public class GestionCuentasGUI extends JFrame {
     private JPasswordField txtPassword;
     private JComboBox<String> cbTipoCuenta;
     private JTextArea txtConsola;
-    private final HttpClient httpClient;
+    private final HttpClient cliente;
 
     /**
      * Constructor de la clase. Inicializa el cliente HTTP y configura
@@ -34,12 +34,11 @@ public class GestionCuentasGUI extends JFrame {
      */
 
     public GestionCuentasGUI() {
-        httpClient = HttpClient.newHttpClient();
+        cliente = HttpClientSingleton.getInstance().getClient();
 
-        // Configuración básica de la ventana
         setTitle("JailQ - Gestión de Cuentas");
         setSize(400, 550);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -69,7 +68,7 @@ public class GestionCuentasGUI extends JFrame {
 
         JButton btnAnadir = new JButton("Añadir Cuenta");
         btnAnadir.addActionListener(e -> anadirCuenta());
-        panelFormulario.add(new JLabel("")); // Espacio vacío
+        panelFormulario.add(new JLabel(""));
         panelFormulario.add(btnAnadir);
 
         // --- PANEL CENTRAL: Formulario para borrar ---
@@ -90,21 +89,20 @@ public class GestionCuentasGUI extends JFrame {
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
-	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        JButton btnVolver = new JButton("← Volver al Menú Principal");
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnVolver.addActionListener(e -> dispose());
- 
-        // ── Composición de la ventana ─────────────────────────────────────────
+
         JPanel panelNorte = new JPanel(new BorderLayout());
         panelNorte.add(panelFormulario, BorderLayout.NORTH);
         panelNorte.add(panelBorrar,     BorderLayout.SOUTH);
- 
+
         JPanel panelSur = new JPanel(new BorderLayout(5, 5));
         panelSur.add(scrollConsola, BorderLayout.CENTER);
         panelSur.add(btnVolver,     BorderLayout.SOUTH);
- 
+
         add(panelNorte, BorderLayout.NORTH);
         add(panelSur,   BorderLayout.CENTER);
     }
@@ -115,26 +113,22 @@ public class GestionCuentasGUI extends JFrame {
      * Construye un objeto JSON con los datos de la cuenta y lo envía al endpoint
      * {@code /cuentas/crear}. El resultado se muestra en la consola de la interfaz.
      */
-
     private void anadirCuenta() {
         try {
-            // 1. Construimos el JSON a mano con los datos de las cajas de texto
             String jsonBody = String.format(
                 "{\"nombre\":\"%s\", \"apellidos\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"tipoCuenta\":\"%s\"}",
                 txtNombre.getText(), txtApellidos.getText(), txtUsername.getText(),
                 new String(txtPassword.getPassword()), cbTipoCuenta.getSelectedItem()
             );
 
-            // 2. Preparamos la petición POST
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/cuentas/crear"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
-            // 3. Enviamos la petición y leemos la respuesta
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
+            HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+
             if (response.statusCode() == 201) {
                 txtConsola.setText("✅ ÉXITO (201): Cuenta creada.\n" + response.body());
                 limpiarFormulario();

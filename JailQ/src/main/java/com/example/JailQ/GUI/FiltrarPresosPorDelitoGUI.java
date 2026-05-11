@@ -296,11 +296,4 @@ public class FiltrarPresosPorDelitoGUI extends JFrame {
             areaResultados.setText("Error al procesar la respuesta del servidor.\n\nRespuesta recibida:\n" + json);
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            FiltrarPresosPorDelitoGUI gui = new FiltrarPresosPorDelitoGUI();
-            gui.setVisible(true);
-        });
-    }
 }

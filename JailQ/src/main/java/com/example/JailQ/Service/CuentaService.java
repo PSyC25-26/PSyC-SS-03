@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * <li>Eliminar cuentas</li>
  * <li>Eliminar cuentas de tipo POLICIA</li>
  * <li>Obtener todas las cuentas de tipo POLICIA</li>
- * <li>Iniciar sesión como POLICIA</li>
+ * <li>Iniciar sesión con cualquier tipo de cuenta</li>
  * </ul>
  * * Este servicio actúa como intermediario entre el controlador (Controller)
  * y el acceso a datos (DAO).
@@ -122,12 +122,7 @@ public class CuentaService {
      *
      * @param id Identificador de la cuenta
      * @return true si la cuenta fue eliminada correctamente
-     * @throws IllegalArgumentException si:
-     * <ul>
-     * <li>El ID es nulo</li>
-     * <li>La cuenta no existe</li>
-     * <li>La cuenta no es de tipo POLICIA</li>
-     * </ul>
+     * @throws IllegalArgumentException si el ID es nulo, la cuenta no existe o no es POLICIA
      */
     public boolean eliminarCuentaPolicia(Integer id) {
         if (id == null) {
@@ -164,24 +159,24 @@ public class CuentaService {
     }
 
     /**
-     * Verifica si existe una cuenta de tipo POLICIA con username y password
-     * correctos.
+     * Autentica un usuario verificando username y password contra la base de datos.
+     *
+     * A diferencia de la versión anterior, este método acepta cualquier tipo de
+     * cuenta (POLICIA, FAMILIA, GUBERNAMENTAL), no solo POLICIA. El tipoCuenta
+     * se devuelve en la entidad Cuenta para que el frontend pueda ajustar
+     * los módulos disponibles según el rol.
      *
      * @param username nombre de usuario
      * @param password contraseña
-     * @return la cuenta si es válida, null si no
+     * @return la cuenta si las credenciales son correctas, null si no coinciden
      */
     public Cuenta loginPolicia(String username, String password) {
-
         for (Cuenta cuenta : cuentaDAO.findAll()) {
             if (cuenta.getUsername().equals(username)
-                    && cuenta.getPassword().equals(password)
-                    && cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {
-
+                    && cuenta.getPassword().equals(password)) {
                 return cuenta;
             }
         }
-
         return null;
     }
 }

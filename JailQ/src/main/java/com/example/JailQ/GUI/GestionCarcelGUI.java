@@ -1,11 +1,13 @@
 package com.example.JailQ.GUI;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 
 /**
  * Interfaz Gráfica de Usuario (GUI) para la gestión y creación de nuevas cárceles dentro del sistema JailQ.
@@ -25,8 +27,7 @@ public class GestionCarcelGUI extends JFrame {
     private JTextField txtNombre, txtLocalidad, txtCapacidad;
     private JTextArea txtDescripcion;
     private JTextArea txtConsola;
-    private final HttpClient httpClient;
-
+    private final HttpClient cliente;
     /**
      * Constructor principal de la clase.
      *
@@ -40,10 +41,10 @@ public class GestionCarcelGUI extends JFrame {
      * <p>La ventana se inicializa con un diseño basado en {@link BorderLayout}.
      */
     public GestionCarcelGUI() {
-        httpClient = HttpClient.newHttpClient();
+        cliente = HttpClientSingleton.getInstance().getClient();
 
         setTitle("JailQ - Gestión de Cárceles");
-        setSize(450, 550);
+        setSize(450, 580);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -76,14 +77,15 @@ public class GestionCarcelGUI extends JFrame {
         // Botón de envío
         JButton btnAnadir = new JButton("Añadir Cárcel");
         btnAnadir.addActionListener(e -> anadirCarcel());
-        panelFormulario.add(new JLabel("")); // celda vacía para alineación
+        panelFormulario.add(new JLabel(""));
         panelFormulario.add(btnAnadir);
 
+        // Panel de estadísticas avanzadas
         JPanel panelEstadisticas = new JPanel(new FlowLayout());
         panelEstadisticas.setBorder(BorderFactory.createTitledBorder("Estadísticas"));
 
-JButton btnEstadisticas = new JButton("Ver Estadísticas");
-btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        JButton btnEstadisticas = new JButton("Ver Estadísticas");
+        btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnEstadisticas.setFocusPainted(false);
         btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnEstadisticas.addActionListener(e -> new EstadisticasAvanzadasGUI().setVisible(true));
@@ -95,23 +97,23 @@ btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
         txtConsola.setLineWrap(true);
         txtConsola.setWrapStyleWord(true);
 
-
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
-	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        JButton btnVolver = new JButton("← Volver al Menú Principal");
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnVolver.addActionListener(e -> dispose());
- 
+
+        // Panel norte: formulario + estadísticas
+        JPanel panelNorte = new JPanel(new BorderLayout());
+        panelNorte.add(panelFormulario,  BorderLayout.NORTH);
+        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);
+
         JPanel panelInferior = new JPanel(new BorderLayout(5, 5));
         panelInferior.add(scrollConsola, BorderLayout.CENTER);
-        panelInferior.add(btnVolver, BorderLayout.SOUTH);
- 
-        JPanel panelNorte = new JPanel(new BorderLayout());
-        panelNorte.add(panelFormulario,   BorderLayout.NORTH);
-        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);
+        panelInferior.add(btnVolver,     BorderLayout.SOUTH);
 
         add(panelNorte,    BorderLayout.NORTH);
         add(panelInferior, BorderLayout.CENTER);
@@ -146,7 +148,7 @@ btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 201) {
                 txtConsola.setText("ÉXITO (201): Cárcel creada.\n" + response.body());
