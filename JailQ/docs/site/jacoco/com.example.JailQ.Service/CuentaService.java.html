@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * &lt;li&gt;Eliminar cuentas&lt;/li&gt;
  * &lt;li&gt;Eliminar cuentas de tipo POLICIA&lt;/li&gt;
  * &lt;li&gt;Obtener todas las cuentas de tipo POLICIA&lt;/li&gt;
- * &lt;li&gt;Iniciar sesión como POLICIA&lt;/li&gt;
+ * &lt;li&gt;Iniciar sesión con cualquier tipo de cuenta&lt;/li&gt;
  * &lt;/ul&gt;
  * * Este servicio actúa como intermediario entre el controlador (Controller)
  * y el acceso a datos (DAO).
@@ -122,28 +122,23 @@ public class CuentaService {
      *
      * @param id Identificador de la cuenta
      * @return true si la cuenta fue eliminada correctamente
-     * @throws IllegalArgumentException si:
-     * &lt;ul&gt;
-     * &lt;li&gt;El ID es nulo&lt;/li&gt;
-     * &lt;li&gt;La cuenta no existe&lt;/li&gt;
-     * &lt;li&gt;La cuenta no es de tipo POLICIA&lt;/li&gt;
-     * &lt;/ul&gt;
+     * @throws IllegalArgumentException si el ID es nulo, la cuenta no existe o no es POLICIA
      */
     public boolean eliminarCuentaPolicia(Integer id) {
-<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (id == null) {</span>
-<span class="fc" id="L134">            throw new IllegalArgumentException(&quot;El ID de la cuenta no puede ser nulo.&quot;);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L129">            throw new IllegalArgumentException(&quot;El ID de la cuenta no puede ser nulo.&quot;);</span>
         }
 
-<span class="fc" id="L137">        Cuenta cuenta = cuentaDAO.findById(id)</span>
-<span class="fc" id="L138">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ninguna cuenta con ese ID.&quot;));</span>
+<span class="fc" id="L132">        Cuenta cuenta = cuentaDAO.findById(id)</span>
+<span class="fc" id="L133">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ninguna cuenta con ese ID.&quot;));</span>
 
-<span class="fc bfc" id="L140" title="All 2 branches covered.">        if (cuenta.getTipoCuenta() != TipoCuenta.POLICIA) {</span>
-<span class="fc" id="L141">            throw new IllegalArgumentException(&quot;La cuenta indicada no pertenece a un policía.&quot;);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (cuenta.getTipoCuenta() != TipoCuenta.POLICIA) {</span>
+<span class="fc" id="L136">            throw new IllegalArgumentException(&quot;La cuenta indicada no pertenece a un policía.&quot;);</span>
         }
 
-<span class="fc" id="L144">        cuentaDAO.deleteById(id);</span>
-<span class="fc" id="L145">        logger.info(&quot;Cuenta de policía con ID {} eliminada correctamente.&quot;, id);</span>
-<span class="fc" id="L146">        return true;</span>
+<span class="fc" id="L139">        cuentaDAO.deleteById(id);</span>
+<span class="fc" id="L140">        logger.info(&quot;Cuenta de policía con ID {} eliminada correctamente.&quot;, id);</span>
+<span class="fc" id="L141">        return true;</span>
     }
 
     /**
@@ -152,37 +147,37 @@ public class CuentaService {
      * @return Lista de cuentas de tipo POLICIA
      */
     public List&lt;Cuenta&gt; obtenerCuentasPolicia() {
-<span class="fc" id="L155">        List&lt;Cuenta&gt; policias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L150">        List&lt;Cuenta&gt; policias = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
-<span class="fc bfc" id="L158" title="All 2 branches covered.">            if (cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {</span>
-<span class="fc" id="L159">                policias.add(cuenta);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {</span>
+<span class="fc" id="L154">                policias.add(cuenta);</span>
             }
-<span class="fc" id="L161">        }</span>
+<span class="fc" id="L156">        }</span>
 
-<span class="fc" id="L163">        return policias;</span>
+<span class="fc" id="L158">        return policias;</span>
     }
 
     /**
-     * Verifica si existe una cuenta de tipo POLICIA con username y password
-     * correctos.
+     * Autentica un usuario verificando username y password contra la base de datos.
+     *
+     * A diferencia de la versión anterior, este método acepta cualquier tipo de
+     * cuenta (POLICIA, FAMILIA, GUBERNAMENTAL), no solo POLICIA. El tipoCuenta
+     * se devuelve en la entidad Cuenta para que el frontend pueda ajustar
+     * los módulos disponibles según el rol.
      *
      * @param username nombre de usuario
      * @param password contraseña
-     * @return la cuenta si es válida, null si no
+     * @return la cuenta si las credenciales son correctas, null si no coinciden
      */
     public Cuenta loginPolicia(String username, String password) {
-
-<span class="fc bfc" id="L176" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">            if (cuenta.getUsername().equals(username)</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">                    &amp;&amp; cuenta.getPassword().equals(password)</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">                    &amp;&amp; cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {</span>
-
-<span class="fc" id="L181">                return cuenta;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (cuenta.getUsername().equals(username)</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">                    &amp;&amp; cuenta.getPassword().equals(password)) {</span>
+<span class="fc" id="L177">                return cuenta;</span>
             }
-<span class="fc" id="L183">        }</span>
-
-<span class="fc" id="L185">        return null;</span>
+<span class="fc" id="L179">        }</span>
+<span class="fc" id="L180">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
