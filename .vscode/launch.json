@@ -1,0 +1,77 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "FiltrarPresosPorDelitoGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.FiltrarPresosPorDelitoGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "ListadoPresosGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.ListadoPresosGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "LoginGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.LoginGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "GestionCarcelGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.GestionCarcelGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "GestionPresosGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.GestionPresosGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "EliminarPoliciaGUI",
+            "request": "launch",
+            "mainClass": "com.example.JailQ.GUI.EliminarPoliciaGUI",
+            "projectName": "JailQ"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-GestionCuentasGUI<JailQ>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.JailQ.GUI.GestionCuentasGUI",
+            "projectName": "JailQ",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-JailQApplication<JailQ>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.JailQ.JailQApplication",
+            "projectName": "JailQ",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55638 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=JailQ"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-TestJailQApplication<JailQ>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.JailQ.TestJailQApplication",
+            "projectName": "JailQ",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
