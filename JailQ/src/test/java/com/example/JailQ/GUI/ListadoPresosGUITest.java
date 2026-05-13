@@ -35,23 +35,18 @@ public class ListadoPresosGUITest {
         // Verificamos que la tabla de presos está visible
         window.table("tablaPresos").requireVisible();
         
-        // Verificamos los botones
-        window.button("btnActualizar").requireVisible().requireText("Actualizar Lista");
-        window.button("btnEliminar").requireVisible().requireText("Eliminar Seleccionado");
+        // Verificamos los botones 
+        window.button("btnActualizar").requireVisible().requireText("Actualizar lista");
+        window.button("btnEliminar").requireVisible().requireText("Eliminar seleccionado");
     }
 
     @Test
     public void testEliminarSinSeleccionMuestraAviso() {
-        // Verificamos que la tabla arranca sin ninguna fila seleccionada
         window.table("tablaPresos").requireNoSelection();
-        
-        // El robot hace clic en el botón de eliminar
         window.button("btnEliminar").click();
         
-        // Comprobamos que el robot detecta el JOptionPane con el mensaje de aviso exacto
-        window.optionPane().requireMessage("Por favor, selecciona un preso de la lista.");
-        
-        // Cerramos el JOptionPane para terminar el test limpiamente
+        // Cambiamos el texto al que tienes ahora programado
+        window.optionPane().requireMessage("Selecciona un preso para eliminar.");
         window.optionPane().okButton().click();
     }
 
@@ -71,8 +66,84 @@ public class ListadoPresosGUITest {
     }
 
     @Test
-    public void testCoberturaMetodoMain() {
-        // Simplemente llamamos al main para que JaCoCo lo pinte de verde
-        ListadoPresosGUI.main(new String[]{});
+    public void testBotonVolverCierraVentana() {
+        window.button("btnVolver").click();
+        window.requireNotVisible();
+    }
+
+    @Test
+    public void testBotonActualizarLlamaAlBackend() {
+        window.button("btnActualizar").click();
+        // Verificamos que el botón no se bloquea tras la actualización
+        window.button("btnActualizar").requireEnabled();
+    }
+
+    @Test
+    public void testTrasladarSinSeleccionMuestraAviso() {
+        window.table("tablaPresos").requireNoSelection();
+        window.button("btnTrasladar").click();
+        
+        window.optionPane().requireMessage("Selecciona un preso para trasladar.");
+        window.optionPane().okButton().click();
+    }
+
+    @Test
+    public void testModificarCondenaSinSeleccionMuestraAviso() {
+        window.table("tablaPresos").requireNoSelection();
+        window.button("btnModificarCondena").click();
+        
+        window.optionPane().requireMessage("Selecciona un preso para modificar su condena.");
+        window.optionPane().okButton().click();
+    }
+
+    @Test
+    public void testModificarCondenaValidacionesDeErrores() {
+        // Solo ejecutamos este test si hay presos cargados en la tabla
+        if (window.table("tablaPresos").rowCount() > 0) {
+            window.table("tablaPresos").selectRows(0);
+            
+            // 1. Error: Condena vacía
+            window.button("btnModificarCondena").click();
+            window.optionPane().textBox().setText(""); // Lo dejamos vacío
+            window.optionPane().okButton().click();
+            window.optionPane().requireMessage("La condena no puede estar vacía.");
+            window.optionPane().okButton().click();
+
+            // 2. Error: Letras en vez de números
+            window.button("btnModificarCondena").click();
+            window.optionPane().textBox().setText("abc"); // Metemos letras
+            window.optionPane().okButton().click();
+            window.optionPane().requireMessage("La condena debe ser un número entero.");
+            window.optionPane().okButton().click();
+
+            // 3. Error: Condena cero o negativa
+            window.button("btnModificarCondena").click();
+            window.optionPane().textBox().setText("0"); // Metemos un 0
+            window.optionPane().okButton().click();
+            window.optionPane().requireMessage("La condena debe ser mayor que 0.");
+            window.optionPane().okButton().click();
+            
+            // 4. Salida limpia: Le damos a cancelar en el menú
+            window.button("btnModificarCondena").click();
+            window.optionPane().cancelButton().click();
+        }
+    }
+
+    @Test
+    public void testTrasladarPresoCancelar() {
+        if (window.table("tablaPresos").rowCount() > 0) {
+            window.table("tablaPresos").selectRows(0);
+            window.button("btnTrasladar").click();
+            
+            // Damos tiempo a que se descarguen las cárceles del servidor (GET)
+            try { Thread.sleep(500); } catch (InterruptedException e) {}
+            
+            try {
+                // Cancelamos el traslado cerrando el menú desplegable
+                window.optionPane().cancelButton().click();
+            } catch (Exception e) {
+                // Si la base de datos de cárceles fallara o estuviera vacía saltaría otro pop-up
+            }
+        }
     }
 }

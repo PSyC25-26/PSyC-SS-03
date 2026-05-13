@@ -82,6 +82,10 @@ public class ListadoPresosGUI extends JFrame {
         btnEliminar.setName("btnEliminar"); 
         JButton btnVolver = new JButton("← Volver al menú principal");
 
+        btnTrasladar.setName("btnTrasladar");
+        btnModificarCondena.setName("btnModificarCondena");
+        btnVolver.setName("btnVolver");
+        
         estilizarBoton(btnActualizar, new Color(230, 235, 242), new Color(26, 61, 111));
         estilizarBoton(btnTrasladar, new Color(100, 200, 255), Color.BLACK);
         estilizarBoton(btnModificarCondena, new Color(255, 210, 100), Color.BLACK);

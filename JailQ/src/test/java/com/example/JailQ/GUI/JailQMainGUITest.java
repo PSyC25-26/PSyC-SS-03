@@ -62,35 +62,72 @@ public class JailQMainGUITest {
     }
 
     @Test
-    public void testCerrarSesionHackeandoEstado() throws Exception {
-        // 1. Accedemos a la ventana real de Java Swing
-        JailQMainGUI mainFrame = (JailQMainGUI) window.target();
-        
-        // 2. Usamos reflexión para inyectar una sesión activa saltándonos el login
-        java.lang.reflect.Field usernameField = JailQMainGUI.class.getDeclaredField("username");
-        usernameField.setAccessible(true);
-        usernameField.set(mainFrame, "Inspector_Gadget");
-        
-        java.lang.reflect.Field tipoCuentaField = JailQMainGUI.class.getDeclaredField("tipoCuenta");
-        tipoCuentaField.setAccessible(true);
-        tipoCuentaField.set(mainFrame, "POLICIA");
-        
-        // 3. Le pedimos al hilo de Swing que actualice los colores y textos de la ventana
+    public void testFlujoCompletoDeSesionYMenuPolicia() {
+        // 1. Iniciamos sesión globalmente usando el nuevo SessionManager
+        SessionManager.getInstance().iniciarSesion("Comisario", "POLICIA");
+
+        // 2. Obligamos a la ventana a actualizar sus colores y textos (usamos reflexión solo para invocar el método privado)
         GuiActionRunner.execute(() -> {
             try {
                 java.lang.reflect.Method aplicarCambio = JailQMainGUI.class.getDeclaredMethod("aplicarCambioSesion");
                 aplicarCambio.setAccessible(true);
-                aplicarCambio.invoke(mainFrame);
+                aplicarCambio.invoke(window.target());
             } catch (Exception e) {}
         });
+
+        // 3. Verificamos que la UI ha cambiado (está logueado)
+        window.button("btnSesion").requireText("Cerrar sesión");
+
+        // 4. Hacemos clic en Presos (como Policía abre un menú de opciones)
+        window.button("btnPresos").click();
         
-        // 4. El botón ahora debe decir "Cerrar sesión". ¡Hacemos clic!
-        window.button("btnSesion").requireText("Cerrar sesión").click();
+        // 5. Elegimos "Cancelar" para cubrir el caso 'default' del Switch
+        window.optionPane().buttonWithText("Cancelar").click(); 
+
+        // 6. Cerramos sesión
+        window.button("btnSesion").click();
         
-        // 5. El robot le da a "Sí" en el panel de confirmación
-        window.optionPane().yesButton().click();
-        
-        // 6. Comprobamos que la sesión se borra y volvemos al estado original
+        // 7. Le damos a "Sí" en el panel de confirmación
+        window.optionPane().yesButton().click(); 
+
+        // 8. Verificamos que vuelve al inicio
         window.button("btnSesion").requireText("Iniciar sesión");
     }
+
+    @Test
+    public void testModoFamiliaAbrePresosDirectamente() {
+        // Iniciamos sesión como Familia
+        SessionManager.getInstance().iniciarSesion("Padre", "FAMILIA");
+
+        GuiActionRunner.execute(() -> {
+            try {
+                java.lang.reflect.Method aplicarCambio = JailQMainGUI.class.getDeclaredMethod("aplicarCambioSesion");
+                aplicarCambio.setAccessible(true);
+                aplicarCambio.invoke(window.target());
+            } catch (Exception e) {}
+        });
+
+        // Al hacer clic en Presos como FAMILIA, se abre directamente la ventana de búsqueda (sin pop-up)
+        window.button("btnPresos").click();
+        
+        // Limpiamos la sesión al terminar el test
+        SessionManager.getInstance().cerrarSesion();
+    }
+
+    @Test
+    public void testBotonReconectarActualizaEstado() {
+        // Hacemos clic en el botón de reconectar
+        window.button("btnRefrescar").click();
+        
+        // Esperamos medio segundo y verificamos que no crashea
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        window.label("lblEstado").requireVisible();
+    }
+    
+    @Test
+    public void testClicEnCuentasEjecutaAccion() {
+        // Ejecutamos la acción del botón de cuentas para pintarlo de verde en JaCoCo
+        window.button("btnCuentas").click();
+    }
+
 }

@@ -48,6 +48,12 @@ public class FiltrarPresosPorDelitoGUI extends JFrame {
 
         botonFiltrar.addActionListener(e -> filtrarPresos());
         botonVolver.addActionListener(e -> dispose());
+
+        comboDelitos.setName("comboDelitos");
+        botonFiltrar.setName("btnFiltrar");
+        botonVolver.setName("btnVolver");
+        areaResultados.setName("areaResultados");
+        labelEstado.setName("lblEstado");
     }
 
     private JPanel crearPanelCabecera() {

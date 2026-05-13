@@ -50,22 +50,29 @@ public class GestionCuentasGUITest {
     }
 
     @Test
-    public void testRellenarFormularioYEnviar() {
-        // 1. El robot rellena los datos
+    public void testRellenarFormularioYEnviarExitoso() {
+        // 1. Generamos un username único para garantizar que la BD nos dé un 201
+        String usuarioUnico = "jperez_" + System.currentTimeMillis();
+        
         window.textBox("txtNombre").enterText("Juan");
         window.textBox("txtApellidos").enterText("Perez");
-        window.textBox("txtUsername").enterText("jperez");
+        window.textBox("txtUsername").enterText(usuarioUnico);
         window.textBox("txtPassword").enterText("1234");
         
-        // Seleccionamos un ítem del desplegable
         window.comboBox("cbTipoCuenta").selectItem("POLICIA");
         
         // 2. Click al botón añadir
         window.button("btnAnadir").click();
         
-        // 3. Verificamos que la consola muestra algún texto tras la petición 
+        // 3. Verificamos que recibimos un 201 (Éxito)
         try { Thread.sleep(500); } catch (InterruptedException e) {}
-        window.textBox("txtConsola").requireText(Pattern.compile("(?s).+"));
+        window.textBox("txtConsola").requireText(Pattern.compile("(?s).*201.*"));
+        
+        // 4. Aseguramos que se ha ejecutado limpiarFormulario() correctamente
+        window.textBox("txtNombre").requireText("");
+        window.textBox("txtApellidos").requireText("");
+        window.textBox("txtUsername").requireText("");
+        window.textBox("txtPassword").requireText("");
     }
 
     @Test
@@ -77,7 +84,6 @@ public class GestionCuentasGUITest {
     @Test
     public void testBotonEliminarAbreVentana() {
         window.button("btnAbrirEliminar").click();
-        // Solo verificamos que el botón reacciona sin lanzar excepciones
         window.button("btnAbrirEliminar").requireEnabled();
     }
 
@@ -89,9 +95,7 @@ public class GestionCuentasGUITest {
         
         try { Thread.sleep(500); } catch (InterruptedException e) {}
         
-        // Verificamos que la consola detecta la palabra ERROR
+        // Verificamos que la consola detecta la palabra ERROR y entra en el 'else'
         window.textBox("txtConsola").requireText(java.util.regex.Pattern.compile("(?s).*ERROR.*"));
     }
-
-
 }

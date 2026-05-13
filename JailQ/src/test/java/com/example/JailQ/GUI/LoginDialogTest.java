@@ -47,4 +47,30 @@ public class LoginDialogTest {
         window.label("lblEstado").requireText("Rellena username y password.");
     }
 
+    @Test
+    public void testLoginConDatosInvalidosMuestraError401() {
+        // Introducimos credenciales que sabemos seguro que no existen para forzar el error 401
+        window.textBox("txtUsername").enterText("usuario_super_falso_999");
+        window.textBox("txtPassword").enterText("clave_incorrecta");
+        window.button("btnLogin").click();
+        
+        // Damos tiempo al servidor para responder con el 401
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        
+        // Comprobamos que entra por el 'else if (response.statusCode() == 401)'
+        window.label("lblEstado").requireText("Usuario o contraseña incorrectos.");
+    }
+
+    @Test
+    public void testPulsarEnterEnPasswordDisparaLogin() {
+        // Escribimos el usuario
+        window.textBox("txtUsername").enterText("inspector");
+        
+        // NO escribimos contraseña, pero ponemos el foco en su caja y el robot pulsa "ENTER"
+        // Esto debería disparar el evento Action Listener y ejecutar hacerLogin()
+        window.textBox("txtPassword").pressAndReleaseKeys(java.awt.event.KeyEvent.VK_ENTER);
+        
+        // Al faltar la contraseña, verificamos que el login ha saltado pero ha sido interceptado
+        window.label("lblEstado").requireText("Rellena username y password.");
+    }
 }

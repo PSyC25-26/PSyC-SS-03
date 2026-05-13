@@ -82,15 +82,18 @@ public class GestionPresosGUI extends JFrame {
 
         panelBusqueda.add(new JLabel("Nombre:"));
         txtBusquedaNombre = new JTextField();
+        txtBusquedaNombre.setName("txtBusquedaNombre");
         txtBusquedaNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         panelBusqueda.add(txtBusquedaNombre);
 
         panelBusqueda.add(new JLabel("Apellidos:"));
         txtBusquedaApellidos = new JTextField();
+        txtBusquedaApellidos.setName("txtBusquedaApellidos");
         txtBusquedaApellidos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         panelBusqueda.add(txtBusquedaApellidos);
 
         JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setName("btnBuscar");
         btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnBuscar.setFocusPainted(false);
         btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -104,10 +107,12 @@ public class GestionPresosGUI extends JFrame {
 
         // ── Estado ────────────────────────────────────────────────────────
         lblEstadoBusqueda = new JLabel(" ", SwingConstants.CENTER);
+        lblEstadoBusqueda.setName("lblEstadoBusqueda");
         lblEstadoBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         // ── Botón volver ──────────────────────────────────────────────────
         JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setName("btnVolverFam");
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

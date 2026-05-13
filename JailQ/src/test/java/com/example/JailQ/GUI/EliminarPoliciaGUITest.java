@@ -86,4 +86,16 @@ public class EliminarPoliciaGUITest {
             window.optionPane().okButton().click();
         }
     }
+
+    @Test
+    public void testBotonRecargarActualizaLista() {
+        // Hacemos clic en el botón de recargar para cubrir su ActionListener
+        window.button("btnRecargar").click();
+        
+        // Le damos medio segundo al servidor para responder a la petición GET
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        
+        // Verificamos que la interfaz no se ha bloqueado y la lista sigue visible
+        window.list("listaPolicias").requireVisible();
+    }
 }
