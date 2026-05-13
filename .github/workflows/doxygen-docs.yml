@@ -4,6 +4,12 @@
 #
 # URL resultado:
 #   https://PSyC25-26.github.io/PSyC-SS-03/doxygen/index.html
+#
+# PREREQUISITOS (una sola vez):
+#   1. Settings → Actions → General → Workflow permissions
+#      → Read and write permissions ✓
+#   2. Rama gh-pages creada
+#   3. Settings → Pages → Source: gh-pages branch / (root)
 # ============================================================
 
 name: Doxygen Docs
@@ -12,7 +18,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:   # Permite lanzarlo manualmente desde Actions
+  workflow_dispatch:
 
 jobs:
   doxygen:
@@ -35,7 +41,7 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # 3. Instalar Doxygen y Graphviz (necesario para HAVE_DOT = YES)
+      # 3. Instalar Doxygen y Graphviz
       - name: Instalar Doxygen y Graphviz
         run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
 
@@ -46,19 +52,19 @@ jobs:
           dot -version
 
       # 5. Generar documentación con Maven
-      # Usamos el nombre completo del plugin porque el runner no tiene
-      # com.soebes.maven.plugins en su settings.xml
+      # working-directory: JailQ porque el pom.xml está en la subcarpeta JailQ/
       - name: Generar documentación Doxygen
+        working-directory: JailQ
         run: mvn com.soebes.maven.plugins:doxygen-maven-plugin:1.1.0:report --no-transfer-progress
 
       # 6. Publicar en gh-pages/doxygen/
-      # destination_dir: doxygen → publica en /doxygen/ dentro de gh-pages
-      # keep_files: true         → no borra Sphinx ni otros artefactos futuros
+      # publish_dir apunta a JailQ/target/doxygen/html/ por la misma razón
+      # keep_files: true → no borra otros artefactos en gh-pages (Sphinx, etc.)
       - name: Deploy a gh-pages/doxygen/
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/doxygen/html
+          publish_dir: ./JailQ/target/doxygen/html
           destination_dir: doxygen
           publish_branch: gh-pages
           keep_files: true
