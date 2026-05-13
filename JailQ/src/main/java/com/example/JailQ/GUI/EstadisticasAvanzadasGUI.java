@@ -41,11 +41,13 @@ public class EstadisticasAvanzadasGUI extends JFrame {
         panelNorte.add(new JLabel("Selecciona una Cárcel:"));
         
         comboCarceles = new JComboBox<>();
+        comboCarceles.setName("comboCarceles"); 
         comboCarceles.setPreferredSize(new Dimension(200, 30));
         comboCarceles.addActionListener(e -> mostrarDatosSeleccionados());
         panelNorte.add(comboCarceles);
 
         btnActualizar = new JButton("↻ Cargar/Actualizar");
+        btnActualizar.setName("btnActualizar"); 
         btnActualizar.addActionListener(e -> descargarDatos());
         panelNorte.add(btnActualizar);
 
@@ -60,11 +62,13 @@ public class EstadisticasAvanzadasGUI extends JFrame {
         panelCentro.add(lblTituloBarra);
 
         barraOcupacion = new JProgressBar();
+        barraOcupacion.setName("barraOcupacion"); 
         barraOcupacion.setStringPainted(true); // Para que se vea el texto dentro de la barra
         barraOcupacion.setFont(new Font("Arial", Font.BOLD, 14));
         panelCentro.add(barraOcupacion);
 
         lblPorcentaje = new JLabel("Esperando datos...", SwingConstants.CENTER);
+        lblPorcentaje.setName("lblPorcentaje"); 
         lblPorcentaje.setFont(new Font("Arial", Font.ITALIC, 14));
         panelCentro.add(lblPorcentaje);
 

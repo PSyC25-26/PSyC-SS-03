@@ -52,6 +52,7 @@ public class EliminarPoliciaGUI extends JFrame {
 
         modeloLista = new DefaultListModel<>();
         listaPolicias = new JList<>(modeloLista);
+        listaPolicias.setName("listaPolicias");
         JScrollPane scrollPane = new JScrollPane(listaPolicias);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Selecciona un policía"));
         add(scrollPane, BorderLayout.CENTER);
@@ -60,9 +61,11 @@ public class EliminarPoliciaGUI extends JFrame {
         JPanel panelBotones = new JPanel(new FlowLayout());
 
         JButton btnRecargar = new JButton("Recargar");
+        btnRecargar.setName("btnRecargar");
         btnRecargar.addActionListener(e -> cargarPolicias());
 
         JButton btnEliminar = new JButton("Eliminar seleccionado");
+        btnEliminar.setName("btnEliminar");
         btnEliminar.addActionListener(e -> eliminarPoliciaSeleccionado());
 
         panelBotones.add(btnRecargar);
@@ -71,6 +74,7 @@ public class EliminarPoliciaGUI extends JFrame {
         panelInferior.add(panelBotones, BorderLayout.NORTH);
 
         lblEstado = new JLabel(" ");
+        lblEstado.setName("lblEstado");
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
         panelInferior.add(lblEstado, BorderLayout.SOUTH);
 

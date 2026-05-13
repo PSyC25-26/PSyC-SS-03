@@ -90,6 +90,7 @@ public class JailQMainGUI extends JFrame {
         panel.add(Box.createVerticalStrut(4));
  
         lblBienvenida = new JLabel(" ", SwingConstants.CENTER);
+        lblBienvenida.setName("lblBienvenida"); 
         lblBienvenida.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblBienvenida.setForeground(new Color(30, 120, 200));
         lblBienvenida.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -140,14 +141,17 @@ public class JailQMainGUI extends JFrame {
         btnCuentas  = crearBotonModulo("🔑", "Gestión de Cuentas",
                 "Administrar cuentas de policía y personal",
                 () -> abrirVentana(new GestionCuentasGUI()));
+        btnCuentas.setName("btnCuentas"); 
  
         btnCarceles = crearBotonModulo("🏛", "Gestión de Cárceles",
                 "Crear, consultar y eliminar centros penitenciarios",
                 () -> abrirVentana(new GestionCarcelGUI()));
+        btnCarceles.setName("btnCarceles"); 
  
         btnPresos   = crearBotonModulo("👤", "Gestión de Presos",
                 "Registrar, consultar y eliminar internos",
                 () -> abrirVentana(new GestionPresosGUI()));
+        btnPresos.setName("btnPresos"); 
  
         grid.add(btnCuentas);
         grid.add(btnCarceles);
@@ -273,10 +277,12 @@ public class JailQMainGUI extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder("Estado del servidor"));
  
         lblEstado = new JLabel("Comprobando...");
+        lblEstado.setName("lblEstado"); 
         lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         panel.add(lblEstado);
  
         JButton btnRefrescar = new JButton("Reconectar");
+        btnRefrescar.setName("btnRefrescar"); 
         btnRefrescar.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnRefrescar.setFocusPainted(false);
         btnRefrescar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -286,6 +292,7 @@ public class JailQMainGUI extends JFrame {
         panel.add(new JLabel("|"));
  
         btnSesion = new JButton("Iniciar sesión");
+        btnSesion.setName("btnSesion"); 
         btnSesion.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnSesion.setForeground(new Color(26, 61, 111));
         btnSesion.setFocusPainted(false);

@@ -82,6 +82,7 @@ public class LoginDialog extends JDialog {
  
         txtUsername = new JTextField();
         txtUsername.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtUsername.setName("txtUsername");
         panelCampos.add(txtUsername);
  
         JLabel lblPass = new JLabel("Password:");
@@ -90,6 +91,7 @@ public class LoginDialog extends JDialog {
  
         txtPassword = new JPasswordField();
         txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtPassword.setName("txtPassword");
         txtPassword.addActionListener(e -> hacerLogin());
         panelCampos.add(txtPassword);
  
@@ -102,6 +104,7 @@ public class LoginDialog extends JDialog {
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLogin.setFocusPainted(false);
         btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLogin.setName("btnLogin");
         btnLogin.addActionListener(e -> hacerLogin());
  
         JPanel panelBoton = new JPanel();
@@ -110,6 +113,7 @@ public class LoginDialog extends JDialog {
         lblEstado = new JLabel(" ");
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
         lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblEstado.setName("lblEstado");
  
         panelInferior.add(panelBoton, BorderLayout.NORTH);
         panelInferior.add(lblEstado,  BorderLayout.SOUTH);

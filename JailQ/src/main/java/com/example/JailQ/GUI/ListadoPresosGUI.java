@@ -43,12 +43,16 @@ public class ListadoPresosGUI extends JFrame {
             }
         };
         tablaPresos = new JTable(modelo);
+        tablaPresos.setName("tablaPresos"); 
         JScrollPane scrollPane = new JScrollPane(tablaPresos);
 
         // Panel de botones
         JPanel panelBotones = new JPanel();
         JButton btnActualizar = new JButton("Actualizar Lista");
+        btnActualizar.setName("btnActualizar"); 
+        
         JButton btnEliminar = new JButton("Eliminar Seleccionado");
+        btnEliminar.setName("btnEliminar"); 
         btnEliminar.setBackground(new Color(255, 100, 100)); // Un tono rojo suave
 
         panelBotones.add(btnActualizar);

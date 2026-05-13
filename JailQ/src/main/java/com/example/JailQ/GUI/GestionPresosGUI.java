@@ -41,15 +41,24 @@ public class GestionPresosGUI extends JFrame {
         panelFormulario.setBorder(BorderFactory.createTitledBorder("Registrar Nuevo Preso"));
 
         txtNombre = new JTextField();
+        txtNombre.setName("txtNombre"); 
+        
         txtApellidos = new JTextField();
+        txtApellidos.setName("txtApellidos"); 
+        
         txtFechaNacimiento = new JTextField();
+        txtFechaNacimiento.setName("txtFechaNacimiento"); 
+        
         txtCondena = new JTextField();
+        txtCondena.setName("txtCondena"); 
 
         cbCarcel = new JComboBox<>();
+        cbCarcel.setName("cbCarcel"); 
         //Cargamos las cárceles desde la base de datos al iniciar
         cargarCarcelesDesdeBD();
 
         listaDelitos = new JList<>(Delito.values());
+        listaDelitos.setName("listaDelitos"); 
         listaDelitos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scrollDelitos = new JScrollPane(listaDelitos);
         scrollDelitos.setPreferredSize(new Dimension(0, 150));
@@ -62,6 +71,7 @@ public class GestionPresosGUI extends JFrame {
         panelFormulario.add(crearCeldaPanel("Delito:", scrollDelitos));
 
         JButton btnAnadir = new JButton("Registrar Preso");
+        btnAnadir.setName("btnAnadir");
         btnAnadir.addActionListener(e -> enviarPreso());
 
         JPanel panelCentral = new JPanel(new BorderLayout(5, 5));
@@ -69,12 +79,14 @@ public class GestionPresosGUI extends JFrame {
         panelCentral.add(btnAnadir, BorderLayout.SOUTH);
 
         txtConsola = new JTextArea(5, 30);
+        txtConsola.setName("txtConsola"); 
         txtConsola.setEditable(false);
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Estado del Servidor"));
 
         // ── Botón Volver ──────────────────────────────────────────────────────
         JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setName("btnVolver"); 
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

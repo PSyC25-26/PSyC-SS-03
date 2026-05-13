@@ -123,6 +123,14 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Dependencia para tests de interfaz gráfica (AssertJ Swing) -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing-junit</artifactId>
+            <version>3.17.1</version>
+            <scope>test</scope>
+        </dependency>
+
 	</dependencies>
 
 	<build>
@@ -142,11 +150,15 @@
     			<artifactId>jacoco-maven-plugin</artifactId>
 				<!-- puede ser por la versión -->
     			<version>0.8.13</version> 
-				<configuration>
+
+				<!-- apartado para quitar cuando haga el AssertJ Swing -->
+				<!-- <configuration>
                     <excludes>
                         <exclude>com/example/JailQ/GUI/**</exclude>
                     </excludes>
-                </configuration>
+                </configuration> -->
+				<!-- apartado para quitar cuando haga el AssertJ Swing -->
+				 
 				<executions>
     			    <execution>
     			        <goals>

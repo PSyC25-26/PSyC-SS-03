@@ -55,26 +55,31 @@ public class GestionCarcelGUI extends JFrame {
         // Campo: Nombre
         panelFormulario.add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
+        txtNombre.setName("txtNombre"); 
         panelFormulario.add(txtNombre);
 
         // Campo: Descripción
         panelFormulario.add(new JLabel("Descripción:"));
         txtDescripcion = new JTextArea(3, 20);
+        txtDescripcion.setName("txtDescripcion"); 
         JScrollPane scrollDesc = new JScrollPane(txtDescripcion);
         panelFormulario.add(scrollDesc);
 
         // Campo: Localidad
         panelFormulario.add(new JLabel("Localidad:"));
         txtLocalidad = new JTextField();
+        txtLocalidad.setName("txtLocalidad"); 
         panelFormulario.add(txtLocalidad);
 
         // Campo: Capacidad
         panelFormulario.add(new JLabel("Capacidad:"));
         txtCapacidad = new JTextField();
+        txtCapacidad.setName("txtCapacidad"); 
         panelFormulario.add(txtCapacidad);
 
         // Botón de envío
         JButton btnAnadir = new JButton("Añadir Cárcel");
+        btnAnadir.setName("btnAnadir"); 
         btnAnadir.addActionListener(e -> anadirCarcel());
         panelFormulario.add(new JLabel("")); // celda vacía para alineación
         panelFormulario.add(btnAnadir);
@@ -83,6 +88,7 @@ public class GestionCarcelGUI extends JFrame {
         panelEstadisticas.setBorder(BorderFactory.createTitledBorder("Estadísticas"));
 
 JButton btnEstadisticas = new JButton("Ver Estadísticas");
+btnEstadisticas.setName("btnEstadisticas"); 
 btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnEstadisticas.setFocusPainted(false);
         btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -91,6 +97,7 @@ btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
         // Consola inferior
         txtConsola = new JTextArea(10, 30);
+        txtConsola.setName("txtConsola"); 
         txtConsola.setEditable(false);
         txtConsola.setLineWrap(true);
         txtConsola.setWrapStyleWord(true);
@@ -100,6 +107,7 @@ btnEstadisticas.setFont(new Font("Segoe UI", Font.BOLD, 12));
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
 	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setName("btnVolver"); 
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

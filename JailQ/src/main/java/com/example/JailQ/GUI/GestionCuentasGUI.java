@@ -49,25 +49,31 @@ public class GestionCuentasGUI extends JFrame {
 
         panelFormulario.add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
+        txtNombre.setName("txtNombre"); 
         panelFormulario.add(txtNombre);
 
         panelFormulario.add(new JLabel("Apellidos:"));
         txtApellidos = new JTextField();
+        txtApellidos.setName("txtApellidos"); 
         panelFormulario.add(txtApellidos);
 
         panelFormulario.add(new JLabel("Username:"));
         txtUsername = new JTextField();
+        txtUsername.setName("txtUsername"); 
         panelFormulario.add(txtUsername);
 
         panelFormulario.add(new JLabel("Password:"));
         txtPassword = new JPasswordField();
+        txtPassword.setName("txtPassword"); 
         panelFormulario.add(txtPassword);
 
         panelFormulario.add(new JLabel("Tipo de Cuenta:"));
         cbTipoCuenta = new JComboBox<>(new String[]{"POLICIA", "FAMILIA", "GUBERNAMENTAL"});
+        cbTipoCuenta.setName("cbTipoCuenta"); 
         panelFormulario.add(cbTipoCuenta);
 
         JButton btnAnadir = new JButton("Añadir Cuenta");
+        btnAnadir.setName("btnAnadir"); 
         btnAnadir.addActionListener(e -> anadirCuenta());
         panelFormulario.add(new JLabel("")); // Espacio vacío
         panelFormulario.add(btnAnadir);
@@ -77,6 +83,7 @@ public class GestionCuentasGUI extends JFrame {
         panelBorrar.setBorder(BorderFactory.createTitledBorder("Eliminar Cuenta"));
         
         JButton btnAbrirEliminar = new JButton("Eliminar Policía");
+        btnAbrirEliminar.setName("btnAbrirEliminar"); 
         btnAbrirEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnAbrirEliminar.setFocusPainted(false);
         btnAbrirEliminar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -85,12 +92,14 @@ public class GestionCuentasGUI extends JFrame {
 
         // --- PANEL INFERIOR: Consola de resultados ---
         txtConsola = new JTextArea(10, 30);
+        txtConsola.setName("txtConsola"); 
         txtConsola.setEditable(false);
         txtConsola.setLineWrap(true);
         JScrollPane scrollConsola = new JScrollPane(txtConsola);
         scrollConsola.setBorder(BorderFactory.createTitledBorder("Resultado del Servidor"));
 
 	    JButton btnVolver = new JButton("← Volver al Menú Principal");
+        btnVolver.setName("btnVolver"); 
         btnVolver.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnVolver.setFocusPainted(false);
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
