@@ -1,24 +1,30 @@
 package com.example.JailQ.Service;
 
-import com.example.JailQ.Dao.PresoDAO;
-import com.example.JailQ.Dao.CarcelDAO;
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Entidades.Delito;
-import com.example.JailQ.Entidades.Carcel;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Preso;
 
 /**
  * Test unitario para {@link PresoService}.
@@ -316,5 +322,29 @@ class PresoServiceTest {
 
         verify(presoDAO).deleteById(1);
         verify(presoDAO, never()).deleteById(2);
+    }
+
+    /*
+    *Test que verifica que el traslado de un preso a otra cárcel se realiza exitosamente
+     */
+    @Test
+    void testTrasladarPreso() {
+        //EL mock devuelve un preso al guardar
+        when(presoDAO.save(any(Preso.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        Preso p = new Preso();
+        p.setId(1);
+        p.setNombre("Markel");
+        when(presoDAO.findById(1)).thenReturn(Optional.of(p)); //Cuando busque al preso (findById) el mock ahora se configura para devolverlo
+
+        Carcel alcatraz = new Carcel();
+        alcatraz.setNombre("Alcatraz");
+        when(carcelDAO.findByNombre("Alcatraz")).thenReturn(Optional.of(alcatraz));
+
+        presoService.trasladarPreso(1, "Alcatraz");
+
+        assertEquals("Alcatraz", p.getCarcel().getNombre());
+
+        //verify(presoDAO).save(p); //Para confirmar que el mock guarda al preso.
     }
 }

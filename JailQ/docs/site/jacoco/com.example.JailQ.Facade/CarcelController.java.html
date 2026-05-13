@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarcelController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Facade</a> &gt; <span class="el_source">CarcelController.java</span></div><h1>CarcelController.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Facade;
+
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Service.CarcelService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Controlador REST encargado de gestionar las operaciones relacionadas con las cárceles.
+ * * Expone endpoints HTTP para:
+ * &lt;ul&gt;
+ * &lt;li&gt;Crear cárceles&lt;/li&gt;
+ * &lt;li&gt;Eliminar cárceles&lt;/li&gt;
+ * &lt;li&gt;Obtener todas las cárceles&lt;/li&gt;
+ * &lt;li&gt;Obtener una cárcel por ID&lt;/li&gt;
+ * &lt;/ul&gt;
+ * * Actúa como capa intermedia entre el cliente (Postman / GUI)
+ * y la lógica de negocio (CarcelService).
+ * * Base URL: /carcel
+ */
+@RestController
+@RequestMapping(&quot;/carcel&quot;)
+<span class="nc" id="L33">public class CarcelController {</span>
+
+    /** Logger para registrar eventos y errores en el controlador */
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(CarcelController.class);</span>
+
+    /** Servicio que contiene la lógica de negocio de cárceles */
+    @Autowired
+    private CarcelService carcelService;
+
+    /**
+     * Crea una nueva cárcel en el sistema.
+     *
+     * Endpoint: POST /carcel/crear
+     *
+     * @param carcel Objeto cárcel recibido en formato JSON
+     * @return ResponseEntity con:
+     * &lt;ul&gt;
+     * &lt;li&gt;201 (CREATED) si se crea correctamente&lt;/li&gt;
+     * &lt;li&gt;400 (BAD REQUEST) si los datos son inválidos&lt;/li&gt;
+     * &lt;li&gt;500 (INTERNAL SERVER ERROR) si ocurre un error inesperado&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    @PostMapping(&quot;/crear&quot;)
+    public ResponseEntity&lt;?&gt; crearCarcel(@RequestBody Carcel carcel) {
+<span class="nc" id="L57">        logger.info(&quot;Recibida petición POST en /carcel/crear para la cárcel: {}&quot;, carcel.getNombre());</span>
+        try {
+<span class="nc" id="L59">            Carcel guardada = carcelService.anadirCarcel(carcel);</span>
+<span class="nc" id="L60">            return new ResponseEntity&lt;&gt;(guardada, HttpStatus.CREATED);</span>
+<span class="nc" id="L61">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L62">            logger.warn(&quot;Petición rechazada al crear cárcel (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L63">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L64">        } catch (Exception e) {</span>
+<span class="nc" id="L65">            logger.error(&quot;Error interno (500) al crear la cárcel: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L66">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Elimina una cárcel por su ID.
+     *
+     * Endpoint: DELETE /carcel/eliminar/{id}
+     *
+     * @param id Identificador de la cárcel
+     * @return ResponseEntity con:
+     * &lt;ul&gt;
+     * &lt;li&gt;200 (OK) si se elimina correctamente&lt;/li&gt;
+     * &lt;li&gt;404 (NOT FOUND) si no existe&lt;/li&gt;
+     * &lt;li&gt;400 (BAD REQUEST) si el ID es inválido&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    @DeleteMapping(&quot;/eliminar/{id}&quot;)
+    public ResponseEntity&lt;?&gt; eliminarCarcel(@PathVariable Integer id) {
+<span class="nc" id="L85">        logger.info(&quot;Recibida petición DELETE en /carcel/eliminar/{}&quot;, id);</span>
+        try {
+<span class="nc" id="L87">            boolean eliminado = carcelService.eliminarCarcel(id);</span>
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (eliminado) {</span>
+<span class="nc" id="L90">                return new ResponseEntity&lt;&gt;(&quot;Cárcel eliminada correctamente.&quot;, HttpStatus.OK);</span>
+            } else {
+<span class="nc" id="L92">                logger.warn(&quot;No se pudo eliminar, cárcel no encontrada con ID: {}&quot;, id);</span>
+<span class="nc" id="L93">                return new ResponseEntity&lt;&gt;(&quot;No se encontró la cárcel con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
+            }
+<span class="nc" id="L95">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L96">            logger.warn(&quot;Petición rechazada al eliminar cárcel (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="nc" id="L97">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L98">        } catch (Exception e) {</span>
+<span class="nc" id="L99">            logger.error(&quot;Error interno (500) al eliminar la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L100">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Obtiene todas las cárceles registradas.
+     *
+     * Endpoint: GET /carcel
+     *
+     * @return Lista de cárceles con código 200 (OK)
+     */
+    @GetMapping
+    public ResponseEntity&lt;?&gt; obtenerCarceles() {
+<span class="nc" id="L113">        logger.info(&quot;Recibida petición GET en /carcel para obtener todas las cárceles&quot;);</span>
+        try {
+<span class="nc" id="L115">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarceles(), HttpStatus.OK);</span>
+<span class="nc" id="L116">        } catch (Exception e) {</span>
+<span class="nc" id="L117">            logger.error(&quot;Error interno (500) al obtener la lista de cárceles: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L118">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    /**
+     * Obtiene una cárcel por su ID.
+     *
+     * Endpoint: GET /carcel/{id}
+     *
+     * @param id identificador de la cárcel
+     * @return la cárcel encontrada o error correspondiente
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; obtenerCarcelPorId(@PathVariable Integer id) {
+<span class="nc" id="L132">        logger.info(&quot;Recibida petición GET en /carcel/{} para obtener cárcel por ID&quot;, id);</span>
+        try {
+<span class="nc" id="L134">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarcelPorId(id), HttpStatus.OK);</span>
+<span class="nc" id="L135">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L136">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) para el ID {}: {}&quot;, id, e.getMessage());</span>
+<span class="nc" id="L137">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L138">        } catch (Exception e) {</span>
+<span class="nc" id="L139">            logger.error(&quot;Error interno (500) al obtener la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L140">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+
+    /**
+     * Endpoint para obtener el recuento de presos por cada cárcel.
+     * Método: GET
+     * URL: /carcel/ocupacion
+     */
+    @GetMapping(&quot;/ocupacion&quot;)
+    public ResponseEntity&lt;?&gt; obtenerOcupacion() {
+<span class="nc" id="L152">        logger.info(&quot;Recibida petición GET en /carcel/ocupacion para obtener el recuento general&quot;);</span>
+        try {
+<span class="nc" id="L154">            Map&lt;String, Long&gt; datosOcupacion = carcelService.obtenerOcupacionPorCarcel();</span>
+<span class="nc" id="L155">            return new ResponseEntity&lt;&gt;(datosOcupacion, HttpStatus.OK);</span>
+<span class="nc" id="L156">        } catch (Exception e) {</span>
+<span class="nc" id="L157">            logger.error(&quot;Error interno (500) al calcular la ocupación: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L158">            return new ResponseEntity&lt;&gt;(&quot;Error al calcular la ocupación: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+
+    /**
+     * Endpoint para obtener la ocupación de una cárcel específica.
+     * URL: GET /carcel/{id}/ocupacion
+     * @param id El ID de la cárcel a consultar
+     * @return Cantidad de presos o error si no existe
+     */
+    @GetMapping(&quot;/{id}/ocupacion&quot;)
+    public ResponseEntity&lt;?&gt; obtenerOcupacionEspecifica(@PathVariable Integer id) {
+<span class="nc" id="L171">        logger.info(&quot;Recibida petición GET en /carcel/{}/ocupacion para obtener ocupación específica&quot;, id);</span>
+        try {
+<span class="nc" id="L173">            long ocupacion = carcelService.obtenerOcupacionDeCarcel(id);</span>
+<span class="nc" id="L174">            return new ResponseEntity&lt;&gt;(ocupacion, HttpStatus.OK);</span>
+<span class="nc" id="L175">        } catch (IllegalArgumentException e) {</span>
+            // Si el ID no existe, devolvemos un 404 Not Found con el mensaje del service
+<span class="nc" id="L177">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) al buscar ocupación para el ID {}: {}&quot;, id, e.getMessage());</span>
+<span class="nc" id="L178">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L179">        } catch (Exception e) {</span>
+<span class="nc" id="L180">            logger.error(&quot;Error interno (500) al obtener la ocupación para el ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="nc" id="L181">            return new ResponseEntity&lt;&gt;(&quot;Error al buscar la ocupación: &quot; + e.getMessage(), </span>
+            HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint para obtener todas las estadísticas de las cárceles en una sola llamada.
+     * URL: GET /carcel/estadisticas-completas
+     */
+    @GetMapping(&quot;/estadisticas-completas&quot;)
+    public ResponseEntity&lt;?&gt; obtenerEstadisticasCompletas() {
+<span class="nc" id="L192">        logger.info(&quot;Recibida petición GET en /carcel/estadisticas-completas&quot;);</span>
+        try {
+<span class="nc" id="L194">            List&lt;Map&lt;String, Object&gt;&gt; listaEstadisticas = new ArrayList&lt;&gt;();</span>
+            // Obtenemos todas las cárceles usando el método que ya tenéis en el servicio
+<span class="nc" id="L196">            List&lt;Carcel&gt; todasLasCarceles = carcelService.obtenerCarceles();</span>
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (Carcel carcel : todasLasCarceles) {</span>
+<span class="nc" id="L199">                long ocupacion = carcelService.obtenerOcupacionDeCarcel(carcel.getIdCarcel());</span>
+                
+<span class="nc" id="L201">                Map&lt;String, Object&gt; datos = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L202">                datos.put(&quot;id&quot;, carcel.getIdCarcel());</span>
+<span class="nc" id="L203">                datos.put(&quot;nombre&quot;, carcel.getNombre());</span>
+<span class="nc" id="L204">                datos.put(&quot;capacidad&quot;, carcel.getCapacidad());</span>
+<span class="nc" id="L205">                datos.put(&quot;ocupacion&quot;, ocupacion);</span>
+                
+<span class="nc" id="L207">                listaEstadisticas.add(datos);</span>
+<span class="nc" id="L208">            }</span>
+<span class="nc" id="L209">            return new ResponseEntity&lt;&gt;(listaEstadisticas, HttpStatus.OK);</span>
+<span class="nc" id="L210">        } catch (Exception e) {</span>
+<span class="nc" id="L211">            logger.error(&quot;Error interno (500) al obtener las estadísticas completas: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L212">            return new ResponseEntity&lt;&gt;(&quot;Error interno: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

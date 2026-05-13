@@ -1,14 +1,35 @@
 package com.example.JailQ.GUI;
+
  
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
  
 /**
  * Ventana principal del sistema JailQ.
@@ -16,13 +37,17 @@ import java.net.http.HttpResponse;
  * Gestiona el estado de sesión internamente:
  * - Sin sesión: solo Gestión de Cuentas disponible.
  * - Con sesión POLICIA: todos los módulos disponibles.
- * - Con sesión otro tipo: Cárceles y Cuentas disponibles, Presos bloqueado.
+ * - Con sesión FAMILIA: Cuentas y Presos disponibles (consulta por nombre+apellidos).
+ * - Con sesión GUBERNAMENTAL: Cuentas y Cárceles disponibles, Presos bloqueado.
+ *
+ * Usa HttpClientSingleton para la conexión HTTP compartida y
+ * SessionManager para el estado de sesión centralizado.
  */
 public class JailQMainGUI extends JFrame {
- 
-    private String username   = null;
-    private String tipoCuenta = null;
- 
+
+    // ── Singletons ────────────────────────────────────────────────────────────
+    private final SessionManager sesion = SessionManager.getInstance();
+
     private JLabel  lblBienvenida;
     private JButton btnCuentas;
     private JButton btnCarceles;
@@ -30,15 +55,11 @@ public class JailQMainGUI extends JFrame {
     private JButton btnSesion;
     private JLabel  lblEstado;
  
-    private final HttpClient httpClient;
- 
     // ──────────────────────────────────────────────────────────────────────────
     // Constructor
     // ──────────────────────────────────────────────────────────────────────────
  
     public JailQMainGUI() {
-        httpClient = HttpClient.newHttpClient();
- 
         setTitle("JailQ - Sistema de Gestión Penitenciaria");
         setSize(480, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,8 +123,8 @@ public class JailQMainGUI extends JFrame {
  
     /** Actualiza la etiqueta de bienvenida con el usuario y tipo de cuenta. */
     private void actualizarCabecera() {
-        lblBienvenida.setText(username != null
-                ? "Bienvenido, " + username + "  [" + tipoCuenta + "]"
+        lblBienvenida.setText(sesion.haySesion()
+                ? "Bienvenido, " + sesion.getUsername() + "  [" + sesion.getTipoCuenta() + "]"
                 : " ");
     }
  
@@ -150,7 +171,7 @@ public class JailQMainGUI extends JFrame {
  
         btnPresos   = crearBotonModulo("👤", "Gestión de Presos",
                 "Registrar, consultar y eliminar internos",
-                () -> abrirVentana(new GestionPresosGUI()));
+                () -> mostrarMenuPresos());
         btnPresos.setName("btnPresos"); 
  
         grid.add(btnCuentas);
@@ -252,16 +273,27 @@ public class JailQMainGUI extends JFrame {
  
     /**
      * Recalcula qué botones están habilitados según el estado de sesión.
-     * Cuentas: siempre. Cárceles: con sesión. Presos: con sesión y POLICIA.
+     *
+     * Reglas:
+     * - Cuentas: siempre habilitado.
+     * - Cárceles: requiere sesión activa. No disponible para FAMILIA.
+     * - Presos: POLICIA (gestión completa) o FAMILIA (consulta nombre+apellidos).
      */
     private void actualizarBotones() {
-        boolean sesion   = username != null;
-        boolean policia  = "POLICIA".equals(tipoCuenta);
- 
-        setBotonHabilitado(btnCuentas,  true,           null);
-        setBotonHabilitado(btnCarceles, sesion,         "Inicia sesión para acceder a este módulo");
-        setBotonHabilitado(btnPresos,   sesion && policia,
-                sesion ? "Solo accesible para cuentas de POLICIA"
+        boolean activo  = sesion.haySesion();
+        boolean policia = "POLICIA".equals(sesion.getTipoCuenta());
+        boolean familia = "FAMILIA".equals(sesion.getTipoCuenta());
+
+        setBotonHabilitado(btnCuentas, true, null);
+
+        // Cárceles: disponible con sesión activa excepto para FAMILIA
+        setBotonHabilitado(btnCarceles, activo && !familia,
+                activo ? "No disponible para cuentas de FAMILIA"
+                       : "Inicia sesión para acceder a este módulo");
+
+        // Presos: POLICIA gestión completa, FAMILIA consulta de solo lectura
+        setBotonHabilitado(btnPresos, activo && (policia || familia),
+                activo ? "Solo accesible para cuentas de POLICIA o FAMILIA"
                        : "Inicia sesión para acceder a este módulo");
     }
  
@@ -305,7 +337,7 @@ public class JailQMainGUI extends JFrame {
  
     /** Actualiza el texto y color del botón de sesión. */
     private void actualizarBotonSesion() {
-        if (username == null) {
+        if (!sesion.haySesion()) {
             btnSesion.setText("Iniciar sesión");
             btnSesion.setForeground(new Color(26, 61, 111));
         } else {
@@ -319,32 +351,31 @@ public class JailQMainGUI extends JFrame {
     // ──────────────────────────────────────────────────────────────────────────
  
     private void gestionarSesion() {
-        if (username == null) iniciarSesion();
-        else                  cerrarSesion();
+        if (!sesion.haySesion()) iniciarSesion();
+        else                     cerrarSesion();
     }
  
     /**
-     * Abre el diálogo de login. Si tiene éxito, actualiza la sesión y refresca la UI.
+     * Abre el diálogo de login. Si tiene éxito, delega en SessionManager
+     * para guardar el estado y refresca la UI.
      */
     private void iniciarSesion() {
         LoginDialog dialog = new LoginDialog(this);
         dialog.setVisible(true);
  
         if (dialog.isLoginCorrecto()) {
-            username   = dialog.getUsername();
-            tipoCuenta = dialog.getTipoCuenta();
+            sesion.iniciarSesion(dialog.getUsername(), dialog.getTipoCuenta());
             aplicarCambioSesion();
         }
     }
  
-    /** Pide confirmación y cierra la sesión si el usuario acepta. */
+    /** Pide confirmación, delega el cierre en SessionManager y refresca la UI. */
     private void cerrarSesion() {
         int r = JOptionPane.showConfirmDialog(this,
-                "¿Deseas cerrar la sesión de " + username + "?",
+                "¿Deseas cerrar la sesión de " + sesion.getUsername() + "?",
                 "Cerrar sesión", JOptionPane.YES_NO_OPTION);
         if (r == JOptionPane.YES_OPTION) {
-            username   = null;
-            tipoCuenta = null;
+            sesion.cerrarSesion();
             aplicarCambioSesion();
         }
     }
@@ -374,7 +405,45 @@ public class JailQMainGUI extends JFrame {
     }
  
     /**
+     * Gestiona el acceso al módulo de presos según el tipo de cuenta:
+     * - FAMILIA: abre GestionPresosGUI en modo consulta (solo nombre+apellidos).
+     * - POLICIA: muestra menú completo con todas las opciones de gestión.
+     */
+    private void mostrarMenuPresos() {
+        if ("FAMILIA".equals(sesion.getTipoCuenta())) {
+            abrirVentana(new GestionPresosGUI("FAMILIA"));
+            return;
+        }
+
+        String[] opciones = {
+                "Crear nuevo preso",
+                "Listado / Modificar / Eliminar",
+                "Filtrar presos por delito",
+                "Cancelar"
+        };
+
+        int seleccion = JOptionPane.showOptionDialog(
+                this,
+                "Seleccione la operación que desea realizar en el módulo de presos:",
+                "Gestión de Presos",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        switch (seleccion) {
+            case 0: abrirVentana(new GestionPresosGUI("POLICIA")); break;
+            case 1: abrirVentana(new ListadoPresosGUI()); break;
+            case 2: abrirVentana(new FiltrarPresosPorDelitoGUI()); break;
+            default: break;
+        }
+    }
+
+    /**
      * Comprueba si el servidor está activo con un GET a /carcel.
+     * Usa HttpClientSingleton en lugar de crear una nueva instancia.
      * Se ejecuta en un hilo secundario para no bloquear la UI.
      */
     private void comprobarConexionServidor() {
@@ -387,15 +456,18 @@ public class JailQMainGUI extends JFrame {
                 HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:8080/carcel"))
                         .GET().build();
-                int codigo = httpClient.send(req, HttpResponse.BodyHandlers.discarding()).statusCode();
+                int codigo = HttpClientSingleton.getInstance().getClient()
+                        .send(req, HttpResponse.BodyHandlers.discarding()).statusCode();
                 ok = codigo >= 200 && codigo < 300;
             } catch (Exception ignored) { }
  
             boolean conectado = ok;
             SwingUtilities.invokeLater(() -> {
-                lblEstado.setText(conectado ? "✅ Conectado" : "❌ Sin conexión");
+                lblEstado.setFont(new Font("Dialog", Font.PLAIN, 14));
+                lblEstado.setText(conectado ? "✓ Conectado" : "✗ Sin conexión");
                 lblEstado.setForeground(conectado ? new Color(0, 128, 0) : new Color(180, 30, 30));
             });
         }).start();
     }
+
 }

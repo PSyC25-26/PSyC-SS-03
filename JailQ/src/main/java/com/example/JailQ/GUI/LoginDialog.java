@@ -1,5 +1,6 @@
 package com.example.JailQ.GUI;
- 
+
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
- 
+
 /**
  * Diálogo modal de inicio de sesión del sistema JailQ.
  *
@@ -22,22 +23,21 @@ import java.net.http.HttpResponse;
  * del JSON de respuesta sin depender de ninguna librería JSON externa.
  */
 public class LoginDialog extends JDialog {
- 
-    private final HttpClient httpClient;
- 
-    private JTextField    txtUsername;
+
+    private final HttpClient cliente;
+
+    private JTextField     txtUsername;
     private JPasswordField txtPassword;
-    private JLabel        lblEstado;
- 
-    /** Resultado del intento de login. */
+    private JLabel         lblEstado;
+
     private boolean loginCorrecto = false;
     private String  username      = null;
     private String  tipoCuenta    = null;
- 
+
     // ──────────────────────────────────────────────────────────────────────────
     // Constructor
     // ──────────────────────────────────────────────────────────────────────────
- 
+
     /**
      * Construye el diálogo de login modal sobre la ventana padre indicada.
      *
@@ -45,16 +45,16 @@ public class LoginDialog extends JDialog {
      */
     public LoginDialog(JFrame parent) {
         super(parent, "JailQ - Iniciar sesión", true);
-        httpClient = HttpClient.newHttpClient();
- 
+        cliente = HttpClientSingleton.getInstance().getClient();
+
         setSize(400, 260);
         setResizable(false);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
- 
+
         initComponents();
     }
- 
+
     // ──────────────────────────────────────────────────────────────────────────
     // Inicialización de componentes
     // ──────────────────────────────────────────────────────────────────────────
@@ -134,48 +134,48 @@ public class LoginDialog extends JDialog {
     private void hacerLogin() {
         String user = txtUsername.getText().trim();
         String pass = new String(txtPassword.getPassword()).trim();
- 
+
         if (user.isEmpty() || pass.isEmpty()) {
             lblEstado.setForeground(Color.RED);
             lblEstado.setText("Rellena username y password.");
             return;
         }
- 
+
         try {
             String json = "{\"username\": \"%s\", \"password\": \"%s\"}"
                     .formatted(user, pass);
- 
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/cuentas/login/policia"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
- 
+
             HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
- 
+                    cliente.send(request, HttpResponse.BodyHandlers.ofString());
+
             if (response.statusCode() == 200) {
                 loginCorrecto = true;
                 username      = user;
                 tipoCuenta    = extraerTipoCuenta(response.body());
-                dispose();  // Cierra el diálogo; la ventana padre retoma el control
- 
+                dispose();
+
             } else if (response.statusCode() == 401) {
                 lblEstado.setForeground(Color.RED);
                 lblEstado.setText("Usuario o contraseña incorrectos.");
                 txtPassword.setText("");
- 
+
             } else {
                 lblEstado.setForeground(Color.RED);
                 lblEstado.setText("Error del servidor (código " + response.statusCode() + ").");
             }
- 
+
         } catch (IOException | InterruptedException e) {
             lblEstado.setForeground(Color.RED);
             lblEstado.setText("No se pudo conectar con el servidor.");
         }
     }
- 
+
     // ──────────────────────────────────────────────────────────────────────────
     // Extracción del tipoCuenta
     // ──────────────────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ public class LoginDialog extends JDialog {
      * la forma {@code "tipoCuenta":"POLICIA"}.
      *
      * @param jsonBody Cuerpo de la respuesta HTTP.
-     * @return Valor de {@code tipoCuenta} en mayúsculas, o {@code "DESCONOCIDO"}.
+     * @return Valor de tipoCuenta en mayúsculas, o "DESCONOCIDO".
      */
     private String extraerTipoCuenta(String jsonBody) {
         String clave = "\"tipoCuenta\":\"";
@@ -199,7 +199,7 @@ public class LoginDialog extends JDialog {
         if (fin == -1) return "DESCONOCIDO";
         return jsonBody.substring(inicio, fin).toUpperCase();
     }
- 
+
     // ──────────────────────────────────────────────────────────────────────────
     // Getters de resultado
     // ──────────────────────────────────────────────────────────────────────────
@@ -210,19 +210,6 @@ public class LoginDialog extends JDialog {
      * @return {@code true} si el login fue exitoso.
      */
     public boolean isLoginCorrecto() { return loginCorrecto; }
- 
-    /**
-     * Devuelve el nombre de usuario autenticado.
-     *
-     * @return Username autenticado, o {@code null} si el login no fue correcto.
-     */
-    public String getUsername()   { return username;   }
- 
-    /**
-     * Devuelve el tipo de cuenta del usuario autenticado.
-     *
-     * @return Tipo de cuenta ({@code "POLICIA"}, {@code "GUBERNAMENTAL"},
-     *         {@code "FAMILIA"} o {@code "DESCONOCIDO"}), o {@code null}.
-     */
-    public String getTipoCuenta() { return tipoCuenta; }
+    public String  getUsername()     { return username;      }
+    public String  getTipoCuenta()   { return tipoCuenta;    }
 }

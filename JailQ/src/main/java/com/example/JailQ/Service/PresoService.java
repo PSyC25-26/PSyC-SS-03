@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.JailQ.Entidades.Carcel;
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Dao.PresoDAO;
-import com.example.JailQ.Dao.CarcelDAO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Dao.PresoDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Preso;
 
 /**
  * Servicio para gestionar operaciones sobre {@link Preso}.
@@ -185,4 +185,67 @@ public class PresoService {
         return true;
     }
 
+    /**
+     * Traslada el preso de una cárcel a otra seleccionada
+     * 
+     * @param idPreso
+     * @param nombreCarcel
+     * @throws IllegalArgumenException si la carcel seleccionada no existe
+     */    
+    public void trasladarPreso(Integer idPreso, String nombreCarcel) {
+    Preso preso = presoDAO.findById(idPreso)
+        .orElseThrow(() -> new IllegalArgumentException("Preso no encontrado"));
+
+    Carcel destino = carcelDAO.findByNombre(nombreCarcel)
+        .orElseThrow(() -> new IllegalArgumentException("La cárcel seleccionada no existe"));
+
+    preso.setCarcel(destino);
+    presoDAO.save(preso);
+}
+    /**
+ * Filtra los presos por un delito concreto.
+ *
+ * @param delito delito por el que se quiere filtrar
+ * @return lista de presos que contienen ese delito
+ */
+public List<Preso> filtrarPorDelito(Delito delito) {
+    if (delito == null) {
+        throw new IllegalArgumentException("El delito no puede ser nulo.");
+    }
+
+    List<Preso> presosFiltrados = new ArrayList<>();
+
+    for (Preso preso : presoDAO.findAll()) {
+        if (preso.getDelitos() != null && preso.getDelitos().contains(delito)) {
+            presosFiltrados.add(preso);
+        }
+    }
+
+    return presosFiltrados;
+}
+/**
+ * Modifica la condena de un preso existente.
+ *
+ * @param idPreso identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado
+ */
+public Preso modificarCondena(Integer idPreso, Integer nuevaCondena) {
+    if (idPreso == null) {
+        throw new IllegalArgumentException("El ID del preso no puede ser nulo.");
+    }
+
+    if (nuevaCondena == null || nuevaCondena <= 0) {
+        throw new IllegalArgumentException("La condena debe ser mayor que 0.");
+    }
+
+    Preso preso = presoDAO.findById(idPreso)
+            .orElseThrow(() -> new IllegalArgumentException("No se encontró ningún preso con ese ID."));
+
+    preso.setCondena(nuevaCondena);
+
+    logger.info("Condena del preso con ID {} modificada a {} años.", idPreso, nuevaCondena);
+
+    return presoDAO.save(preso);
+}
 }

@@ -313,7 +313,8 @@ class CuentaServiceTest {
         c.setTipoCuenta(TipoCuenta.FAMILIA);
 
         when(cuentaDAO.findAll()).thenReturn(List.of(c));
-
-        assertNull(cuentaService.loginPolicia("policia1", "1234"));
+        Cuenta result = cuentaService.loginPolicia("policia1", "1234");
+        assertNotNull(result);
+        assertEquals(TipoCuenta.FAMILIA, result.getTipoCuenta());
     }
 }

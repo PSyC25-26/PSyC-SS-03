@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Service</a> &gt; <span class="el_source">CuentaService.java</span></div><h1>CuentaService.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Service;
+
+import com.example.JailQ.Dao.CuentaDAO;
+import com.example.JailQ.Entidades.Cuenta;
+import com.example.JailQ.Entidades.TipoCuenta;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Servicio encargado de la lógica de negocio relacionada con las cuentas.
+ * * Proporciona métodos para:
+ * &lt;ul&gt;
+ * &lt;li&gt;Crear nuevas cuentas&lt;/li&gt;
+ * &lt;li&gt;Eliminar cuentas&lt;/li&gt;
+ * &lt;li&gt;Eliminar cuentas de tipo POLICIA&lt;/li&gt;
+ * &lt;li&gt;Obtener todas las cuentas de tipo POLICIA&lt;/li&gt;
+ * &lt;li&gt;Iniciar sesión con cualquier tipo de cuenta&lt;/li&gt;
+ * &lt;/ul&gt;
+ * * Este servicio actúa como intermediario entre el controlador (Controller)
+ * y el acceso a datos (DAO).
+ */
+@Service
+public class CuentaService {
+
+    /** Logger para registrar eventos y errores en el servicio */
+<span class="fc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(CuentaService.class);</span>
+
+    /**
+     * DAO utilizado para acceder a la base de datos de cuentas.
+     * * &lt;p&gt;
+     * Este campo se declara como &lt;code&gt;private final&lt;/code&gt; y se inicializa
+     * mediante inyección de dependencias a través del constructor.
+     * No debe ser modificado directamente fuera de esta clase.
+     * &lt;/p&gt;
+     */
+    private final CuentaDAO cuentaDAO;
+
+    /**
+     * Constructor de {@link CuentaService} que permite inyectar el DAO de cuentas.
+     *
+     * &lt;p&gt;
+     * Se utiliza inyección de dependencias mediante {@link Autowired}, lo que
+     * permite que Spring proporcione automáticamente la implementación de
+     * {@link CuentaDAO}.
+     * &lt;/p&gt;
+     *
+     * @param cuentaDAO DAO utilizado para persistir y consultar entidades
+     * {@link Cuenta}
+     */
+    @Autowired
+<span class="fc" id="L57">    public CuentaService(CuentaDAO cuentaDAO) {</span>
+<span class="fc" id="L58">        this.cuentaDAO = cuentaDAO;</span>
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Añade una nueva cuenta tras validar los campos obligatorios y comprobar
+     * que no exista ya otra cuenta con el mismo username.
+     *
+     * @param nuevaCuenta Objeto Cuenta a guardar
+     * @return La cuenta guardada con su ID generado
+     * @throws IllegalArgumentException si los datos son inválidos o si el username
+     * ya está en uso
+     */
+    public Cuenta anadirCuenta(Cuenta nuevaCuenta) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (nuevaCuenta == null) {</span>
+<span class="fc" id="L72">            throw new IllegalArgumentException(&quot;No se ha recibido ningún dato de la cuenta.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L75" title="1 of 4 branches missed.">        if (nuevaCuenta.getUsername() == null || nuevaCuenta.getUsername().trim().isEmpty()) {</span>
+<span class="fc" id="L76">            throw new IllegalArgumentException(&quot;El nombre de usuario (username) es obligatorio.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">        if (nuevaCuenta.getPassword() == null || nuevaCuenta.getPassword().trim().isEmpty()) {</span>
+<span class="fc" id="L80">            throw new IllegalArgumentException(&quot;La contraseña es obligatoria.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (nuevaCuenta.getTipoCuenta() == null) {</span>
+<span class="fc" id="L84">            throw new IllegalArgumentException(&quot;El tipo de cuenta es obligatorio.&quot;);</span>
+        }
+
+<span class="fc" id="L87">        String usernameLimpio = nuevaCuenta.getUsername().trim();</span>
+<span class="fc" id="L88">        nuevaCuenta.setUsername(usernameLimpio);</span>
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (cuentaDAO.existsByUsername(usernameLimpio)) {</span>
+<span class="nc" id="L91">            throw new IllegalArgumentException(&quot;Ya existe una cuenta con ese nombre de usuario.&quot;);</span>
+        }
+
+<span class="fc" id="L94">        logger.info(&quot;Cuenta validada correctamente. Procediendo a guardar...&quot;);</span>
+<span class="fc" id="L95">        return cuentaDAO.save(nuevaCuenta);</span>
+    }
+
+    /**
+     * Elimina una cuenta de la base de datos según su ID.
+     *
+     * @param id El identificador de la cuenta a eliminar
+     * @return true si se eliminó correctamente, false si no se encontró
+     * @throws IllegalArgumentException si el ID es nulo
+     */
+    public boolean eliminarCuenta(Integer id) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L107">            throw new IllegalArgumentException(&quot;El ID de la cuenta no puede ser nulo.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (cuentaDAO.existsById(id)) {</span>
+<span class="fc" id="L111">            cuentaDAO.deleteById(id);</span>
+<span class="fc" id="L112">            logger.info(&quot;Cuenta con ID {} eliminada correctamente.&quot;, id);</span>
+<span class="fc" id="L113">            return true;</span>
+        } else {
+<span class="fc" id="L115">            logger.warn(&quot;No se encontró ninguna cuenta con el ID: {}&quot;, id);</span>
+<span class="fc" id="L116">            return false;</span>
+        }
+    }
+
+    /**
+     * Elimina una cuenta únicamente si pertenece al tipo POLICIA.
+     *
+     * @param id Identificador de la cuenta
+     * @return true si la cuenta fue eliminada correctamente
+     * @throws IllegalArgumentException si el ID es nulo, la cuenta no existe o no es POLICIA
+     */
+    public boolean eliminarCuentaPolicia(Integer id) {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L129">            throw new IllegalArgumentException(&quot;El ID de la cuenta no puede ser nulo.&quot;);</span>
+        }
+
+<span class="fc" id="L132">        Cuenta cuenta = cuentaDAO.findById(id)</span>
+<span class="fc" id="L133">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ninguna cuenta con ese ID.&quot;));</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (cuenta.getTipoCuenta() != TipoCuenta.POLICIA) {</span>
+<span class="fc" id="L136">            throw new IllegalArgumentException(&quot;La cuenta indicada no pertenece a un policía.&quot;);</span>
+        }
+
+<span class="fc" id="L139">        cuentaDAO.deleteById(id);</span>
+<span class="fc" id="L140">        logger.info(&quot;Cuenta de policía con ID {} eliminada correctamente.&quot;, id);</span>
+<span class="fc" id="L141">        return true;</span>
+    }
+
+    /**
+     * Obtiene todas las cuentas de tipo POLICIA almacenadas en la base de datos.
+     *
+     * @return Lista de cuentas de tipo POLICIA
+     */
+    public List&lt;Cuenta&gt; obtenerCuentasPolicia() {
+<span class="fc" id="L150">        List&lt;Cuenta&gt; policias = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (cuenta.getTipoCuenta() == TipoCuenta.POLICIA) {</span>
+<span class="fc" id="L154">                policias.add(cuenta);</span>
+            }
+<span class="fc" id="L156">        }</span>
+
+<span class="fc" id="L158">        return policias;</span>
+    }
+
+    /**
+     * Autentica un usuario verificando username y password contra la base de datos.
+     *
+     * A diferencia de la versión anterior, este método acepta cualquier tipo de
+     * cuenta (POLICIA, FAMILIA, GUBERNAMENTAL), no solo POLICIA. El tipoCuenta
+     * se devuelve en la entidad Cuenta para que el frontend pueda ajustar
+     * los módulos disponibles según el rol.
+     *
+     * @param username nombre de usuario
+     * @param password contraseña
+     * @return la cuenta si las credenciales son correctas, null si no coinciden
+     */
+    public Cuenta loginPolicia(String username, String password) {
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        for (Cuenta cuenta : cuentaDAO.findAll()) {</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (cuenta.getUsername().equals(username)</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">                    &amp;&amp; cuenta.getPassword().equals(password)) {</span>
+<span class="fc" id="L177">                return cuenta;</span>
+            }
+<span class="fc" id="L179">        }</span>
+<span class="fc" id="L180">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

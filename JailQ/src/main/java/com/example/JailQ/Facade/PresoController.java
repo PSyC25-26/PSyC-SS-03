@@ -1,5 +1,7 @@
 package com.example.JailQ.Facade;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.JailQ.Entidades.Delito;
 import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Service.PresoService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Controlador REST encargado de gestionar las operaciones relacionadas con los presos.
@@ -142,4 +142,95 @@ public class PresoController {
             return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Traslada a un preso a una cárcel diferente.
+     *
+     * Endpoint: POST /preso/trasladar/{id}/{nombreCarcel}
+     *
+     * @param id identificador del preso
+     * @param nombreCarcel nombre de la cárcel de destino
+     * @return mensaje de éxito o error correspondiente
+     */
+    @PostMapping("/trasladar/{id}/{nombreCarcel}")
+    public ResponseEntity<?> trasladarPreso(@PathVariable Integer id, @PathVariable String nombreCarcel) {
+        logger.info("Recibida petición POST en /preso/trasladar/{}/{}", id, nombreCarcel);
+        try {
+            // Llamada al servicio para ejecutar la lógica de negocio del traslado
+            presoService.trasladarPreso(id, nombreCarcel);
+            
+            logger.info("Traslado exitoso: Preso ID {} enviado a {}", id, nombreCarcel);
+            return new ResponseEntity<>("Traslado realizado correctamente a " + nombreCarcel, HttpStatus.OK);
+
+        } catch (IllegalArgumentException e) {
+            // Se lanza si el preso no existe o la cárcel es inválida
+            logger.warn("Petición de traslado rechazada (400 Bad Request): {}", e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+        } catch (Exception e) {
+            logger.error("Error interno (500) al trasladar el preso con ID {}: {}", id, e.getMessage(), e);
+            return new ResponseEntity<>("Error interno del servidor al procesar el traslado", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+ * Filtra presos por delito.
+ *
+ * Endpoint: GET /preso/filtrar/delito/{delito}
+ *
+ * Ejemplo:
+ * GET /preso/filtrar/delito/ROBO
+ *
+ * @param delito delito por el que se quiere filtrar
+ * @return lista de presos que contienen ese delito
+ */
+@GetMapping("/filtrar/delito/{delito}")
+public ResponseEntity<?> filtrarPresosPorDelito(@PathVariable String delito) {
+    logger.info("Recibida petición GET en /preso/filtrar/delito/{}", delito);
+
+    try {
+        Delito delitoEnum = Delito.valueOf(delito.toUpperCase());
+
+        return new ResponseEntity<>(
+                presoService.filtrarPorDelito(delitoEnum),
+                HttpStatus.OK
+        );
+
+    } catch (IllegalArgumentException e) {
+        logger.warn("Delito no válido al filtrar presos: {}", delito);
+        return new ResponseEntity<>("Delito no válido: " + delito, HttpStatus.BAD_REQUEST);
+
+    } catch (Exception e) {
+        logger.error("Error interno (500) al filtrar presos por delito {}: {}", delito, e.getMessage(), e);
+        return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+/**
+ * Modifica la condena de un preso.
+ *
+ * Endpoint: POST /preso/modificar-condena/{id}/{nuevaCondena}
+ *
+ * @param id identificador del preso
+ * @param nuevaCondena nueva condena en años
+ * @return preso actualizado o error correspondiente
+ */
+@PostMapping("/modificar-condena/{id}/{nuevaCondena}")
+public ResponseEntity<?> modificarCondena(
+        @PathVariable Integer id,
+        @PathVariable Integer nuevaCondena) {
+
+    logger.info("Recibida petición POST en /preso/modificar-condena/{}/{}", id, nuevaCondena);
+
+    try {
+        Preso actualizado = presoService.modificarCondena(id, nuevaCondena);
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
+
+    } catch (IllegalArgumentException e) {
+        logger.warn("Petición rechazada al modificar condena: {}", e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+    } catch (Exception e) {
+        logger.error("Error interno (500) al modificar condena del preso con ID {}: {}", id, e.getMessage(), e);
+        return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 }
