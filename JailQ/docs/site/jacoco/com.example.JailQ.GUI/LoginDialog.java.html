@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoginDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">LoginDialog.java</span></div><h1>LoginDialog.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+/**
+ * Diálogo modal de inicio de sesión del sistema JailQ.
+ *
+ * &lt;p&gt;Se abre sobre {@link JailQMainGUI} cuando el usuario pulsa
+ * «Iniciar sesión». Al cerrarse, la ventana principal consulta
+ * {@link #isLoginCorrecto()}, {@link #getUsername()} y
+ * {@link #getTipoCuenta()} para actualizar su estado de sesión.
+ *
+ * &lt;p&gt;Envía las credenciales al endpoint
+ * {@code POST /cuentas/login/policia} y extrae el {@code tipoCuenta}
+ * del JSON de respuesta sin depender de ninguna librería JSON externa.
+ */
+public class LoginDialog extends JDialog {
+
+    private final HttpClient cliente;
+
+    private JTextField     txtUsername;
+    private JPasswordField txtPassword;
+    private JLabel         lblEstado;
+
+<span class="nc" id="L33">    private boolean loginCorrecto = false;</span>
+<span class="nc" id="L34">    private String  username      = null;</span>
+<span class="nc" id="L35">    private String  tipoCuenta    = null;</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Constructor
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Construye el diálogo de login modal sobre la ventana padre indicada.
+     *
+     * @param parent Ventana padre sobre la que se centra el diálogo.
+     */
+    public LoginDialog(JFrame parent) {
+<span class="nc" id="L47">        super(parent, &quot;JailQ - Iniciar sesión&quot;, true);</span>
+<span class="nc" id="L48">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+
+<span class="nc" id="L50">        setSize(400, 260);</span>
+<span class="nc" id="L51">        setResizable(false);</span>
+<span class="nc" id="L52">        setLocationRelativeTo(parent);</span>
+<span class="nc" id="L53">        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);</span>
+
+<span class="nc" id="L55">        initComponents();</span>
+<span class="nc" id="L56">    }</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Inicialización de componentes
+    // ──────────────────────────────────────────────────────────────────────────
+ 
+    /**
+     * Construye y organiza todos los componentes visuales del diálogo.
+     */
+    private void initComponents() {
+<span class="nc" id="L66">        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));</span>
+<span class="nc" id="L67">        panelPrincipal.setBorder(new EmptyBorder(15, 15, 15, 15));</span>
+<span class="nc" id="L68">        add(panelPrincipal);</span>
+ 
+        // Título
+<span class="nc" id="L71">        JLabel titulo = new JLabel(&quot;Iniciar sesión&quot;);</span>
+<span class="nc" id="L72">        titulo.setHorizontalAlignment(SwingConstants.CENTER);</span>
+<span class="nc" id="L73">        titulo.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 18));</span>
+<span class="nc" id="L74">        panelPrincipal.add(titulo, BorderLayout.NORTH);</span>
+ 
+        // Campos
+<span class="nc" id="L77">        JPanel panelCampos = new JPanel(new GridLayout(4, 1, 6, 6));</span>
+ 
+<span class="nc" id="L79">        JLabel lblUser = new JLabel(&quot;Username:&quot;);</span>
+<span class="nc" id="L80">        lblUser.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L81">        panelCampos.add(lblUser);</span>
+ 
+<span class="nc" id="L83">        txtUsername = new JTextField();</span>
+<span class="nc" id="L84">        txtUsername.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="nc" id="L85">        txtUsername.setName(&quot;txtUsername&quot;);</span>
+<span class="nc" id="L86">        panelCampos.add(txtUsername);</span>
+ 
+<span class="nc" id="L88">        JLabel lblPass = new JLabel(&quot;Password:&quot;);</span>
+<span class="nc" id="L89">        lblPass.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L90">        panelCampos.add(lblPass);</span>
+ 
+<span class="nc" id="L92">        txtPassword = new JPasswordField();</span>
+<span class="nc" id="L93">        txtPassword.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="nc" id="L94">        txtPassword.setName(&quot;txtPassword&quot;);</span>
+<span class="nc" id="L95">        txtPassword.addActionListener(e -&gt; hacerLogin());</span>
+<span class="nc" id="L96">        panelCampos.add(txtPassword);</span>
+ 
+<span class="nc" id="L98">        panelPrincipal.add(panelCampos, BorderLayout.CENTER);</span>
+ 
+        // Panel inferior
+<span class="nc" id="L101">        JPanel panelInferior = new JPanel(new BorderLayout(5, 5));</span>
+ 
+<span class="nc" id="L103">        JButton btnLogin = new JButton(&quot;Iniciar sesión&quot;);</span>
+<span class="nc" id="L104">        btnLogin.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 13));</span>
+<span class="nc" id="L105">        btnLogin.setFocusPainted(false);</span>
+<span class="nc" id="L106">        btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L107">        btnLogin.setName(&quot;btnLogin&quot;);</span>
+<span class="nc" id="L108">        btnLogin.addActionListener(e -&gt; hacerLogin());</span>
+ 
+<span class="nc" id="L110">        JPanel panelBoton = new JPanel();</span>
+<span class="nc" id="L111">        panelBoton.add(btnLogin);</span>
+ 
+<span class="nc" id="L113">        lblEstado = new JLabel(&quot; &quot;);</span>
+<span class="nc" id="L114">        lblEstado.setHorizontalAlignment(SwingConstants.CENTER);</span>
+<span class="nc" id="L115">        lblEstado.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 11));</span>
+<span class="nc" id="L116">        lblEstado.setName(&quot;lblEstado&quot;);</span>
+ 
+<span class="nc" id="L118">        panelInferior.add(panelBoton, BorderLayout.NORTH);</span>
+<span class="nc" id="L119">        panelInferior.add(lblEstado,  BorderLayout.SOUTH);</span>
+<span class="nc" id="L120">        panelPrincipal.add(panelInferior, BorderLayout.SOUTH);</span>
+<span class="nc" id="L121">    }</span>
+ 
+    // ──────────────────────────────────────────────────────────────────────────
+    // Lógica de login
+    // ──────────────────────────────────────────────────────────────────────────
+ 
+    /**
+     * Recoge las credenciales y realiza la petición de autenticación.
+     *
+     * &lt;p&gt;Si el login es correcto (HTTP 200), guarda el resultado en los campos
+     * internos y cierra el diálogo para que {@link JailQMainGUI} pueda
+     * consultar los resultados. Si falla, muestra el error sin cerrar el diálogo.
+     */
+    private void hacerLogin() {
+<span class="nc" id="L135">        String user = txtUsername.getText().trim();</span>
+<span class="nc" id="L136">        String pass = new String(txtPassword.getPassword()).trim();</span>
+
+<span class="nc bnc" id="L138" title="All 4 branches missed.">        if (user.isEmpty() || pass.isEmpty()) {</span>
+<span class="nc" id="L139">            lblEstado.setForeground(Color.RED);</span>
+<span class="nc" id="L140">            lblEstado.setText(&quot;Rellena username y password.&quot;);</span>
+<span class="nc" id="L141">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L145">            String json = &quot;{\&quot;username\&quot;: \&quot;%s\&quot;, \&quot;password\&quot;: \&quot;%s\&quot;}&quot;</span>
+<span class="nc" id="L146">                    .formatted(user, pass);</span>
+
+<span class="nc" id="L148">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L149">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/login/policia&quot;))</span>
+<span class="nc" id="L150">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="nc" id="L151">                    .POST(HttpRequest.BodyPublishers.ofString(json))</span>
+<span class="nc" id="L152">                    .build();</span>
+
+<span class="nc" id="L154">            HttpResponse&lt;String&gt; response =</span>
+<span class="nc" id="L155">                    cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L158">                loginCorrecto = true;</span>
+<span class="nc" id="L159">                username      = user;</span>
+<span class="nc" id="L160">                tipoCuenta    = extraerTipoCuenta(response.body());</span>
+<span class="nc" id="L161">                dispose();</span>
+
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            } else if (response.statusCode() == 401) {</span>
+<span class="nc" id="L164">                lblEstado.setForeground(Color.RED);</span>
+<span class="nc" id="L165">                lblEstado.setText(&quot;Usuario o contraseña incorrectos.&quot;);</span>
+<span class="nc" id="L166">                txtPassword.setText(&quot;&quot;);</span>
+
+            } else {
+<span class="nc" id="L169">                lblEstado.setForeground(Color.RED);</span>
+<span class="nc" id="L170">                lblEstado.setText(&quot;Error del servidor (código &quot; + response.statusCode() + &quot;).&quot;);</span>
+            }
+
+<span class="nc" id="L173">        } catch (IOException | InterruptedException e) {</span>
+<span class="nc" id="L174">            lblEstado.setForeground(Color.RED);</span>
+<span class="nc" id="L175">            lblEstado.setText(&quot;No se pudo conectar con el servidor.&quot;);</span>
+<span class="nc" id="L176">        }</span>
+<span class="nc" id="L177">    }</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Extracción del tipoCuenta
+    // ──────────────────────────────────────────────────────────────────────────
+ 
+    /**
+     * Extrae el valor del campo {@code tipoCuenta} del JSON de respuesta
+     * del backend sin depender de ninguna librería JSON externa.
+     *
+     * &lt;p&gt;Spring Boot serializa la entidad {@code Cuenta} con el campo en
+     * la forma {@code &quot;tipoCuenta&quot;:&quot;POLICIA&quot;}.
+     *
+     * @param jsonBody Cuerpo de la respuesta HTTP.
+     * @return Valor de tipoCuenta en mayúsculas, o &quot;DESCONOCIDO&quot;.
+     */
+    private String extraerTipoCuenta(String jsonBody) {
+<span class="nc" id="L194">        String clave = &quot;\&quot;tipoCuenta\&quot;:\&quot;&quot;;</span>
+<span class="nc" id="L195">        int inicio = jsonBody.indexOf(clave);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (inicio == -1) return &quot;DESCONOCIDO&quot;;</span>
+<span class="nc" id="L197">        inicio += clave.length();</span>
+<span class="nc" id="L198">        int fin = jsonBody.indexOf(&quot;\&quot;&quot;, inicio);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (fin == -1) return &quot;DESCONOCIDO&quot;;</span>
+<span class="nc" id="L200">        return jsonBody.substring(inicio, fin).toUpperCase();</span>
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Getters de resultado
+    // ──────────────────────────────────────────────────────────────────────────
+ 
+    /**
+     * Indica si el último intento de login fue correcto.
+     *
+     * @return {@code true} si el login fue exitoso.
+     */
+<span class="nc" id="L212">    public boolean isLoginCorrecto() { return loginCorrecto; }</span>
+<span class="nc" id="L213">    public String  getUsername()     { return username;      }</span>
+<span class="nc" id="L214">    public String  getTipoCuenta()   { return tipoCuenta;    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

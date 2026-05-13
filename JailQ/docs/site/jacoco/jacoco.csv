@@ -1,13 +1,29 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JailQ,com.example.JailQ.Entidades,Carcel,3,35,0,0,1,15,1,10,1,10
 JailQ,com.example.JailQ.Entidades,TipoCuenta,0,21,0,0,0,4,0,1,0,1
 JailQ,com.example.JailQ.Entidades,Delito,0,75,0,0,0,13,0,1,0,1
 JailQ,com.example.JailQ.Entidades,Preso,15,74,2,2,5,29,3,19,2,18
-JailQ,com.example.JailQ.Entidades,Carcel,3,35,0,0,1,15,1,10,1,10
 JailQ,com.example.JailQ.Entidades,Cuenta,21,24,0,0,9,10,6,7,6,7
 JailQ,com.example.JailQ.Service,CuentaService,5,193,3,29,1,46,3,21,0,8
 JailQ,com.example.JailQ.Service,PresoService,102,211,18,26,18,47,17,19,6,8
 JailQ,com.example.JailQ.Service,CarcelService,33,139,5,17,7,32,5,15,1,8
 JailQ,com.example.JailQ,JailQApplication,20,0,0,0,7,0,3,0,3,0
+JailQ,com.example.JailQ.GUI,JailQMainGUI.new WindowAdapter() {...},17,0,0,0,4,0,2,0,2,0
+JailQ,com.example.JailQ.GUI,HttpClientSingleton,26,0,4,0,10,0,5,0,3,0
+JailQ,com.example.JailQ.GUI,LoginDialog,421,0,12,0,93,0,15,0,9,0
+JailQ,com.example.JailQ.GUI,ListadoPresosGUI,845,0,42,0,207,0,37,0,16,0
+JailQ,com.example.JailQ.GUI,GestionCuentasGUI,436,0,2,0,86,0,7,0,6,0
+JailQ,com.example.JailQ.GUI,JailQMainGUI,1127,0,46,0,227,0,49,0,25,0
+JailQ,com.example.JailQ.GUI,GestionPresosGUI.new TypeReference() {...},8,0,0,0,1,0,1,0,1,0
+JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI.new TypeReference() {...},8,0,0,0,1,0,1,0,1,0
+JailQ,com.example.JailQ.GUI,SessionManager,53,0,6,0,18,0,10,0,7,0
+JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI.CarcelDatos,6,0,0,0,2,0,2,0,2,0
+JailQ,com.example.JailQ.GUI,GestionCarcelGUI,403,0,2,0,86,0,7,0,6,0
+JailQ,com.example.JailQ.GUI,EliminarPoliciaGUI,424,0,20,0,98,0,16,0,6,0
+JailQ,com.example.JailQ.GUI,GestionPresosGUI,1176,0,48,0,255,0,44,0,20,0
+JailQ,com.example.JailQ.GUI,ListadoPresosGUI.new DefaultTableModel() {...},13,0,0,0,2,0,2,0,2,0
+JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI,347,0,10,0,72,0,10,0,5,0
+JailQ,com.example.JailQ.GUI,FiltrarPresosPorDelitoGUI,918,0,36,0,167,0,27,0,9,0
+JailQ,com.example.JailQ.Facade,PresoController,360,0,2,0,65,0,10,0,9,0
 JailQ,com.example.JailQ.Facade,CuentaController,263,0,6,0,51,0,10,0,7,0
 JailQ,com.example.JailQ.Facade,CarcelController,357,0,4,0,67,0,11,0,9,0
-JailQ,com.example.JailQ.Facade,PresoController,360,0,2,0,65,0,10,0,9,0

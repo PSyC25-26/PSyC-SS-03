@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SessionManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">SessionManager.java</span></div><h1>SessionManager.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+/**
+ * Singleton thread-safe que centraliza el estado de sesión del usuario autenticado.
+ *
+ * Antes, username y tipoCuenta vivían como campos privados de JailQMainGUI,
+ * lo que impedía que cualquier otra ventana consultara el rol activo.
+ * SessionManager resuelve esto exponiendo el estado de sesión de forma global
+ * sin necesidad de pasar parámetros entre ventanas.
+ *
+ * Implementación con double-checked locking y volatile para garantizar
+ * thread-safety sin coste de sincronización en cada llamada.
+ *
+ * Uso:
+ *   SessionManager.getInstance().iniciarSesion(username, tipoCuenta);
+ *   SessionManager.getInstance().getTipoCuenta();
+ *   SessionManager.getInstance().haySesion();
+ */
+public class SessionManager {
+    private static volatile SessionManager instance;
+
+<span class="nc" id="L22">    private String username   = null;</span>
+<span class="nc" id="L23">    private String tipoCuenta = null;</span>
+
+<span class="nc" id="L25">    private SessionManager() { }</span>
+
+    /**
+     * Devuelve la instancia única de SessionManager.
+     * Usa double-checked locking para thread-safety eficiente.
+     *
+     * @return la única instancia del singleton
+     */
+    public static SessionManager getInstance() {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L35">            synchronized (SessionManager.class) {</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">                if (instance == null) {</span>
+<span class="nc" id="L37">                    instance = new SessionManager();</span>
+                }
+<span class="nc" id="L39">            }</span>
+        }
+<span class="nc" id="L41">        return instance;</span>
+    }
+
+    /**
+     * Registra una sesión activa con el usuario y tipo de cuenta indicados.
+     *
+     * @param username   nombre de usuario autenticado
+     * @param tipoCuenta tipo de cuenta (POLICIA, FAMILIA, GUBERNAMENTAL)
+     */
+    public synchronized void iniciarSesion(String username, String tipoCuenta) {
+<span class="nc" id="L51">        this.username   = username;</span>
+<span class="nc" id="L52">        this.tipoCuenta = tipoCuenta;</span>
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Cierra la sesión actual, limpiando username y tipoCuenta.
+     */
+    public synchronized void cerrarSesion() {
+<span class="nc" id="L59">        this.username   = null;</span>
+<span class="nc" id="L60">        this.tipoCuenta = null;</span>
+<span class="nc" id="L61">    }</span>
+
+    /** @return nombre del usuario autenticado, o null si no hay sesión */
+<span class="nc" id="L64">    public String getUsername()   { return username;   }</span>
+
+    /** @return tipo de cuenta activo, o null si no hay sesión */
+<span class="nc" id="L67">    public String getTipoCuenta() { return tipoCuenta; }</span>
+
+    /** @return true si hay una sesión activa */
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    public boolean haySesion()    { return username != null; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
