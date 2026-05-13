@@ -3,13 +3,7 @@
 # Genera documentación Doxygen y la publica en gh-pages/doxygen/
 #
 # URL resultado:
-#   https://PSyC25-26.github.io/PSyC-SS-03/doxygen/index.html
-#
-# PREREQUISITOS (una sola vez):
-#   1. Settings → Actions → General → Workflow permissions
-#      → Read and write permissions ✓
-#   2. Rama gh-pages creada
-#   3. Settings → Pages → Source: gh-pages branch / (root)
+#   https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html
 # ============================================================
 
 name: Doxygen Docs
@@ -45,21 +39,21 @@ jobs:
       - name: Instalar Doxygen y Graphviz
         run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
 
-      # 4. Verificar versiones instaladas
-      - name: Verificar versiones
-        run: |
-          doxygen --version
-          dot -version
+      # 4. Verificar que doxygen está en PATH
+      - name: Verificar doxygen en PATH
+        run: which doxygen && doxygen --version
 
       # 5. Generar documentación con Maven
-      # working-directory: JailQ porque el pom.xml está en la subcarpeta JailQ/
+      # Se fuerza el PATH para asegurar que el plugin encuentra doxygen
       - name: Generar documentación Doxygen
         working-directory: JailQ
-        run: mvn com.soebes.maven.plugins:doxygen-maven-plugin:1.1.0:report --no-transfer-progress
+        env:
+          PATH: /usr/bin:${{ env.PATH }}
+        run: |
+          doxygen --version
+          mvn com.soebes.maven.plugins:doxygen-maven-plugin:1.1.0:report --no-transfer-progress
 
       # 6. Publicar en gh-pages/doxygen/
-      # publish_dir apunta a JailQ/target/doxygen/html/ por la misma razón
-      # keep_files: true → no borra otros artefactos en gh-pages (Sphinx, etc.)
       - name: Deploy a gh-pages/doxygen/
         uses: peaceiris/actions-gh-pages@v4
         with:
