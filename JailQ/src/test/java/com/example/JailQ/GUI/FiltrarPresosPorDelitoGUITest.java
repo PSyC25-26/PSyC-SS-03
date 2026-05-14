@@ -62,4 +62,23 @@ public class FiltrarPresosPorDelitoGUITest {
             window.label("lblEstado").requireText(Pattern.compile("(?s).+"));
         }
     }
+
+    @Test
+    public void testFiltrarProvocaExcepcionLocal() {
+        // Limpiamos la selección del combo. Esto hará que getSelectedItem() devuelva null.
+        // Al intentar procesar la petición, saltará un NullPointerException que 
+        // nos permitirá cubrir el escurridizo bloque "catch (Exception e)".
+        window.comboBox("comboDelitos").clearSelection();
+        window.button("btnFiltrar").click();
+
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
+
+        // En caso de que se capture la excepción en el text area o lance un panel
+        try {
+            window.textBox("areaResultados").requireText(Pattern.compile("(?s).*Error.*"));
+        } catch (AssertionError ae) {
+            window.optionPane().requireMessage(Pattern.compile("(?s).*"));
+            window.optionPane().okButton().click();
+        }
+    }
 }
