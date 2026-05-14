@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
  * * */
 @RestController
 @RequestMapping(&quot;/cuentas&quot;)
-<span class="nc" id="L28">public class CuentaController {</span>
+<span class="fc" id="L28">public class CuentaController {</span>
 
     /** Logger para registrar eventos y errores en el controlador */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(CuentaController.class);</span>
+<span class="fc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(CuentaController.class);</span>
 
     /** Servicio que contiene la lógica de negocio de cuentas */
     @Autowired
@@ -49,16 +49,16 @@ import org.slf4j.LoggerFactory;
      */
     @PostMapping(&quot;/crear&quot;)
     public ResponseEntity&lt;?&gt; crearCuenta(@RequestBody Cuenta cuenta) {
-<span class="nc" id="L52">        logger.info(&quot;Recibida petición POST en /cuentas/crear para la cuenta: {}&quot;, cuenta.getUsername());</span>
+<span class="fc" id="L52">        logger.info(&quot;Recibida petición POST en /cuentas/crear para la cuenta: {}&quot;, cuenta.getUsername());</span>
         try {
-<span class="nc" id="L54">            Cuenta cuentaGuardada = cuentaService.anadirCuenta(cuenta);</span>
-<span class="nc" id="L55">            return new ResponseEntity&lt;&gt;(cuentaGuardada, HttpStatus.CREATED);</span>
+<span class="fc" id="L54">            Cuenta cuentaGuardada = cuentaService.anadirCuenta(cuenta);</span>
+<span class="fc" id="L55">            return new ResponseEntity&lt;&gt;(cuentaGuardada, HttpStatus.CREATED);</span>
 <span class="nc" id="L56">        } catch (IllegalArgumentException e) {</span>
 <span class="nc" id="L57">            logger.warn(&quot;Petición rechazada al crear cuenta (400 Bad Request): {}&quot;, e.getMessage());</span>
 <span class="nc" id="L58">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L59">        } catch (Exception e) {</span>
-<span class="nc" id="L60">            logger.error(&quot;Error interno (500) al crear la cuenta: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L61">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L59">        } catch (Exception e) {</span>
+<span class="fc" id="L60">            logger.error(&quot;Error interno (500) al crear la cuenta: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L61">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -78,12 +78,12 @@ import org.slf4j.LoggerFactory;
      */
     @DeleteMapping(&quot;/eliminar/{id}&quot;)
     public ResponseEntity&lt;?&gt; eliminarCuenta(@PathVariable Integer id) {
-<span class="nc" id="L81">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/{}&quot;, id);</span>
+<span class="fc" id="L81">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/{}&quot;, id);</span>
         try {
-<span class="nc" id="L83">            boolean eliminado = cuentaService.eliminarCuenta(id);</span>
+<span class="fc" id="L83">            boolean eliminado = cuentaService.eliminarCuenta(id);</span>
 
-<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (eliminado) {</span>
-<span class="nc" id="L86">                return new ResponseEntity&lt;&gt;(&quot;Cuenta eliminada correctamente.&quot;, HttpStatus.OK);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">            if (eliminado) {</span>
+<span class="fc" id="L86">                return new ResponseEntity&lt;&gt;(&quot;Cuenta eliminada correctamente.&quot;, HttpStatus.OK);</span>
             } else {
 <span class="nc" id="L88">                logger.warn(&quot;No se pudo eliminar, cuenta no encontrada con ID: {}&quot;, id);</span>
 <span class="nc" id="L89">                return new ResponseEntity&lt;&gt;(&quot;No se encontró la cuenta con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
@@ -91,9 +91,9 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L91">        } catch (IllegalArgumentException e) {</span>
 <span class="nc" id="L92">            logger.warn(&quot;Petición rechazada al eliminar cuenta (400 Bad Request): {}&quot;, e.getMessage());</span>
 <span class="nc" id="L93">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L94">        } catch (Exception e) {</span>
-<span class="nc" id="L95">            logger.error(&quot;Error interno (500) al eliminar la cuenta con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L96">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L94">        } catch (Exception e) {</span>
+<span class="fc" id="L95">            logger.error(&quot;Error interno (500) al eliminar la cuenta con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L96">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -112,22 +112,22 @@ import org.slf4j.LoggerFactory;
      */
     @DeleteMapping(&quot;/eliminar/policia/{id}&quot;)
     public ResponseEntity&lt;?&gt; eliminarCuentaPolicia(@PathVariable Integer id) {
-<span class="nc" id="L115">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/policia/{}&quot;, id);</span>
+<span class="fc" id="L115">        logger.info(&quot;Recibida petición DELETE en /cuentas/eliminar/policia/{}&quot;, id);</span>
         try {
-<span class="nc" id="L117">            boolean eliminado = cuentaService.eliminarCuentaPolicia(id);</span>
+<span class="fc" id="L117">            boolean eliminado = cuentaService.eliminarCuentaPolicia(id);</span>
 
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (eliminado) {</span>
-<span class="nc" id="L120">                return new ResponseEntity&lt;&gt;(&quot;Cuenta de policía eliminada correctamente.&quot;, HttpStatus.OK);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            if (eliminado) {</span>
+<span class="fc" id="L120">                return new ResponseEntity&lt;&gt;(&quot;Cuenta de policía eliminada correctamente.&quot;, HttpStatus.OK);</span>
             } else {
 <span class="nc" id="L122">                logger.warn(&quot;No se pudo eliminar, cuenta de policía no encontrada con ID: {}&quot;, id);</span>
 <span class="nc" id="L123">                return new ResponseEntity&lt;&gt;(&quot;No se encontró ninguna cuenta de policía con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
             }
-<span class="nc" id="L125">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L126">            logger.warn(&quot;Petición rechazada al eliminar cuenta de policía (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L127">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L128">        } catch (Exception e) {</span>
-<span class="nc" id="L129">            logger.error(&quot;Error interno (500) al eliminar la cuenta de policía con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L130">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L125">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L126">            logger.warn(&quot;Petición rechazada al eliminar cuenta de policía (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="fc" id="L127">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L128">        } catch (Exception e) {</span>
+<span class="fc" id="L129">            logger.error(&quot;Error interno (500) al eliminar la cuenta de policía con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L130">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -141,12 +141,12 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping(&quot;/policias&quot;)
     public ResponseEntity&lt;?&gt; obtenerCuentasPolicia() {
-<span class="nc" id="L144">        logger.info(&quot;Recibida petición GET en /cuentas/policias&quot;);</span>
+<span class="fc" id="L144">        logger.info(&quot;Recibida petición GET en /cuentas/policias&quot;);</span>
         try {
-<span class="nc" id="L146">            return new ResponseEntity&lt;&gt;(cuentaService.obtenerCuentasPolicia(), HttpStatus.OK);</span>
-<span class="nc" id="L147">        } catch (Exception e) {</span>
-<span class="nc" id="L148">            logger.error(&quot;Error interno (500) al obtener la lista de policías: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L149">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L146">            return new ResponseEntity&lt;&gt;(cuentaService.obtenerCuentasPolicia(), HttpStatus.OK);</span>
+<span class="fc" id="L147">        } catch (Exception e) {</span>
+<span class="fc" id="L148">            logger.error(&quot;Error interno (500) al obtener la lista de policías: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L149">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
     
@@ -157,23 +157,23 @@ import org.slf4j.LoggerFactory;
      */
     @PostMapping(&quot;/login/policia&quot;)
     public ResponseEntity&lt;?&gt; loginPolicia(@RequestBody Cuenta cuenta) {
-<span class="nc" id="L160">        logger.info(&quot;Recibida petición POST en /cuentas/login/policia para el usuario: {}&quot;, cuenta.getUsername());</span>
+<span class="fc" id="L160">        logger.info(&quot;Recibida petición POST en /cuentas/login/policia para el usuario: {}&quot;, cuenta.getUsername());</span>
         try {
-<span class="nc" id="L162">            Cuenta resultado = cuentaService.loginPolicia(</span>
-<span class="nc" id="L163">                    cuenta.getUsername(),</span>
-<span class="nc" id="L164">                    cuenta.getPassword()</span>
+<span class="fc" id="L162">            Cuenta resultado = cuentaService.loginPolicia(</span>
+<span class="fc" id="L163">                    cuenta.getUsername(),</span>
+<span class="fc" id="L164">                    cuenta.getPassword()</span>
             );
 
-<span class="nc bnc" id="L167" title="All 2 branches missed.">            if (resultado != null) {</span>
-<span class="nc" id="L168">                return new ResponseEntity&lt;&gt;(resultado, HttpStatus.OK);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">            if (resultado != null) {</span>
+<span class="fc" id="L168">                return new ResponseEntity&lt;&gt;(resultado, HttpStatus.OK);</span>
             } else {
-<span class="nc" id="L170">                logger.warn(&quot;Intento de login fallido (401 Unauthorized) para el usuario: {}&quot;, cuenta.getUsername());</span>
-<span class="nc" id="L171">                return new ResponseEntity&lt;&gt;(&quot;Credenciales incorrectas&quot;, HttpStatus.UNAUTHORIZED);</span>
+<span class="fc" id="L170">                logger.warn(&quot;Intento de login fallido (401 Unauthorized) para el usuario: {}&quot;, cuenta.getUsername());</span>
+<span class="fc" id="L171">                return new ResponseEntity&lt;&gt;(&quot;Credenciales incorrectas&quot;, HttpStatus.UNAUTHORIZED);</span>
             }
 
-<span class="nc" id="L174">        } catch (Exception e) {</span>
-<span class="nc" id="L175">            logger.error(&quot;Error interno (500) durante el login del usuario {}: {}&quot;, cuenta.getUsername(), e.getMessage(), e);</span>
-<span class="nc" id="L176">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L174">        } catch (Exception e) {</span>
+<span class="fc" id="L175">            logger.error(&quot;Error interno (500) durante el login del usuario {}: {}&quot;, cuenta.getUsername(), e.getMessage(), e);</span>
+<span class="fc" id="L176">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 }

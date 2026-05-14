@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FiltrarPresosPorDelitoGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">FiltrarPresosPorDelitoGUI.java</span></div><h1>FiltrarPresosPorDelitoGUI.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class FiltrarPresosPorDelitoGUI extends JFrame {
+
+    private JComboBox&lt;String&gt; comboDelitos;
+    private JButton botonFiltrar;
+    private JButton botonVolver;
+    private JTextArea areaResultados;
+    private JLabel labelEstado;
+
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+
+<span class="nc" id="L25">    public FiltrarPresosPorDelitoGUI() {</span>
+<span class="nc" id="L26">        this.httpClient = HttpClient.newHttpClient();</span>
+<span class="nc" id="L27">        this.objectMapper = new ObjectMapper();</span>
+
+<span class="nc" id="L29">        setTitle(&quot;JailQ - Filtrar presos por delito&quot;);</span>
+<span class="nc" id="L30">        setSize(780, 560);</span>
+<span class="nc" id="L31">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L32">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L33">        setResizable(false);</span>
+
+<span class="nc" id="L35">        inicializarComponentes();</span>
+<span class="nc" id="L36">    }</span>
+
+    private void inicializarComponentes() {
+<span class="nc" id="L39">        JPanel panelPrincipal = new JPanel(new BorderLayout(12, 12));</span>
+<span class="nc" id="L40">        panelPrincipal.setBorder(new EmptyBorder(18, 18, 18, 18));</span>
+<span class="nc" id="L41">        panelPrincipal.setBackground(new Color(245, 247, 250));</span>
+
+<span class="nc" id="L43">        panelPrincipal.add(crearPanelCabecera(), BorderLayout.NORTH);</span>
+<span class="nc" id="L44">        panelPrincipal.add(crearPanelResultados(), BorderLayout.CENTER);</span>
+<span class="nc" id="L45">        panelPrincipal.add(crearPanelInferior(), BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L47">        add(panelPrincipal);</span>
+
+<span class="nc" id="L49">        botonFiltrar.addActionListener(e -&gt; filtrarPresos());</span>
+<span class="nc" id="L50">        botonVolver.addActionListener(e -&gt; dispose());</span>
+
+<span class="nc" id="L52">        comboDelitos.setName(&quot;comboDelitos&quot;);</span>
+<span class="nc" id="L53">        botonFiltrar.setName(&quot;btnFiltrar&quot;);</span>
+<span class="nc" id="L54">        botonVolver.setName(&quot;btnVolver&quot;);</span>
+<span class="nc" id="L55">        areaResultados.setName(&quot;areaResultados&quot;);</span>
+<span class="nc" id="L56">        labelEstado.setName(&quot;lblEstado&quot;);</span>
+<span class="nc" id="L57">    }</span>
+
+    private JPanel crearPanelCabecera() {
+<span class="nc" id="L60">        JPanel panelCabecera = new JPanel(new BorderLayout(10, 10));</span>
+<span class="nc" id="L61">        panelCabecera.setBackground(Color.WHITE);</span>
+<span class="nc" id="L62">        panelCabecera.setBorder(BorderFactory.createCompoundBorder(</span>
+<span class="nc" id="L63">                BorderFactory.createLineBorder(new Color(210, 215, 225)),</span>
+                new EmptyBorder(15, 15, 15, 15)
+        ));
+
+<span class="nc" id="L67">        JPanel panelTexto = new JPanel();</span>
+<span class="nc" id="L68">        panelTexto.setLayout(new BoxLayout(panelTexto, BoxLayout.Y_AXIS));</span>
+<span class="nc" id="L69">        panelTexto.setBackground(Color.WHITE);</span>
+
+<span class="nc" id="L71">        JLabel titulo = new JLabel(&quot;Filtrar presos por delito&quot;);</span>
+<span class="nc" id="L72">        titulo.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 20));</span>
+<span class="nc" id="L73">        titulo.setForeground(new Color(26, 61, 111));</span>
+
+<span class="nc" id="L75">        JLabel subtitulo = new JLabel(&quot;Consulta los internos registrados según el delito seleccionado.&quot;);</span>
+<span class="nc" id="L76">        subtitulo.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L77">        subtitulo.setForeground(new Color(90, 90, 90));</span>
+
+<span class="nc" id="L79">        panelTexto.add(titulo);</span>
+<span class="nc" id="L80">        panelTexto.add(Box.createVerticalStrut(4));</span>
+<span class="nc" id="L81">        panelTexto.add(subtitulo);</span>
+
+<span class="nc" id="L83">        JPanel panelFiltro = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));</span>
+<span class="nc" id="L84">        panelFiltro.setBackground(Color.WHITE);</span>
+
+<span class="nc" id="L86">        JLabel labelDelito = new JLabel(&quot;Delito:&quot;);</span>
+<span class="nc" id="L87">        labelDelito.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+
+<span class="nc" id="L89">        comboDelitos = new JComboBox&lt;&gt;(new String[]{</span>
+                &quot;HOMICIDIO&quot;,
+                &quot;SECUESTRO&quot;,
+                &quot;ROBO&quot;,
+                &quot;AGRESION_SEXUAL&quot;,
+                &quot;PEDOFILIA&quot;,
+                &quot;ESTAFA&quot;,
+                &quot;TRAF_DROGAS&quot;,
+                &quot;TRAF_PERSONAS&quot;,
+                &quot;TERRORISMO&quot;,
+                &quot;PIROMANIA&quot;,
+                &quot;BLANQUEO_DINERO&quot;,
+                &quot;FALSIFICACION_DOC&quot;
+        });
+
+<span class="nc" id="L104">        comboDelitos.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L105">        comboDelitos.setPreferredSize(new Dimension(190, 30));</span>
+
+<span class="nc" id="L107">        botonFiltrar = new JButton(&quot;Filtrar&quot;);</span>
+<span class="nc" id="L108">        botonFiltrar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L109">        botonFiltrar.setFocusPainted(false);</span>
+<span class="nc" id="L110">        botonFiltrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L111">        botonFiltrar.setBackground(new Color(26, 61, 111));</span>
+<span class="nc" id="L112">        botonFiltrar.setForeground(Color.WHITE);</span>
+
+<span class="nc" id="L114">        panelFiltro.add(labelDelito);</span>
+<span class="nc" id="L115">        panelFiltro.add(comboDelitos);</span>
+<span class="nc" id="L116">        panelFiltro.add(botonFiltrar);</span>
+
+<span class="nc" id="L118">        panelCabecera.add(panelTexto, BorderLayout.CENTER);</span>
+<span class="nc" id="L119">        panelCabecera.add(panelFiltro, BorderLayout.EAST);</span>
+
+<span class="nc" id="L121">        return panelCabecera;</span>
+    }
+
+    private JPanel crearPanelResultados() {
+<span class="nc" id="L125">        JPanel panel = new JPanel(new BorderLayout(8, 8));</span>
+<span class="nc" id="L126">        panel.setBackground(new Color(245, 247, 250));</span>
+<span class="nc" id="L127">        panel.setBorder(BorderFactory.createTitledBorder(&quot;Resultados de la búsqueda&quot;));</span>
+
+<span class="nc" id="L129">        areaResultados = new JTextArea();</span>
+<span class="nc" id="L130">        areaResultados.setEditable(false);</span>
+<span class="nc" id="L131">        areaResultados.setFont(new Font(&quot;Consolas&quot;, Font.PLAIN, 13));</span>
+<span class="nc" id="L132">        areaResultados.setForeground(new Color(40, 40, 40));</span>
+<span class="nc" id="L133">        areaResultados.setBackground(Color.WHITE);</span>
+<span class="nc" id="L134">        areaResultados.setMargin(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L135">        areaResultados.setText(&quot;Selecciona un delito y pulsa Filtrar para ver los presos encontrados.&quot;);</span>
+
+<span class="nc" id="L137">        JScrollPane scrollPane = new JScrollPane(areaResultados);</span>
+<span class="nc" id="L138">        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 225)));</span>
+
+<span class="nc" id="L140">        panel.add(scrollPane, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L142">        return panel;</span>
+    }
+
+    private JPanel crearPanelInferior() {
+<span class="nc" id="L146">        JPanel panelInferior = new JPanel(new BorderLayout(10, 10));</span>
+<span class="nc" id="L147">        panelInferior.setBackground(new Color(245, 247, 250));</span>
+
+<span class="nc" id="L149">        labelEstado = new JLabel(&quot;Listo para filtrar.&quot;);</span>
+<span class="nc" id="L150">        labelEstado.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L151">        labelEstado.setForeground(new Color(80, 80, 80));</span>
+
+<span class="nc" id="L153">        botonVolver = new JButton(&quot;← Volver al menú principal&quot;);</span>
+<span class="nc" id="L154">        botonVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L155">        botonVolver.setFocusPainted(false);</span>
+<span class="nc" id="L156">        botonVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L157">        botonVolver.setBackground(new Color(230, 235, 242));</span>
+<span class="nc" id="L158">        botonVolver.setForeground(new Color(26, 61, 111));</span>
+
+<span class="nc" id="L160">        panelInferior.add(labelEstado, BorderLayout.WEST);</span>
+<span class="nc" id="L161">        panelInferior.add(botonVolver, BorderLayout.EAST);</span>
+
+<span class="nc" id="L163">        return panelInferior;</span>
+    }
+
+    private void filtrarPresos() {
+<span class="nc" id="L167">        String delitoSeleccionado = (String) comboDelitos.getSelectedItem();</span>
+
+<span class="nc bnc" id="L169" title="All 4 branches missed.">        if (delitoSeleccionado == null || delitoSeleccionado.isBlank()) {</span>
+<span class="nc" id="L170">            JOptionPane.showMessageDialog(</span>
+                    this,
+                    &quot;Debes seleccionar un delito.&quot;,
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE
+            );
+<span class="nc" id="L176">            return;</span>
+        }
+
+<span class="nc" id="L179">        String url = &quot;http://localhost:8080/preso/filtrar/delito/&quot; + delitoSeleccionado;</span>
+
+        try {
+<span class="nc" id="L182">            labelEstado.setText(&quot;Buscando presos con delito: &quot; + delitoSeleccionado + &quot;...&quot;);</span>
+<span class="nc" id="L183">            labelEstado.setForeground(new Color(26, 61, 111));</span>
+<span class="nc" id="L184">            areaResultados.setText(&quot;&quot;);</span>
+
+<span class="nc" id="L186">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L187">                    .uri(URI.create(url))</span>
+<span class="nc" id="L188">                    .GET()</span>
+<span class="nc" id="L189">                    .build();</span>
+
+<span class="nc" id="L191">            HttpResponse&lt;String&gt; response = httpClient.send(</span>
+                    request,
+<span class="nc" id="L193">                    HttpResponse.BodyHandlers.ofString()</span>
+            );
+
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L197">                mostrarResultados(response.body());</span>
+<span class="nc" id="L198">                labelEstado.setText(&quot;Filtro realizado correctamente.&quot;);</span>
+<span class="nc" id="L199">                labelEstado.setForeground(new Color(0, 128, 0));</span>
+
+<span class="nc bnc" id="L201" title="All 2 branches missed.">            } else if (response.statusCode() == 400) {</span>
+<span class="nc" id="L202">                labelEstado.setText(&quot;Delito no válido.&quot;);</span>
+<span class="nc" id="L203">                labelEstado.setForeground(new Color(180, 120, 0));</span>
+
+<span class="nc" id="L205">                JOptionPane.showMessageDialog(</span>
+                        this,
+<span class="nc" id="L207">                        response.body(),</span>
+                        &quot;Delito no válido&quot;,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+            } else {
+<span class="nc" id="L213">                labelEstado.setText(&quot;Error al filtrar presos.&quot;);</span>
+<span class="nc" id="L214">                labelEstado.setForeground(new Color(180, 30, 30));</span>
+
+<span class="nc" id="L216">                JOptionPane.showMessageDialog(</span>
+                        this,
+<span class="nc" id="L218">                        &quot;Error del servidor: &quot; + response.statusCode() + &quot;\n&quot; + response.body(),</span>
+                        &quot;Error&quot;,
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+
+<span class="nc" id="L224">        } catch (Exception ex) {</span>
+<span class="nc" id="L225">            labelEstado.setText(&quot;No se pudo conectar con el servidor.&quot;);</span>
+<span class="nc" id="L226">            labelEstado.setForeground(new Color(180, 30, 30));</span>
+
+<span class="nc" id="L228">            JOptionPane.showMessageDialog(</span>
+                    this,
+                    &quot;No se pudo conectar con el backend.\nComprueba que Spring Boot está arrancado en http://localhost:8080.&quot;,
+                    &quot;Error de conexión&quot;,
+                    JOptionPane.ERROR_MESSAGE
+            );
+<span class="nc" id="L234">        }</span>
+<span class="nc" id="L235">    }</span>
+
+    private void mostrarResultados(String json) {
+        try {
+<span class="nc" id="L239">            JsonNode presos = objectMapper.readTree(json);</span>
+
+<span class="nc bnc" id="L241" title="All 4 branches missed.">            if (!presos.isArray() || presos.size() == 0) {</span>
+<span class="nc" id="L242">                areaResultados.setText(&quot;No se encontraron presos con ese delito.&quot;);</span>
+<span class="nc" id="L243">                return;</span>
+            }
+
+<span class="nc" id="L246">            StringBuilder sb = new StringBuilder();</span>
+
+<span class="nc" id="L248">            sb.append(&quot;Presos encontrados: &quot;)</span>
+<span class="nc" id="L249">                    .append(presos.size())</span>
+<span class="nc" id="L250">                    .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L252">            sb.append(&quot;============================================================\n\n&quot;);</span>
+
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            for (JsonNode preso : presos) {</span>
+<span class="nc" id="L255">                sb.append(&quot;ID: &quot;)</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">                        .append(preso.has(&quot;id&quot;) ? preso.get(&quot;id&quot;).asText() : &quot;Sin ID&quot;)</span>
+<span class="nc" id="L257">                        .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L259">                sb.append(&quot;Nombre: &quot;)</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">                        .append(preso.has(&quot;nombre&quot;) ? preso.get(&quot;nombre&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L261">                        .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L263">                sb.append(&quot;Apellidos: &quot;)</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">                        .append(preso.has(&quot;apellidos&quot;) ? preso.get(&quot;apellidos&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L265">                        .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L267">                sb.append(&quot;Fecha nacimiento: &quot;)</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">                        .append(preso.has(&quot;fechaNacimiento&quot;) ? preso.get(&quot;fechaNacimiento&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L269">                        .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L271">                sb.append(&quot;Condena: &quot;)</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                        .append(preso.has(&quot;condena&quot;) ? preso.get(&quot;condena&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L273">                        .append(&quot; años\n&quot;);</span>
+
+<span class="nc" id="L275">                sb.append(&quot;Fecha ingreso: &quot;)</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                        .append(preso.has(&quot;fechaIngreso&quot;) ? preso.get(&quot;fechaIngreso&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L277">                        .append(&quot;\n&quot;);</span>
+
+<span class="nc" id="L279">                sb.append(&quot;Delitos: &quot;);</span>
+
+<span class="nc bnc" id="L281" title="All 4 branches missed.">                if (preso.has(&quot;delitos&quot;) &amp;&amp; preso.get(&quot;delitos&quot;).isArray()) {</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">                    for (JsonNode delito : preso.get(&quot;delitos&quot;)) {</span>
+<span class="nc" id="L283">                        sb.append(delito.asText()).append(&quot; &quot;);</span>
+<span class="nc" id="L284">                    }</span>
+                }
+
+<span class="nc" id="L287">                sb.append(&quot;\n&quot;);</span>
+
+<span class="nc bnc" id="L289" title="All 4 branches missed.">                if (preso.has(&quot;carcel&quot;) &amp;&amp; preso.get(&quot;carcel&quot;).has(&quot;nombre&quot;)) {</span>
+<span class="nc" id="L290">                    sb.append(&quot;Cárcel: &quot;)</span>
+<span class="nc" id="L291">                            .append(preso.get(&quot;carcel&quot;).get(&quot;nombre&quot;).asText())</span>
+<span class="nc" id="L292">                            .append(&quot;\n&quot;);</span>
+                }
+
+<span class="nc" id="L295">                sb.append(&quot;\n------------------------------------------------------------\n\n&quot;);</span>
+<span class="nc" id="L296">            }</span>
+
+<span class="nc" id="L298">            areaResultados.setText(sb.toString());</span>
+<span class="nc" id="L299">            areaResultados.setCaretPosition(0);</span>
+
+<span class="nc" id="L301">        } catch (Exception e) {</span>
+<span class="nc" id="L302">            areaResultados.setText(&quot;Error al procesar la respuesta del servidor.\n\nRespuesta recibida:\n&quot; + json);</span>
+<span class="nc" id="L303">        }</span>
+<span class="nc" id="L304">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

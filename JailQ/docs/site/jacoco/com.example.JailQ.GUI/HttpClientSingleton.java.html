@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpClientSingleton.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">HttpClientSingleton.java</span></div><h1>HttpClientSingleton.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+import java.net.http.HttpClient;
+
+/**
+ * Singleton thread-safe que proporciona una instancia compartida de HttpClient
+ * para todas las ventanas del sistema JailQ.
+ *
+ * HttpClient está diseñado para ser reutilizado: crear una instancia por ventana
+ * desperdicia recursos (hilos, conexiones). Este singleton garantiza que solo
+ * existe una instancia durante toda la ejecución.
+ *
+ * Implementación con double-checked locking y volatile para garantizar
+ * thread-safety sin coste de sincronización en cada llamada.
+ *
+ * Uso: HttpClientSingleton.getInstance().getClient()
+ */
+public class HttpClientSingleton {
+
+    private static volatile HttpClientSingleton instance;
+
+    private final HttpClient cliente;
+
+<span class="nc" id="L24">    private HttpClientSingleton() {</span>
+<span class="nc" id="L25">        this.cliente = HttpClient.newHttpClient();</span>
+<span class="nc" id="L26">    }</span>
+
+    /**
+     * Devuelve la instancia única de HttpClientSingleton.
+     * Usa double-checked locking para thread-safety eficiente.
+     *
+     * @return la única instancia del singleton
+     */
+    public static HttpClientSingleton getInstance() {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L36">            synchronized (HttpClientSingleton.class) {</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (instance == null) {</span>
+<span class="nc" id="L38">                    instance = new HttpClientSingleton();</span>
+                }
+<span class="nc" id="L40">            }</span>
+        }
+<span class="nc" id="L42">        return instance;</span>
+    }
+
+    /**
+     * Devuelve el HttpClient compartido listo para enviar peticiones.
+     *
+     * @return la única instancia de HttpClient de la aplicación
+     */
+    public HttpClient getClient() {
+<span class="nc" id="L51">        return cliente;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

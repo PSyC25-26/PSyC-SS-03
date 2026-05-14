@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListadoPresosGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">ListadoPresosGUI.java</span></div><h1>ListadoPresosGUI.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ * Interfaz de listado de presos con soporte para JSON anidado.
+ * Permite listar, trasladar, eliminar y modificar la condena de presos.
+ */
+public class ListadoPresosGUI extends JFrame {
+
+    private JTable tablaPresos;
+    private DefaultTableModel modelo;
+    private final HttpClient httpClient;
+
+<span class="nc" id="L39">    private final String BASE_URL = &quot;http://localhost:8080/preso&quot;;</span>
+<span class="nc" id="L40">    private final String CARCEL_URL = &quot;http://localhost:8080/carcel&quot;;</span>
+
+<span class="nc" id="L42">    public ListadoPresosGUI() {</span>
+<span class="nc" id="L43">        httpClient = HttpClient.newHttpClient();</span>
+
+<span class="nc" id="L45">        setTitle(&quot;JailQ - Listado de Presos&quot;);</span>
+<span class="nc" id="L46">        setSize(950, 500);</span>
+<span class="nc" id="L47">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L48">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L49">        setLayout(new BorderLayout(10, 10));</span>
+
+<span class="nc" id="L51">        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));</span>
+<span class="nc" id="L52">        panelPrincipal.setBorder(new EmptyBorder(15, 15, 15, 15));</span>
+<span class="nc" id="L53">        panelPrincipal.setBackground(new Color(245, 247, 250));</span>
+
+<span class="nc" id="L55">        String[] columnas = {&quot;ID&quot;, &quot;Nombre&quot;, &quot;Apellidos&quot;, &quot;Condena&quot;, &quot;Cárcel&quot;};</span>
+
+<span class="nc" id="L57">        modelo = new DefaultTableModel(columnas, 0) {</span>
+            @Override
+            public boolean isCellEditable(int row, int column) {
+<span class="nc" id="L60">                return false;</span>
+            }
+        };
+
+<span class="nc" id="L64">        tablaPresos = new JTable(modelo);</span>
+<span class="nc" id="L65">        tablaPresos.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L66">        tablaPresos.setRowHeight(24);</span>
+<span class="nc" id="L67">        tablaPresos.getTableHeader().setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+
+<span class="nc" id="L69">        tablaPresos.setName(&quot;tablaPresos&quot;); </span>
+<span class="nc" id="L70">        JScrollPane scrollPane = new JScrollPane(tablaPresos);</span>
+<span class="nc" id="L71">        scrollPane.setBorder(BorderFactory.createTitledBorder(&quot;Presos registrados&quot;));</span>
+
+<span class="nc" id="L73">        JPanel panelBotones = new JPanel();</span>
+<span class="nc" id="L74">        panelBotones.setBackground(new Color(245, 247, 250));</span>
+
+<span class="nc" id="L76">        JButton btnActualizar = new JButton(&quot;Actualizar lista&quot;);</span>
+<span class="nc" id="L77">        JButton btnTrasladar = new JButton(&quot;Trasladar preso&quot;);</span>
+<span class="nc" id="L78">        JButton btnModificarCondena = new JButton(&quot;Modificar condena&quot;);</span>
+<span class="nc" id="L79">        btnActualizar.setName(&quot;btnActualizar&quot;); </span>
+        
+<span class="nc" id="L81">        JButton btnEliminar = new JButton(&quot;Eliminar seleccionado&quot;);</span>
+<span class="nc" id="L82">        btnEliminar.setName(&quot;btnEliminar&quot;); </span>
+<span class="nc" id="L83">        JButton btnVolver = new JButton(&quot;← Volver al menú principal&quot;);</span>
+
+<span class="nc" id="L85">        btnTrasladar.setName(&quot;btnTrasladar&quot;);</span>
+<span class="nc" id="L86">        btnModificarCondena.setName(&quot;btnModificarCondena&quot;);</span>
+<span class="nc" id="L87">        btnVolver.setName(&quot;btnVolver&quot;);</span>
+        
+<span class="nc" id="L89">        estilizarBoton(btnActualizar, new Color(230, 235, 242), new Color(26, 61, 111));</span>
+<span class="nc" id="L90">        estilizarBoton(btnTrasladar, new Color(100, 200, 255), Color.BLACK);</span>
+<span class="nc" id="L91">        estilizarBoton(btnModificarCondena, new Color(255, 210, 100), Color.BLACK);</span>
+<span class="nc" id="L92">        estilizarBoton(btnEliminar, new Color(255, 100, 100), Color.BLACK);</span>
+<span class="nc" id="L93">        estilizarBoton(btnVolver, new Color(220, 225, 235), new Color(26, 61, 111));</span>
+
+<span class="nc" id="L95">        panelBotones.add(btnActualizar);</span>
+<span class="nc" id="L96">        panelBotones.add(btnTrasladar);</span>
+<span class="nc" id="L97">        panelBotones.add(btnModificarCondena);</span>
+<span class="nc" id="L98">        panelBotones.add(btnEliminar);</span>
+<span class="nc" id="L99">        panelBotones.add(btnVolver);</span>
+
+<span class="nc" id="L101">        btnActualizar.addActionListener(e -&gt; cargarPresos());</span>
+<span class="nc" id="L102">        btnTrasladar.addActionListener(e -&gt; trasladarPresoSeleccionado());</span>
+<span class="nc" id="L103">        btnModificarCondena.addActionListener(e -&gt; modificarCondenaSeleccionado());</span>
+<span class="nc" id="L104">        btnEliminar.addActionListener(e -&gt; eliminarPresoSeleccionado());</span>
+<span class="nc" id="L105">        btnVolver.addActionListener(e -&gt; dispose());</span>
+
+<span class="nc" id="L107">        panelPrincipal.add(scrollPane, BorderLayout.CENTER);</span>
+<span class="nc" id="L108">        panelPrincipal.add(panelBotones, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L110">        add(panelPrincipal, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L112">        cargarPresos();</span>
+<span class="nc" id="L113">    }</span>
+
+    private void estilizarBoton(JButton boton, Color fondo, Color texto) {
+<span class="nc" id="L116">        boton.setBackground(fondo);</span>
+<span class="nc" id="L117">        boton.setForeground(texto);</span>
+<span class="nc" id="L118">        boton.setFocusPainted(false);</span>
+<span class="nc" id="L119">        boton.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L120">        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L121">    }</span>
+
+    private void cargarPresos() {
+        try {
+<span class="nc" id="L125">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L126">                    .uri(URI.create(BASE_URL + &quot;/todos&quot;))</span>
+<span class="nc" id="L127">                    .GET()</span>
+<span class="nc" id="L128">                    .build();</span>
+
+<span class="nc" id="L130">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L133">                actualizarTabla(response.body());</span>
+            } else {
+<span class="nc" id="L135">                JOptionPane.showMessageDialog(this, &quot;Error del servidor: &quot; + response.statusCode());</span>
+            }
+
+<span class="nc" id="L138">        } catch (Exception ex) {</span>
+<span class="nc" id="L139">            JOptionPane.showMessageDialog(this, &quot;Error de conexión: &quot; + ex.getMessage());</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">    }</span>
+
+    private void actualizarTabla(String json) {
+<span class="nc" id="L144">        modelo.setRowCount(0);</span>
+
+<span class="nc" id="L146">        String jsonLimpio = json.replaceAll(</span>
+                &quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\&quot;nombre\&quot;\\s*:\\s*\&quot;([^\&quot;]+)\&quot;[^}]*\\}&quot;,
+                &quot;\&quot;carcel\&quot;:\&quot;$1\&quot;&quot;
+        );
+
+<span class="nc" id="L151">        jsonLimpio = jsonLimpio.replaceAll(</span>
+                &quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\\}&quot;,
+                &quot;\&quot;carcel\&quot;:\&quot;N/A\&quot;&quot;
+        );
+
+<span class="nc" id="L156">        Pattern pattern = Pattern.compile(&quot;\\{(.*?)\\}&quot;);</span>
+<span class="nc" id="L157">        Matcher matcher = pattern.matcher(jsonLimpio);</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        while (matcher.find()) {</span>
+<span class="nc" id="L160">            String objeto = matcher.group(1);</span>
+
+<span class="nc" id="L162">            String id = extraerValor(objeto, &quot;idPreso&quot;);</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (id.equals(&quot;N/A&quot;)) {</span>
+<span class="nc" id="L164">                id = extraerValor(objeto, &quot;id&quot;);</span>
+            }
+
+<span class="nc" id="L167">            String nombre = extraerValor(objeto, &quot;nombre&quot;);</span>
+<span class="nc" id="L168">            String apellidos = extraerValor(objeto, &quot;apellidos&quot;);</span>
+<span class="nc" id="L169">            String condena = extraerValor(objeto, &quot;condena&quot;);</span>
+<span class="nc" id="L170">            String carcel = extraerValor(objeto, &quot;carcel&quot;);</span>
+
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (!nombre.equals(&quot;N/A&quot;)) {</span>
+<span class="nc" id="L173">                modelo.addRow(new Object[]{id, nombre, apellidos, condena, carcel});</span>
+            }
+<span class="nc" id="L175">        }</span>
+<span class="nc" id="L176">    }</span>
+
+    private String extraerValor(String texto, String campo) {
+<span class="nc" id="L179">        Pattern p = Pattern.compile(&quot;\&quot;&quot; + campo + &quot;\&quot;\\s*:\\s*\&quot;?([^,\&quot;}]+)\&quot;?&quot;);</span>
+<span class="nc" id="L180">        Matcher m = p.matcher(texto);</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (m.find()) {</span>
+<span class="nc" id="L183">            String valor = m.group(1).trim();</span>
+<span class="nc" id="L184">            return valor.replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
+        }
+
+<span class="nc" id="L187">        return &quot;N/A&quot;;</span>
+    }
+
+    private void trasladarPresoSeleccionado() {
+<span class="nc" id="L191">        int fila = tablaPresos.getSelectedRow();</span>
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (fila == -1) {</span>
+<span class="nc" id="L194">            JOptionPane.showMessageDialog(this, &quot;Selecciona un preso para trasladar.&quot;);</span>
+<span class="nc" id="L195">            return;</span>
+        }
+
+<span class="nc" id="L198">        String idPreso = modelo.getValueAt(fila, 0).toString();</span>
+<span class="nc" id="L199">        String nombrePreso = modelo.getValueAt(fila, 1).toString();</span>
+<span class="nc" id="L200">        String carcelActual = modelo.getValueAt(fila, 4).toString();</span>
+
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
+<span class="nc" id="L203">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido para operar.&quot;);</span>
+<span class="nc" id="L204">            return;</span>
+        }
+
+<span class="nc" id="L207">        List&lt;String&gt; carceles = obtenerNombresCarceles();</span>
+
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (carceles.isEmpty()) {</span>
+<span class="nc" id="L210">            JOptionPane.showMessageDialog(this, &quot;No se pudieron cargar las cárceles de destino.&quot;);</span>
+<span class="nc" id="L211">            return;</span>
+        }
+
+<span class="nc" id="L214">        String carcelDestino = (String) JOptionPane.showInputDialog(</span>
+                this,
+                &quot;Selecciona la cárcel de destino para &quot; + nombrePreso + &quot;:&quot;,
+                &quot;Trasladar Preso&quot;,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+<span class="nc" id="L220">                carceles.toArray(),</span>
+                carcelActual
+        );
+
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (carcelDestino != null) {</span>
+<span class="nc" id="L225">            ejecutarTraslado(idPreso, carcelDestino);</span>
+        }
+<span class="nc" id="L227">    }</span>
+
+    private List&lt;String&gt; obtenerNombresCarceles() {
+<span class="nc" id="L230">        List&lt;String&gt; nombres = new ArrayList&lt;&gt;();</span>
+
+        try {
+<span class="nc" id="L233">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L234">                    .uri(URI.create(CARCEL_URL))</span>
+<span class="nc" id="L235">                    .GET()</span>
+<span class="nc" id="L236">                    .build();</span>
+
+<span class="nc" id="L238">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc" id="L240">            Pattern p = Pattern.compile(&quot;\&quot;nombre\&quot;\\s*:\\s*\&quot;(.*?)\&quot;&quot;);</span>
+<span class="nc" id="L241">            Matcher m = p.matcher(response.body());</span>
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">            while (m.find()) {</span>
+<span class="nc" id="L244">                nombres.add(m.group(1));</span>
+            }
+
+<span class="nc" id="L247">        } catch (Exception ex) {</span>
+<span class="nc" id="L248">            System.err.println(&quot;Error obteniendo cárceles: &quot; + ex.getMessage());</span>
+<span class="nc" id="L249">        }</span>
+
+<span class="nc" id="L251">        return nombres;</span>
+    }
+
+    private void ejecutarTraslado(String idPreso, String nombreCarcel) {
+        try {
+<span class="nc" id="L256">            String carcelCodificada = URLEncoder.encode(nombreCarcel, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L257">            String urlFinal = BASE_URL + &quot;/trasladar/&quot; + idPreso + &quot;/&quot; + carcelCodificada;</span>
+
+<span class="nc" id="L259">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L260">                    .uri(URI.create(urlFinal))</span>
+<span class="nc" id="L261">                    .POST(HttpRequest.BodyPublishers.noBody())</span>
+<span class="nc" id="L262">                    .build();</span>
+
+<span class="nc" id="L264">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L266" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L267">                JOptionPane.showMessageDialog(this, &quot;Traslado exitoso a &quot; + nombreCarcel);</span>
+<span class="nc" id="L268">                cargarPresos();</span>
+            } else {
+<span class="nc" id="L270">                JOptionPane.showMessageDialog(this, &quot;Error en el traslado: &quot; + response.body());</span>
+            }
+
+<span class="nc" id="L273">        } catch (Exception ex) {</span>
+<span class="nc" id="L274">            JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
+<span class="nc" id="L275">        }</span>
+<span class="nc" id="L276">    }</span>
+
+    private void modificarCondenaSeleccionado() {
+<span class="nc" id="L279">        int fila = tablaPresos.getSelectedRow();</span>
+
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (fila == -1) {</span>
+<span class="nc" id="L282">            JOptionPane.showMessageDialog(this, &quot;Selecciona un preso para modificar su condena.&quot;);</span>
+<span class="nc" id="L283">            return;</span>
+        }
+
+<span class="nc" id="L286">        String idPreso = modelo.getValueAt(fila, 0).toString();</span>
+<span class="nc" id="L287">        String nombrePreso = modelo.getValueAt(fila, 1).toString();</span>
+<span class="nc" id="L288">        String condenaActual = modelo.getValueAt(fila, 3).toString();</span>
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
+<span class="nc" id="L291">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
+<span class="nc" id="L292">            return;</span>
+        }
+
+<span class="nc" id="L295">        String nuevaCondenaTexto = JOptionPane.showInputDialog(</span>
+                this,
+                &quot;Introduce la nueva condena para &quot; + nombrePreso + &quot;:\nCondena actual: &quot; + condenaActual + &quot; años&quot;,
+                &quot;Modificar condena&quot;,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+<span class="nc bnc" id="L302" title="All 2 branches missed.">        if (nuevaCondenaTexto == null) {</span>
+<span class="nc" id="L303">            return;</span>
+        }
+
+<span class="nc" id="L306">        nuevaCondenaTexto = nuevaCondenaTexto.trim();</span>
+
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        if (nuevaCondenaTexto.isEmpty()) {</span>
+<span class="nc" id="L309">            JOptionPane.showMessageDialog(this, &quot;La condena no puede estar vacía.&quot;);</span>
+<span class="nc" id="L310">            return;</span>
+        }
+
+        int nuevaCondena;
+
+        try {
+<span class="nc" id="L316">            nuevaCondena = Integer.parseInt(nuevaCondenaTexto);</span>
+<span class="nc" id="L317">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L318">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser un número entero.&quot;);</span>
+<span class="nc" id="L319">            return;</span>
+<span class="nc" id="L320">        }</span>
+
+<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (nuevaCondena &lt;= 0) {</span>
+<span class="nc" id="L323">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser mayor que 0.&quot;);</span>
+<span class="nc" id="L324">            return;</span>
+        }
+
+<span class="nc" id="L327">        ejecutarModificacionCondena(idPreso, nuevaCondena);</span>
+<span class="nc" id="L328">    }</span>
+
+    private void ejecutarModificacionCondena(String idPreso, int nuevaCondena) {
+        try {
+<span class="nc" id="L332">            String urlFinal = BASE_URL + &quot;/modificar-condena/&quot; + idPreso + &quot;/&quot; + nuevaCondena;</span>
+
+<span class="nc" id="L334">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L335">                    .uri(URI.create(urlFinal))</span>
+<span class="nc" id="L336">                    .POST(HttpRequest.BodyPublishers.noBody())</span>
+<span class="nc" id="L337">                    .build();</span>
+
+<span class="nc" id="L339">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L341" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L342">                JOptionPane.showMessageDialog(this, &quot;Condena modificada correctamente.&quot;);</span>
+<span class="nc" id="L343">                cargarPresos();</span>
+            } else {
+<span class="nc" id="L345">                JOptionPane.showMessageDialog(this, &quot;No se pudo modificar la condena: &quot; + response.body());</span>
+            }
+
+<span class="nc" id="L348">        } catch (Exception ex) {</span>
+<span class="nc" id="L349">            JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
+<span class="nc" id="L350">        }</span>
+<span class="nc" id="L351">    }</span>
+
+    private void eliminarPresoSeleccionado() {
+<span class="nc" id="L354">        int fila = tablaPresos.getSelectedRow();</span>
+
+<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (fila == -1) {</span>
+<span class="nc" id="L357">            JOptionPane.showMessageDialog(this, &quot;Selecciona un preso para eliminar.&quot;);</span>
+<span class="nc" id="L358">            return;</span>
+        }
+
+<span class="nc" id="L361">        String id = modelo.getValueAt(fila, 0).toString();</span>
+
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        if (id.equals(&quot;N/A&quot;)) {</span>
+<span class="nc" id="L364">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
+<span class="nc" id="L365">            return;</span>
+        }
+
+<span class="nc" id="L368">        int confirm = JOptionPane.showConfirmDialog(</span>
+                this,
+                &quot;¿Eliminar preso con ID &quot; + id + &quot;?&quot;,
+                &quot;Confirmar eliminación&quot;,
+                JOptionPane.YES_NO_OPTION
+        );
+
+<span class="nc bnc" id="L375" title="All 2 branches missed.">        if (confirm == JOptionPane.YES_OPTION) {</span>
+            try {
+<span class="nc" id="L377">                HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L378">                        .uri(URI.create(BASE_URL + &quot;/eliminar/&quot; + id))</span>
+<span class="nc" id="L379">                        .DELETE()</span>
+<span class="nc" id="L380">                        .build();</span>
+
+<span class="nc" id="L382">                HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L384" title="All 2 branches missed.">                if (response.statusCode() == 200) {</span>
+<span class="nc" id="L385">                    JOptionPane.showMessageDialog(this, &quot;Preso eliminado correctamente.&quot;);</span>
+<span class="nc" id="L386">                    cargarPresos();</span>
+                } else {
+<span class="nc" id="L388">                    JOptionPane.showMessageDialog(this, &quot;No se pudo eliminar: &quot; + response.body());</span>
+                }
+
+<span class="nc" id="L391">            } catch (Exception ex) {</span>
+<span class="nc" id="L392">                JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
+<span class="nc" id="L393">            }</span>
+        }
+<span class="nc" id="L395">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "Creating initial test data..."
 
-          docker exec mysql-container mysql -umyuser -psecret mydatabase <<'EOF'
+          docker exec mysql-container mysql -umyuser -psecret mydatabase <<'SQLEOF'
 
           -- CARCEL
           INSERT INTO carcel (id_carcel, nombre, descripcion, localidad, capacidad)
@@ -69,7 +69,7 @@ jobs:
           VALUES (
               1,
               'Juan',
-              'Pérez',
+              'Perez',
               '1990-01-01',
               10,
               '2024-01-01',
@@ -80,7 +80,7 @@ jobs:
           INSERT INTO preso_delitos (preso_id, delito)
           VALUES (1, 'ROBO');
 
-          EOF
+          SQLEOF
 
       - name: Install tools (Doxygen + Graphviz + Pandoc)
         run: |
@@ -136,3 +136,15 @@ jobs:
           git add -f docs
           git commit -m "Update docs [CI skip]" || echo "No changes"
           git push
+
+      # Deploy Maven site output to gh-pages/site/
+      # This makes JaCoCo and Surefire links work on GitHub Pages
+      - name: Deploy site to gh-pages/site/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./JailQ/target/site
+          destination_dir: site
+          publish_branch: gh-pages
+          keep_files: true
+          commit_message: "docs: actualizar Maven site [skip ci]"
