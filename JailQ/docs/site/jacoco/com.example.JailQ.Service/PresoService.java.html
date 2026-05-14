@@ -129,8 +129,8 @@ public class PresoService {
         }
 
 
-<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        if (nuevoPreso.getCarcel() == null || nuevoPreso.getCarcel().getIdCarcel() == null) {</span>
-<span class="nc" id="L133">            throw new IllegalArgumentException(&quot;La cárcel es obligatoria.&quot;);</span>
+<span class="pc bpc" id="L132" title="1 of 4 branches missed.">        if (nuevoPreso.getCarcel() == null || nuevoPreso.getCarcel().getIdCarcel() == null) {</span>
+<span class="fc" id="L133">            throw new IllegalArgumentException(&quot;La cárcel es obligatoria.&quot;);</span>
         }
 
         // 1. Buscamos la cárcel completa en la base de datos usando el ID
@@ -209,19 +209,19 @@ public class PresoService {
  * @return lista de presos que contienen ese delito
  */
 public List&lt;Preso&gt; filtrarPorDelito(Delito delito) {
-<span class="nc bnc" id="L212" title="All 2 branches missed.">    if (delito == null) {</span>
-<span class="nc" id="L213">        throw new IllegalArgumentException(&quot;El delito no puede ser nulo.&quot;);</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">    if (delito == null) {</span>
+<span class="fc" id="L213">        throw new IllegalArgumentException(&quot;El delito no puede ser nulo.&quot;);</span>
     }
 
-<span class="nc" id="L216">    List&lt;Preso&gt; presosFiltrados = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L216">    List&lt;Preso&gt; presosFiltrados = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L218" title="All 2 branches missed.">    for (Preso preso : presoDAO.findAll()) {</span>
-<span class="nc bnc" id="L219" title="All 4 branches missed.">        if (preso.getDelitos() != null &amp;&amp; preso.getDelitos().contains(delito)) {</span>
-<span class="nc" id="L220">            presosFiltrados.add(preso);</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">    for (Preso preso : presoDAO.findAll()) {</span>
+<span class="pc bpc" id="L219" title="1 of 4 branches missed.">        if (preso.getDelitos() != null &amp;&amp; preso.getDelitos().contains(delito)) {</span>
+<span class="fc" id="L220">            presosFiltrados.add(preso);</span>
         }
-<span class="nc" id="L222">    }</span>
+<span class="fc" id="L222">    }</span>
 
-<span class="nc" id="L224">    return presosFiltrados;</span>
+<span class="fc" id="L224">    return presosFiltrados;</span>
 }
 /**
  * Modifica la condena de un preso existente.

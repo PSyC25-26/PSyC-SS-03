@@ -47,15 +47,15 @@ public class CarcelService {
      * * @return Un mapa donde la clave es el nombre de la cárcel y el valor es la cantidad de presos.
      */
     public Map&lt;String, Long&gt; obtenerOcupacionPorCarcel() {
-<span class="nc" id="L50">        Map&lt;String, Long&gt; estadisticas = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L51">        Iterable&lt;Carcel&gt; todasLasCarceles = carcelDAO.findAll();</span>
+<span class="fc" id="L50">        Map&lt;String, Long&gt; estadisticas = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L51">        Iterable&lt;Carcel&gt; todasLasCarceles = carcelDAO.findAll();</span>
         
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (Carcel carcel : todasLasCarceles) {</span>
-<span class="nc" id="L54">            long totalPresos = presoDAO.countByCarcel(carcel);</span>
-<span class="nc" id="L55">            estadisticas.put(carcel.getNombre(), totalPresos);</span>
-<span class="nc" id="L56">        }</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (Carcel carcel : todasLasCarceles) {</span>
+<span class="fc" id="L54">            long totalPresos = presoDAO.countByCarcel(carcel);</span>
+<span class="fc" id="L55">            estadisticas.put(carcel.getNombre(), totalPresos);</span>
+<span class="fc" id="L56">        }</span>
         
-<span class="nc" id="L58">        return estadisticas;</span>
+<span class="fc" id="L58">        return estadisticas;</span>
     }
 
 

@@ -19,10 +19,10 @@
 public class SessionManager {
     private static volatile SessionManager instance;
 
-<span class="nc" id="L22">    private String username   = null;</span>
-<span class="nc" id="L23">    private String tipoCuenta = null;</span>
+<span class="fc" id="L22">    private String username   = null;</span>
+<span class="fc" id="L23">    private String tipoCuenta = null;</span>
 
-<span class="nc" id="L25">    private SessionManager() { }</span>
+<span class="fc" id="L25">    private SessionManager() { }</span>
 
     /**
      * Devuelve la instancia única de SessionManager.
@@ -31,14 +31,14 @@ public class SessionManager {
      * @return la única instancia del singleton
      */
     public static SessionManager getInstance() {
-<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (instance == null) {</span>
-<span class="nc" id="L35">            synchronized (SessionManager.class) {</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">                if (instance == null) {</span>
-<span class="nc" id="L37">                    instance = new SessionManager();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L35">            synchronized (SessionManager.class) {</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">                if (instance == null) {</span>
+<span class="fc" id="L37">                    instance = new SessionManager();</span>
                 }
-<span class="nc" id="L39">            }</span>
+<span class="fc" id="L39">            }</span>
         }
-<span class="nc" id="L41">        return instance;</span>
+<span class="fc" id="L41">        return instance;</span>
     }
 
     /**
@@ -48,25 +48,25 @@ public class SessionManager {
      * @param tipoCuenta tipo de cuenta (POLICIA, FAMILIA, GUBERNAMENTAL)
      */
     public synchronized void iniciarSesion(String username, String tipoCuenta) {
-<span class="nc" id="L51">        this.username   = username;</span>
-<span class="nc" id="L52">        this.tipoCuenta = tipoCuenta;</span>
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L51">        this.username   = username;</span>
+<span class="fc" id="L52">        this.tipoCuenta = tipoCuenta;</span>
+<span class="fc" id="L53">    }</span>
 
     /**
      * Cierra la sesión actual, limpiando username y tipoCuenta.
      */
     public synchronized void cerrarSesion() {
-<span class="nc" id="L59">        this.username   = null;</span>
-<span class="nc" id="L60">        this.tipoCuenta = null;</span>
-<span class="nc" id="L61">    }</span>
+<span class="fc" id="L59">        this.username   = null;</span>
+<span class="fc" id="L60">        this.tipoCuenta = null;</span>
+<span class="fc" id="L61">    }</span>
 
     /** @return nombre del usuario autenticado, o null si no hay sesión */
-<span class="nc" id="L64">    public String getUsername()   { return username;   }</span>
+<span class="fc" id="L64">    public String getUsername()   { return username;   }</span>
 
     /** @return tipo de cuenta activo, o null si no hay sesión */
-<span class="nc" id="L67">    public String getTipoCuenta() { return tipoCuenta; }</span>
+<span class="fc" id="L67">    public String getTipoCuenta() { return tipoCuenta; }</span>
 
     /** @return true si hay una sesión activa */
-<span class="nc bnc" id="L70" title="All 2 branches missed.">    public boolean haySesion()    { return username != null; }</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    public boolean haySesion()    { return username != null; }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
