@@ -293,9 +293,9 @@ and execution time.</p>
 </section>
 <section id="performance-test-report">
 <h2>Performance — Test Report<a class="headerlink" href="#performance-test-report" title="Link to this heading">¶</a></h2>
-<p>Generated only when running the <code class="docutils literal notranslate"><span class="pre">performance</span></code> Maven profile. Shows throughput
+<p>Generated when running the <code class="docutils literal notranslate"><span class="pre">performance</span></code> Maven profile. Shows throughput
 and latency for endpoints annotated with <code class="docutils literal notranslate"><span class="pre">&#64;JUnitPerfTest</span></code>.</p>
-<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../site/reports/perf-report.html">Performance Report</a></p>
+<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../performance/index.html">Performance Report</a></p>
 </section>
 <section id="doxygen-technical-reference">
 <h2>Doxygen — Technical Reference<a class="headerlink" href="#doxygen-technical-reference" title="Link to this heading">¶</a></h2>
@@ -307,13 +307,71 @@ with collaboration diagrams and navigable source code.</p>
 <section id="generating-all-reports-locally">
 <h2>Generating All Reports Locally<a class="headerlink" href="#generating-all-reports-locally" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unit tests + JaCoCo</span>
+<span class="nb">cd</span><span class="w"> </span>JailQ
 mvn<span class="w"> </span><span class="nb">test</span><span class="w"> </span>jacoco:report
+
+<span class="c1"># Full Maven site (includes Surefire report)</span>
+mvn<span class="w"> </span>site
 
 <span class="c1"># Performance tests</span>
 mvn<span class="w"> </span>-Pperformance<span class="w"> </span>integration-test
 
 <span class="c1"># Generate Doxygen</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>target/doxygen
+doxygen<span class="w"> </span>src/main/resources/Doxyfile
+
+<span class="c1"># Build Sphinx</span>
+<span class="nb">cd</span><span class="w"> </span>../docs-sphinx
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span><span class="nb">source</span><span class="w"> </span>_build/html
+<span class="sb">```</span><span class="c1"># Test and Quality Reports</span>
+
+All<span class="w"> </span>reports<span class="w"> </span>below<span class="w"> </span>are<span class="w"> </span>generated<span class="w"> </span>automatically<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>CI/CD<span class="w"> </span>pipeline<span class="w"> </span>and<span class="w"> </span>published
+alongside<span class="w"> </span>this<span class="w"> </span>Sphinx<span class="w"> </span>portal<span class="w"> </span>on<span class="w"> </span>GitHub<span class="w"> </span>Pages.
+
+<span class="c1">## JaCoCo — Code Coverage</span>
+
+JaCoCo<span class="w"> </span>instruments<span class="w"> </span>the<span class="w"> </span>bytecode<span class="w"> </span>and<span class="w"> </span>measures<span class="w"> </span>which<span class="w"> </span>lines,<span class="w"> </span>branches,<span class="w"> </span>and<span class="w"> </span>methods
+are<span class="w"> </span>exercised<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span><span class="nb">test</span><span class="w"> </span>suite.
+
+**Direct<span class="w"> </span>link<span class="w"> </span>-&gt;**<span class="w"> </span><span class="o">[</span>JaCoCo<span class="w"> </span>Coverage<span class="w"> </span>Report<span class="o">](</span>../site/jacoco/index.html<span class="o">)</span>
+
+<span class="c1">## Surefire — Unit Test Report</span>
+
+The<span class="w"> </span>Surefire<span class="w"> </span>plugin<span class="w"> </span>records<span class="w"> </span>every<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">case</span><span class="w"> </span>result<span class="w"> </span><span class="o">(</span>pass<span class="w"> </span>/<span class="w"> </span>fail<span class="w"> </span>/<span class="w"> </span>skipped<span class="o">)</span>
+and<span class="w"> </span>execution<span class="w"> </span>time.
+
+**Direct<span class="w"> </span>link<span class="w"> </span>-&gt;**<span class="w"> </span><span class="o">[</span>Surefire<span class="w"> </span>Unit<span class="w"> </span>Test<span class="w"> </span>Report<span class="o">](</span>../site/surefire-report.html<span class="o">)</span>
+
+<span class="c1">## Performance — Test Report</span>
+
+Generated<span class="w"> </span>when<span class="w"> </span>running<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>performance<span class="sb">`</span><span class="w"> </span>Maven<span class="w"> </span>profile.<span class="w"> </span>Shows<span class="w"> </span>throughput
+and<span class="w"> </span>latency<span class="w"> </span><span class="k">for</span><span class="w"> </span>endpoints<span class="w"> </span>annotated<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>@JUnitPerfTest<span class="sb">`</span>.
+
+**Direct<span class="w"> </span>link<span class="w"> </span>-&gt;**<span class="w"> </span><span class="o">[</span>Performance<span class="w"> </span>Report<span class="o">](</span>../performance/index.html<span class="o">)</span>
+
+<span class="c1">## Doxygen — Technical Reference</span>
+
+Doxygen<span class="w"> </span>parses<span class="w"> </span>the<span class="w"> </span>Java<span class="w"> </span><span class="nb">source</span><span class="w"> </span>and<span class="w"> </span>produces<span class="w"> </span>a<span class="w"> </span>cross-referenced<span class="w"> </span>HTML<span class="w"> </span>reference
+with<span class="w"> </span>collaboration<span class="w"> </span>diagrams<span class="w"> </span>and<span class="w"> </span>navigable<span class="w"> </span><span class="nb">source</span><span class="w"> </span>code.
+
+**Direct<span class="w"> </span>link<span class="w"> </span>-&gt;**<span class="w"> </span><span class="o">[</span>Doxygen<span class="w"> </span>HTML<span class="w"> </span>Reference<span class="o">](</span>../doxygen/index.html<span class="o">)</span>
+
+---
+
+<span class="c1">## Generating All Reports Locally</span>
+
+<span class="sb">```</span>bash
+<span class="c1"># Unit tests + JaCoCo</span>
 <span class="nb">cd</span><span class="w"> </span>JailQ
+mvn<span class="w"> </span><span class="nb">test</span><span class="w"> </span>jacoco:report
+
+<span class="c1"># Full Maven site (includes Surefire report)</span>
+mvn<span class="w"> </span>site
+
+<span class="c1"># Performance tests</span>
+mvn<span class="w"> </span>-Pperformance<span class="w"> </span>integration-test
+
+<span class="c1"># Generate Doxygen</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span>target/doxygen
 doxygen<span class="w"> </span>src/main/resources/Doxyfile
 
