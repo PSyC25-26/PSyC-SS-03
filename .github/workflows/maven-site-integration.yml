@@ -21,6 +21,9 @@ jobs:
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: secret
       DISPLAY: :99
+      # JAVA_TOOL_OPTIONS is inherited by all JVM processes including Surefire forks
+      # This ensures Swing tests can create windows via Xvfb
+      JAVA_TOOL_OPTIONS: -Djava.awt.headless=false
 
     steps:
       - name: Checkout code
@@ -89,11 +92,12 @@ jobs:
           sudo apt-get install -y doxygen graphviz pandoc xvfb
 
       # Virtual display required for Swing GUI tests
+      # 1920x1080 to ensure all windows fit within screen boundaries
       - name: Set up virtual display (Xvfb)
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1920x1080x24 &
           sleep 2
-          echo "Xvfb started on display :99"
+          echo "Xvfb started on display :99 at 1920x1080"
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
