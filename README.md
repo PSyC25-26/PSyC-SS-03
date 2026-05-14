@@ -94,7 +94,7 @@ Se proporciona el comando para ejecutar los test:
 1. Tests: `mvn test`
 3. Tests específicos: `mvn -Dtest=CarcelServiceTest,CuentaLoginTest test`
 4. Test unitarios: `mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test`
-5. Test de integración: `mvn -Dtest=JailQIntegrationTest test`
+5. Test de integración: `mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test`
 6. Test de performance: `mvn -Dtest=JailQPerformanceTest test`
 
 Para conseguir el reporte de covertura de JaCoCo: `mvn clean test jacoco:report`
