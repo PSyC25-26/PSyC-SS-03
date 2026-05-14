@@ -8,6 +8,12 @@
 - [Para usar la aplicación](#Para_usar_la_aplicación)
 - [Para ejecutar los test](#Para_ejecutar_los_test)
 
+## Documentación técnica
+Next you can find the pages corresponding to:
+
+1. [Technical documentation](https://dipina.github.io/SpringBootLibrary/doxygen/html/) created with Doxygen
+2. [Test reports](https://dipina.github.io/SpringBootLibrary/site/) created after running Coberture, Unit test, Performance and Integration tests
+   
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
 
