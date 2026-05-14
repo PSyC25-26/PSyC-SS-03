@@ -6,8 +6,8 @@ import sys
 
 # -- Project information -----------------------------------------------------
 project   = 'JailQ'
-copyright = '2025, PSyC25-26 | Universidad de Deusto'
-author    = 'Equipo 3'
+copyright = '2025, PSyC25-26 – Universidad de Deusto'
+author    = 'Equipo PSyC-SS-03'
 release   = '0.0.2'
 
 # -- General configuration ---------------------------------------------------
@@ -30,13 +30,14 @@ source_suffix = {
 html_theme       = 'furo'
 html_static_path = ['_static']
 html_title       = 'JailQ Documentation'
-html_logo        = None
-html_favicon     = None
 
-
-
+# -- MyST options ------------------------------------------------------------
 myst_enable_extensions = [
     "colon_fence",
     "deflist",
     "tasklist",
 ]
+
+# Treat all links as external URLs so relative links to Doxygen/site
+# are rendered as plain <a href> tags and work correctly on GitHub Pages
+myst_all_links_external = True

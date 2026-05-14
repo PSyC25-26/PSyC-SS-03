@@ -32,7 +32,7 @@ jobs:
       - name: Build Sphinx HTML documentation
         run: |
           cd docs-sphinx
-          make html
+          sphinx-build -b html source _build/html
 
       # Deploy only the Sphinx HTML into the sphinx/ subfolder of gh-pages.
       # keep_files: true ensures Doxygen output is NOT deleted.
@@ -43,3 +43,15 @@ jobs:
           publish_dir: ./docs-sphinx/_build/html
           destination_dir: sphinx
           keep_files: true
+          commit_message: "docs: actualizar portal Sphinx [skip ci]"
+
+      # Deploy docs/index.html to the root of gh-pages as the landing page.
+      # keep_files: true ensures Sphinx and Doxygen output are NOT deleted.
+      - name: Deploy landing page to gh-pages root
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          destination_dir: .
+          keep_files: true
+          commit_message: "docs: actualizar landing page [skip ci]"

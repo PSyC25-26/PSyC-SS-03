@@ -5,10 +5,9 @@ comments in the source code and published as part of the GitHub Pages deployment
 
 ## Accessing the Documentation
 
-```{important}
 **[-> Open Doxygen Documentation](../doxygen/index.html)**
+
 *(Link works when browsing the published GitHub Pages site)*
-```
 
 ## Key Documented Classes
 
