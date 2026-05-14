@@ -137,22 +137,19 @@ jobs:
           git commit -m "Update docs [CI skip]" || echo "No changes"
           git push
 
-      - name: Deploy site to gh-pages/site/
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./JailQ/target/site
-          destination_dir: site
-          publish_branch: gh-pages
-          keep_files: true
-          commit_message: "docs: actualizar Maven site [skip ci]"
+      - name: Prepare gh-pages output
+        run: |
+          mkdir -p gh-pages-output/site
+          mkdir -p gh-pages-output/performance
+          cp -r target/site/* gh-pages-output/site/ || true
+          cp -r target/junitperf/* gh-pages-output/performance/ || true
 
-      - name: Deploy performance report to gh-pages/performance/
+      - name: Deploy site and performance to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./JailQ/target/junitperf
-          destination_dir: performance
+          publish_dir: ./JailQ/gh-pages-output
+          destination_dir: .
           publish_branch: gh-pages
           keep_files: true
-          commit_message: "docs: actualizar performance report [skip ci]"
+          commit_message: "docs: actualizar site y performance [skip ci]"
