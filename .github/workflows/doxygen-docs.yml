@@ -27,31 +27,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2. Java 17 con caché Maven
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: maven
-
-      # 3. Instalar Doxygen y Graphviz
+      # 2. Instalar Doxygen y Graphviz
       - name: Instalar Doxygen y Graphviz
         run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
 
-      # 4. Verificar que doxygen está en PATH
-      - name: Verificar doxygen en PATH
-        run: which doxygen && doxygen --version
-
-      # 5. Generar documentación con Maven
-      # Se fuerza el PATH para asegurar que el plugin encuentra doxygen
-      - name: Generar documentación Doxygen
-        working-directory: JailQ
-        env:
-          PATH: /usr/bin:${{ env.PATH }}
+      # 3. Verificar versiones
+      - name: Verificar versiones
         run: |
           doxygen --version
-          mvn com.soebes.maven.plugins:doxygen-maven-plugin:1.1.0:report --no-transfer-progress
+          dot -version
+
+      # 4. Generar documentación llamando a Doxygen directamente
+      # Sin Maven — más simple y fiable
+      - name: Generar documentación Doxygen
+        working-directory: JailQ
+        run: doxygen src/main/resources/Doxyfile
+
+      # 5. Verificar que se generó el HTML
+      - name: Verificar salida
+        run: ls JailQ/target/doxygen/html/ | head -10
 
       # 6. Publicar en gh-pages/doxygen/
       - name: Deploy a gh-pages/doxygen/
