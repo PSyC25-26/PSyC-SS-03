@@ -22,7 +22,7 @@ and execution time.
 Generated when running the `performance` Maven profile. Shows throughput
 and latency for endpoints annotated with `@JUnitPerfTest`.
 
-**Direct link ->** [Performance Report](../performance/index.html)
+**Direct link ->** [Performance Report](../performance/report.html)
 
 ## Doxygen — Technical Reference
 
