@@ -104,14 +104,14 @@ jobs:
 
       #- name: Run Integration Tests + Sonar
         #run: |
-          #mvn -Pintegration integration-test \
+          #mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test \
           #org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           #-Dsonar.projectKey=aitanagf
         #env:
           #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Run Performance Tests
-        run: mvn -Pperformance integration-test
+        run: mvn -Dtest=JailQPerformanceTest test
 
       - name: Generate Maven Site
         run: mvn site
