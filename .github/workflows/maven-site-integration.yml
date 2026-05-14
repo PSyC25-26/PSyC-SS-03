@@ -20,6 +20,7 @@ jobs:
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3307/mydatabase?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: secret
+      DISPLAY: :99
 
     steps:
       - name: Checkout code
@@ -82,10 +83,17 @@ jobs:
 
           SQLEOF
 
-      - name: Install tools (Doxygen + Graphviz + Pandoc)
+      - name: Install tools (Doxygen + Graphviz + Pandoc + Xvfb)
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz pandoc
+          sudo apt-get install -y doxygen graphviz pandoc xvfb
+
+      # Virtual display required for Swing GUI tests
+      - name: Set up virtual display (Xvfb)
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          echo "Xvfb started on display :99"
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
@@ -94,24 +102,32 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
-      #- name: Start Swing application
-        #run: |
-          #mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
-          #echo $! > app.pid
+      # Start Spring Boot app in background - required for GUI and performance tests
+      - name: Start Spring Boot application
+        run: |
+          mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
+          echo $! > app.pid
 
+      # Wait for Spring Boot to be ready before running any tests
+      - name: Wait for Spring Boot to start
+        run: |
+          echo "Waiting for Spring Boot..."
+          until curl -s http://localhost:8080/carcel > /dev/null 2>&1; do
+            sleep 2
+          done
+          echo "Spring Boot is ready"
+
+      # Unit tests only (no GUI, no integration, no performance)
       - name: Run Unit tests + JaCoCo
         run: mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test jacoco:report
 
-      #- name: Run Integration Tests + Sonar
-        #run: |
-          #mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test \
-          #org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          #-Dsonar.projectKey=aitanagf
-        #env:
-          #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Integration + GUI tests (require Xvfb + running app + seeded DB)
+      - name: Run Integration and GUI tests
+        run: mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test
 
-      #- name: Run Performance Tests
-        #run: mvn -Dtest=JailQPerformanceTest test
+      # Performance tests (require running app)
+      - name: Run Performance Tests
+        run: mvn -Dtest=JailQPerformanceTest test
 
       - name: Generate Maven Site
         run: mvn site
@@ -137,6 +153,8 @@ jobs:
           git commit -m "Update docs [CI skip]" || echo "No changes"
           git push
 
+      # Combine site and performance into one folder to avoid
+      # gh-pages push conflicts from multiple sequential deploy steps
       - name: Prepare gh-pages output
         run: |
           mkdir -p gh-pages-output/site
