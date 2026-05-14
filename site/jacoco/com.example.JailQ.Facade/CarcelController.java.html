@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 @RestController
 @RequestMapping(&quot;/carcel&quot;)
-<span class="nc" id="L33">public class CarcelController {</span>
+<span class="fc" id="L33">public class CarcelController {</span>
 
     /** Logger para registrar eventos y errores en el controlador */
-<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(CarcelController.class);</span>
+<span class="fc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(CarcelController.class);</span>
 
     /** Servicio que contiene la lógica de negocio de cárceles */
     @Autowired
@@ -54,16 +54,16 @@ import org.slf4j.LoggerFactory;
      */
     @PostMapping(&quot;/crear&quot;)
     public ResponseEntity&lt;?&gt; crearCarcel(@RequestBody Carcel carcel) {
-<span class="nc" id="L57">        logger.info(&quot;Recibida petición POST en /carcel/crear para la cárcel: {}&quot;, carcel.getNombre());</span>
+<span class="fc" id="L57">        logger.info(&quot;Recibida petición POST en /carcel/crear para la cárcel: {}&quot;, carcel.getNombre());</span>
         try {
-<span class="nc" id="L59">            Carcel guardada = carcelService.anadirCarcel(carcel);</span>
-<span class="nc" id="L60">            return new ResponseEntity&lt;&gt;(guardada, HttpStatus.CREATED);</span>
-<span class="nc" id="L61">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L62">            logger.warn(&quot;Petición rechazada al crear cárcel (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L63">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L64">        } catch (Exception e) {</span>
-<span class="nc" id="L65">            logger.error(&quot;Error interno (500) al crear la cárcel: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L66">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L59">            Carcel guardada = carcelService.anadirCarcel(carcel);</span>
+<span class="fc" id="L60">            return new ResponseEntity&lt;&gt;(guardada, HttpStatus.CREATED);</span>
+<span class="fc" id="L61">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L62">            logger.warn(&quot;Petición rechazada al crear cárcel (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="fc" id="L63">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L64">        } catch (Exception e) {</span>
+<span class="fc" id="L65">            logger.error(&quot;Error interno (500) al crear la cárcel: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L66">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -82,22 +82,22 @@ import org.slf4j.LoggerFactory;
      */
     @DeleteMapping(&quot;/eliminar/{id}&quot;)
     public ResponseEntity&lt;?&gt; eliminarCarcel(@PathVariable Integer id) {
-<span class="nc" id="L85">        logger.info(&quot;Recibida petición DELETE en /carcel/eliminar/{}&quot;, id);</span>
+<span class="fc" id="L85">        logger.info(&quot;Recibida petición DELETE en /carcel/eliminar/{}&quot;, id);</span>
         try {
-<span class="nc" id="L87">            boolean eliminado = carcelService.eliminarCarcel(id);</span>
+<span class="fc" id="L87">            boolean eliminado = carcelService.eliminarCarcel(id);</span>
 
-<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (eliminado) {</span>
-<span class="nc" id="L90">                return new ResponseEntity&lt;&gt;(&quot;Cárcel eliminada correctamente.&quot;, HttpStatus.OK);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (eliminado) {</span>
+<span class="fc" id="L90">                return new ResponseEntity&lt;&gt;(&quot;Cárcel eliminada correctamente.&quot;, HttpStatus.OK);</span>
             } else {
-<span class="nc" id="L92">                logger.warn(&quot;No se pudo eliminar, cárcel no encontrada con ID: {}&quot;, id);</span>
-<span class="nc" id="L93">                return new ResponseEntity&lt;&gt;(&quot;No se encontró la cárcel con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L92">                logger.warn(&quot;No se pudo eliminar, cárcel no encontrada con ID: {}&quot;, id);</span>
+<span class="fc" id="L93">                return new ResponseEntity&lt;&gt;(&quot;No se encontró la cárcel con ID: &quot; + id, HttpStatus.NOT_FOUND);</span>
             }
 <span class="nc" id="L95">        } catch (IllegalArgumentException e) {</span>
 <span class="nc" id="L96">            logger.warn(&quot;Petición rechazada al eliminar cárcel (400 Bad Request): {}&quot;, e.getMessage());</span>
 <span class="nc" id="L97">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
-<span class="nc" id="L98">        } catch (Exception e) {</span>
-<span class="nc" id="L99">            logger.error(&quot;Error interno (500) al eliminar la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L100">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L98">        } catch (Exception e) {</span>
+<span class="fc" id="L99">            logger.error(&quot;Error interno (500) al eliminar la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L100">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -110,12 +110,12 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping
     public ResponseEntity&lt;?&gt; obtenerCarceles() {
-<span class="nc" id="L113">        logger.info(&quot;Recibida petición GET en /carcel para obtener todas las cárceles&quot;);</span>
+<span class="fc" id="L113">        logger.info(&quot;Recibida petición GET en /carcel para obtener todas las cárceles&quot;);</span>
         try {
-<span class="nc" id="L115">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarceles(), HttpStatus.OK);</span>
-<span class="nc" id="L116">        } catch (Exception e) {</span>
-<span class="nc" id="L117">            logger.error(&quot;Error interno (500) al obtener la lista de cárceles: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L118">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L115">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarceles(), HttpStatus.OK);</span>
+<span class="fc" id="L116">        } catch (Exception e) {</span>
+<span class="fc" id="L117">            logger.error(&quot;Error interno (500) al obtener la lista de cárceles: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L118">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -129,15 +129,15 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping(&quot;/{id}&quot;)
     public ResponseEntity&lt;?&gt; obtenerCarcelPorId(@PathVariable Integer id) {
-<span class="nc" id="L132">        logger.info(&quot;Recibida petición GET en /carcel/{} para obtener cárcel por ID&quot;, id);</span>
+<span class="fc" id="L132">        logger.info(&quot;Recibida petición GET en /carcel/{} para obtener cárcel por ID&quot;, id);</span>
         try {
-<span class="nc" id="L134">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarcelPorId(id), HttpStatus.OK);</span>
-<span class="nc" id="L135">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L136">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) para el ID {}: {}&quot;, id, e.getMessage());</span>
-<span class="nc" id="L137">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L138">        } catch (Exception e) {</span>
-<span class="nc" id="L139">            logger.error(&quot;Error interno (500) al obtener la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L140">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L134">            return new ResponseEntity&lt;&gt;(carcelService.obtenerCarcelPorId(id), HttpStatus.OK);</span>
+<span class="fc" id="L135">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L136">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) para el ID {}: {}&quot;, id, e.getMessage());</span>
+<span class="fc" id="L137">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L138">        } catch (Exception e) {</span>
+<span class="fc" id="L139">            logger.error(&quot;Error interno (500) al obtener la cárcel con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L140">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -149,13 +149,13 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping(&quot;/ocupacion&quot;)
     public ResponseEntity&lt;?&gt; obtenerOcupacion() {
-<span class="nc" id="L152">        logger.info(&quot;Recibida petición GET en /carcel/ocupacion para obtener el recuento general&quot;);</span>
+<span class="fc" id="L152">        logger.info(&quot;Recibida petición GET en /carcel/ocupacion para obtener el recuento general&quot;);</span>
         try {
-<span class="nc" id="L154">            Map&lt;String, Long&gt; datosOcupacion = carcelService.obtenerOcupacionPorCarcel();</span>
-<span class="nc" id="L155">            return new ResponseEntity&lt;&gt;(datosOcupacion, HttpStatus.OK);</span>
-<span class="nc" id="L156">        } catch (Exception e) {</span>
-<span class="nc" id="L157">            logger.error(&quot;Error interno (500) al calcular la ocupación: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L158">            return new ResponseEntity&lt;&gt;(&quot;Error al calcular la ocupación: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L154">            Map&lt;String, Long&gt; datosOcupacion = carcelService.obtenerOcupacionPorCarcel();</span>
+<span class="fc" id="L155">            return new ResponseEntity&lt;&gt;(datosOcupacion, HttpStatus.OK);</span>
+<span class="fc" id="L156">        } catch (Exception e) {</span>
+<span class="fc" id="L157">            logger.error(&quot;Error interno (500) al calcular la ocupación: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L158">            return new ResponseEntity&lt;&gt;(&quot;Error al calcular la ocupación: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 
@@ -168,17 +168,17 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping(&quot;/{id}/ocupacion&quot;)
     public ResponseEntity&lt;?&gt; obtenerOcupacionEspecifica(@PathVariable Integer id) {
-<span class="nc" id="L171">        logger.info(&quot;Recibida petición GET en /carcel/{}/ocupacion para obtener ocupación específica&quot;, id);</span>
+<span class="fc" id="L171">        logger.info(&quot;Recibida petición GET en /carcel/{}/ocupacion para obtener ocupación específica&quot;, id);</span>
         try {
-<span class="nc" id="L173">            long ocupacion = carcelService.obtenerOcupacionDeCarcel(id);</span>
-<span class="nc" id="L174">            return new ResponseEntity&lt;&gt;(ocupacion, HttpStatus.OK);</span>
-<span class="nc" id="L175">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L173">            long ocupacion = carcelService.obtenerOcupacionDeCarcel(id);</span>
+<span class="fc" id="L174">            return new ResponseEntity&lt;&gt;(ocupacion, HttpStatus.OK);</span>
+<span class="fc" id="L175">        } catch (IllegalArgumentException e) {</span>
             // Si el ID no existe, devolvemos un 404 Not Found con el mensaje del service
-<span class="nc" id="L177">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) al buscar ocupación para el ID {}: {}&quot;, id, e.getMessage());</span>
-<span class="nc" id="L178">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
-<span class="nc" id="L179">        } catch (Exception e) {</span>
-<span class="nc" id="L180">            logger.error(&quot;Error interno (500) al obtener la ocupación para el ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L181">            return new ResponseEntity&lt;&gt;(&quot;Error al buscar la ocupación: &quot; + e.getMessage(), </span>
+<span class="fc" id="L177">            logger.warn(&quot;Cárcel no encontrada (404 Not Found) al buscar ocupación para el ID {}: {}&quot;, id, e.getMessage());</span>
+<span class="fc" id="L178">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L179">        } catch (Exception e) {</span>
+<span class="fc" id="L180">            logger.error(&quot;Error interno (500) al obtener la ocupación para el ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L181">            return new ResponseEntity&lt;&gt;(&quot;Error al buscar la ocupación: &quot; + e.getMessage(), </span>
             HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -189,27 +189,27 @@ import org.slf4j.LoggerFactory;
      */
     @GetMapping(&quot;/estadisticas-completas&quot;)
     public ResponseEntity&lt;?&gt; obtenerEstadisticasCompletas() {
-<span class="nc" id="L192">        logger.info(&quot;Recibida petición GET en /carcel/estadisticas-completas&quot;);</span>
+<span class="fc" id="L192">        logger.info(&quot;Recibida petición GET en /carcel/estadisticas-completas&quot;);</span>
         try {
-<span class="nc" id="L194">            List&lt;Map&lt;String, Object&gt;&gt; listaEstadisticas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L194">            List&lt;Map&lt;String, Object&gt;&gt; listaEstadisticas = new ArrayList&lt;&gt;();</span>
             // Obtenemos todas las cárceles usando el método que ya tenéis en el servicio
-<span class="nc" id="L196">            List&lt;Carcel&gt; todasLasCarceles = carcelService.obtenerCarceles();</span>
+<span class="fc" id="L196">            List&lt;Carcel&gt; todasLasCarceles = carcelService.obtenerCarceles();</span>
 
-<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (Carcel carcel : todasLasCarceles) {</span>
-<span class="nc" id="L199">                long ocupacion = carcelService.obtenerOcupacionDeCarcel(carcel.getIdCarcel());</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">            for (Carcel carcel : todasLasCarceles) {</span>
+<span class="fc" id="L199">                long ocupacion = carcelService.obtenerOcupacionDeCarcel(carcel.getIdCarcel());</span>
                 
-<span class="nc" id="L201">                Map&lt;String, Object&gt; datos = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L202">                datos.put(&quot;id&quot;, carcel.getIdCarcel());</span>
-<span class="nc" id="L203">                datos.put(&quot;nombre&quot;, carcel.getNombre());</span>
-<span class="nc" id="L204">                datos.put(&quot;capacidad&quot;, carcel.getCapacidad());</span>
-<span class="nc" id="L205">                datos.put(&quot;ocupacion&quot;, ocupacion);</span>
+<span class="fc" id="L201">                Map&lt;String, Object&gt; datos = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L202">                datos.put(&quot;id&quot;, carcel.getIdCarcel());</span>
+<span class="fc" id="L203">                datos.put(&quot;nombre&quot;, carcel.getNombre());</span>
+<span class="fc" id="L204">                datos.put(&quot;capacidad&quot;, carcel.getCapacidad());</span>
+<span class="fc" id="L205">                datos.put(&quot;ocupacion&quot;, ocupacion);</span>
                 
-<span class="nc" id="L207">                listaEstadisticas.add(datos);</span>
-<span class="nc" id="L208">            }</span>
-<span class="nc" id="L209">            return new ResponseEntity&lt;&gt;(listaEstadisticas, HttpStatus.OK);</span>
-<span class="nc" id="L210">        } catch (Exception e) {</span>
-<span class="nc" id="L211">            logger.error(&quot;Error interno (500) al obtener las estadísticas completas: {}&quot;, e.getMessage(), e);</span>
-<span class="nc" id="L212">            return new ResponseEntity&lt;&gt;(&quot;Error interno: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L207">                listaEstadisticas.add(datos);</span>
+<span class="fc" id="L208">            }</span>
+<span class="fc" id="L209">            return new ResponseEntity&lt;&gt;(listaEstadisticas, HttpStatus.OK);</span>
+<span class="fc" id="L210">        } catch (Exception e) {</span>
+<span class="fc" id="L211">            logger.error(&quot;Error interno (500) al obtener las estadísticas completas: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L212">            return new ResponseEntity&lt;&gt;(&quot;Error interno: &quot; + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
 }
