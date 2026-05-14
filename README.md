@@ -11,8 +11,9 @@
 ## Documentación técnica
 Next you can find the pages corresponding to:
 
-1. [Technical documentation](https://dipina.github.io/SpringBootLibrary/doxygen/html/) created with Doxygen
-2. [Test reports](https://dipina.github.io/SpringBootLibrary/site/) created after running Coberture, Unit test, Performance and Integration tests
+1. [Documentation landing page](https://psyc25-26.github.io/PSyC-SS-03/) created with Sphinx
+2. [Technical documentation](https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html) created with Doxygen
+3. [Test reports](https://psyc25-26.github.io/PSyC-SS-03/site/project-reports.html) created after running Coberture, Unit test, Performance and Integration tests
    
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
