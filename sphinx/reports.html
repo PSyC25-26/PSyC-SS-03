@@ -283,37 +283,25 @@ alongside this Sphinx portal on GitHub Pages.</p>
 <h2>JaCoCo — Code Coverage<a class="headerlink" href="#jacoco-code-coverage" title="Link to this heading">¶</a></h2>
 <p>JaCoCo instruments the bytecode and measures which lines, branches, and methods
 are exercised by the test suite.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Direct link -&gt;</strong> <a class="reference internal" href="#../site/jacoco/index.html"><span class="xref myst">JaCoCo Coverage Report</span></a></p>
-</div>
+<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../site/jacoco/index.html">JaCoCo Coverage Report</a></p>
 </section>
 <section id="surefire-unit-test-report">
 <h2>Surefire — Unit Test Report<a class="headerlink" href="#surefire-unit-test-report" title="Link to this heading">¶</a></h2>
 <p>The Surefire plugin records every test case result (pass / fail / skipped)
 and execution time.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Direct link -&gt;</strong> <a class="reference internal" href="#../site/surefire-report.html"><span class="xref myst">Surefire Unit Test Report</span></a></p>
-</div>
+<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../site/surefire-report.html">Surefire Unit Test Report</a></p>
 </section>
 <section id="performance-test-report">
 <h2>Performance — Test Report<a class="headerlink" href="#performance-test-report" title="Link to this heading">¶</a></h2>
 <p>Generated only when running the <code class="docutils literal notranslate"><span class="pre">performance</span></code> Maven profile. Shows throughput
 and latency for endpoints annotated with <code class="docutils literal notranslate"><span class="pre">&#64;JUnitPerfTest</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Direct link -&gt;</strong> <a class="reference internal" href="#../site/reports/perf-report.html"><span class="xref myst">Performance Report</span></a></p>
-</div>
+<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../site/reports/perf-report.html">Performance Report</a></p>
 </section>
 <section id="doxygen-technical-reference">
 <h2>Doxygen — Technical Reference<a class="headerlink" href="#doxygen-technical-reference" title="Link to this heading">¶</a></h2>
 <p>Doxygen parses the Java source and produces a cross-referenced HTML reference
 with collaboration diagrams and navigable source code.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Direct link -&gt;</strong> <a class="reference internal" href="#../doxygen/index.html"><span class="xref myst">Doxygen HTML Reference</span></a></p>
-</div>
+<p><strong>Direct link -&gt;</strong> <a class="reference external" href="../doxygen/index.html">Doxygen HTML Reference</a></p>
 </section>
 <hr class="docutils" />
 <section id="generating-all-reports-locally">
@@ -330,7 +318,8 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>target/doxygen
 doxygen<span class="w"> </span>src/main/resources/Doxyfile
 
 <span class="c1"># Build Sphinx</span>
-<span class="nb">cd</span><span class="w"> </span>../docs-sphinx<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>html
+<span class="nb">cd</span><span class="w"> </span>../docs-sphinx
+sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span><span class="nb">source</span><span class="w"> </span>_build/html
 </pre></div>
 </div>
 </section>
@@ -365,7 +354,7 @@ doxygen<span class="w"> </span>src/main/resources/Doxyfile
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, PSyC25-26 | Universidad de Deusto
+                Copyright &#169; 2025, PSyC25-26 – Universidad de Deusto
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
