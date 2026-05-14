@@ -38,10 +38,12 @@ jobs:
           dot -version
 
       # 4. Generar documentación llamando a Doxygen directamente
-      # Sin Maven — más simple y fiable
+      # mkdir -p crea target/doxygen antes de que Doxygen intente escribir ahí
       - name: Generar documentación Doxygen
         working-directory: JailQ
-        run: doxygen src/main/resources/Doxyfile
+        run: |
+          mkdir -p target/doxygen
+          doxygen src/main/resources/Doxyfile
 
       # 5. Verificar que se generó el HTML
       - name: Verificar salida
