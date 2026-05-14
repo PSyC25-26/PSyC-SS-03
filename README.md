@@ -8,6 +8,13 @@
 - [Para usar la aplicación](#Para_usar_la_aplicación)
 - [Para ejecutar los test](#Para_ejecutar_los_test)
 
+## Documentación técnica
+Next you can find the pages corresponding to:
+
+1. [Documentation landing page](https://psyc25-26.github.io/PSyC-SS-03/) created with Sphinx
+2. [Technical documentation](https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html) created with Doxygen
+3. [Test reports](https://psyc25-26.github.io/PSyC-SS-03/site/project-reports.html) created after running Coberture, Unit test, Performance and Integration tests
+   
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
 
@@ -88,7 +95,7 @@ Se proporciona el comando para ejecutar los test:
 1. Tests: `mvn test`
 3. Tests específicos: `mvn -Dtest=CarcelServiceTest,CuentaLoginTest test`
 4. Test unitarios: `mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test`
-5. Test de integración: `mvn -Dtest=JailQIntegrationTest test`
+5. Test de integración: `mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test`
 6. Test de performance: `mvn -Dtest=JailQPerformanceTest test`
 
 Para conseguir el reporte de covertura de JaCoCo: `mvn clean test jacoco:report`

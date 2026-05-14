@@ -10,6 +10,19 @@ ejecución</a></li>
 <li><a href="#Para_usar_la_aplicación">Para usar la aplicación</a></li>
 <li><a href="#Para_ejecutar_los_test">Para ejecutar los test</a></li>
 </ul>
+<h2 id="documentación-técnica">Documentación técnica</h2>
+<p>Next you can find the pages corresponding to:</p>
+<ol type="1">
+<li><a href="https://psyc25-26.github.io/PSyC-SS-03/">Documentation
+landing page</a> created with Sphinx</li>
+<li><a
+href="https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html">Technical
+documentation</a> created with Doxygen</li>
+<li><a
+href="https://psyc25-26.github.io/PSyC-SS-03/site/project-reports.html">Test
+reports</a> created after running Coberture, Unit test, Performance and
+Integration tests</li>
+</ol>
 <h2 id="descripción">Descripción</h2>
 <p>Software de gestión para cárceles, que proporciona información sobre
 cárceles y presos a distintos agentes (policía, familias,…), además de
@@ -111,8 +124,9 @@ test (como <code>mvn clean install -U</code>).</p>
 unitarios:
 <code>mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test</code>
 5. Test de integración:
-<code>mvn -Dtest=JailQIntegrationTest test</code> 6. Test de
-performance: <code>mvn -Dtest=JailQPerformanceTest test</code></p>
+<code>mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test</code>
+6. Test de performance:
+<code>mvn -Dtest=JailQPerformanceTest test</code></p>
 <p>Para conseguir el reporte de covertura de JaCoCo:
 <code>mvn clean test jacoco:report</code> Para visualizar los test de
 JaCoCo dirijase a la carpeta: <em>target/site/jacoco/index.html</em></p>
