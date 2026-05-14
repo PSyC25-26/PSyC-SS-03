@@ -1,0 +1,19 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,179,72,204"/>
+<area shape="rect" id="Node000001" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_eliminar_policia_g_u_i.html" title=" " alt="" coords="146,5,289,31"/>
+<area shape="poly" id="edge5_Node000000_Node000001" title=" " alt="" coords="44,165,70,102,91,68,118,40,144,26,147,31,122,44,95,72,74,104,49,166"/>
+<area shape="rect" id="Node000002" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_estadisticas_avanzadas_g_u_i.html" title=" " alt="" coords="120,55,315,80"/>
+<area shape="poly" id="edge6_Node000000_Node000002" title=" " alt="" coords="51,165,79,126,97,106,119,89,142,78,144,83,121,94,101,110,83,129,56,168"/>
+<area shape="rect" id="Node000003" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_filtrar_presos_por_delito_g_u_i.html" title=" " alt="" coords="124,104,311,129"/>
+<area shape="poly" id="edge7_Node000000_Node000003" title=" " alt="" coords="67,168,119,138,152,127,153,132,121,143,69,173"/>
+<area shape="rect" id="Node000004" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_gestion_carcel_g_u_i.html" title=" " alt="" coords="149,153,286,179"/>
+<area shape="poly" id="edge8_Node000000_Node000004" title=" " alt="" coords="85,182,148,173,149,178,86,187"/>
+<area shape="rect" id="Node000005" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_gestion_cuentas_g_u_i.html" title=" " alt="" coords="143,203,292,228"/>
+<area shape="poly" id="edge9_Node000000_Node000005" title=" " alt="" coords="86,195,143,203,142,208,86,200"/>
+<area shape="rect" id="Node000006" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_gestion_presos_g_u_i.html" title=" " alt="" coords="148,252,287,277"/>
+<area shape="poly" id="edge10_Node000000_Node000006" title=" " alt="" coords="71,210,121,237,158,249,156,255,119,242,68,214"/>
+<area shape="rect" id="Node000007" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_jail_q_main_g_u_i.html" title=" " alt="" coords="163,301,271,327"/>
+<area shape="poly" id="edge11_Node000000_Node000007" title=" " alt="" coords="56,215,84,252,101,271,121,286,142,297,164,304,162,309,140,302,119,291,98,275,79,256,52,218"/>
+<area shape="rect" id="Node000008" href="$classcom_1_1example_1_1_jail_q_1_1_g_u_i_1_1_listado_presos_g_u_i.html" title=" " alt="" coords="149,351,285,376"/>
+<area shape="poly" id="edge12_Node000000_Node000008" title=" " alt="" coords="50,216,75,277,95,309,122,336,150,351,148,356,118,340,91,312,70,279,45,218"/>
+</map>
