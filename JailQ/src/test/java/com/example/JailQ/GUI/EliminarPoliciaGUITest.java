@@ -98,4 +98,50 @@ public class EliminarPoliciaGUITest {
         // Verificamos que la interfaz no se ha bloqueado y la lista sigue visible
         window.list("listaPolicias").requireVisible();
     }
+
+    @Test
+    public void testEliminarPoliciaFallaConErrorDelServidor() {
+        // 1. Obtenemos la lista real de Swing y le metemos un policía falso
+        javax.swing.JList lista = window.list("listaPolicias").target();
+        
+        GuiActionRunner.execute(() -> {
+            javax.swing.DefaultListModel modelo = (javax.swing.DefaultListModel) lista.getModel();
+            modelo.addElement("ID: 9999 | Fake | user: falso");
+        });
+
+        // 2. Hacemos que el robot seleccione a nuestro policía infiltrado
+        window.list("listaPolicias").selectItem("ID: 9999 | Fake | user: falso");
+        window.button("btnEliminar").click();
+        
+        // 3. Confirmamos el borrado
+        window.optionPane().yesButton().click();
+        
+        // 4. El servidor buscará el ID 9999, no lo encontrará y devolverá un ERROR.
+        // Esto nos permite cubrir la rama 'else' del código.
+        window.optionPane().requireMessage(java.util.regex.Pattern.compile("(?s).*Código:.*"));
+        window.optionPane().okButton().click();
+    }
+
+    @Test
+    public void testExtraerValorCasosLimiteConReflexion() {
+        // Como 'extraerValor' es un método privado y el servidor siempre envía JSON perfectos,
+        // usamos Reflexión para atacarlo directamente con "basura" y cubrir sus validaciones de seguridad.
+        GuiActionRunner.execute(() -> {
+            try {
+                java.lang.reflect.Method metodo = EliminarPoliciaGUI.class.getDeclaredMethod("extraerValor", String.class, String.class);
+                metodo.setAccessible(true);
+                
+                // Caso A: Un JSON válido pero que NO tiene la clave que buscamos
+                String sinClave = (String) metodo.invoke(window.target(), "{\"otraClave\":\"valor\"}", "idCuentas");
+                org.junit.jupiter.api.Assertions.assertEquals("", sinClave);
+                
+                // Caso B: Un texto que ni siquiera tiene los dos puntos (:) para que falle el 'partes.length == 2'
+                String malformado = (String) metodo.invoke(window.target(), "texto_sin_formato_json", "idCuentas");
+                org.junit.jupiter.api.Assertions.assertEquals("", malformado);
+                
+            } catch (Exception e) {
+                org.junit.jupiter.api.Assertions.fail("La reflexión no debería fallar: " + e.getMessage());
+            }
+        });
+    }
 }
