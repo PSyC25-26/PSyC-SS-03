@@ -110,8 +110,8 @@ jobs:
         #env:
           #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      #- name: Run Performance Tests
-        #run: mvn -Pperformance integration-test
+      - name: Run Performance Tests
+        run: mvn -Pperformance integration-test
 
       - name: Generate Maven Site
         run: mvn site
@@ -137,8 +137,6 @@ jobs:
           git commit -m "Update docs [CI skip]" || echo "No changes"
           git push
 
-      # Deploy Maven site output to gh-pages/site/
-      # This makes JaCoCo and Surefire links work on GitHub Pages
       - name: Deploy site to gh-pages/site/
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -148,3 +146,13 @@ jobs:
           publish_branch: gh-pages
           keep_files: true
           commit_message: "docs: actualizar Maven site [skip ci]"
+
+      - name: Deploy performance report to gh-pages/performance/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./JailQ/target/junitperf
+          destination_dir: performance
+          publish_branch: gh-pages
+          keep_files: true
+          commit_message: "docs: actualizar performance report [skip ci]"
