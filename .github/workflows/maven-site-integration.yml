@@ -102,10 +102,11 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
-      # Start Spring Boot app in background - required for GUI and performance tests
+      # spring-boot:run compiles and starts the app automatically
+      # Required for GUI tests and performance tests
       - name: Start Spring Boot application
         run: |
-          mvn exec:java -Dexec.mainClass="com.example.JailQ.JailQApplication" &
+          mvn spring-boot:run &
           echo $! > app.pid
 
       # Wait for Spring Boot to be ready before running any tests
