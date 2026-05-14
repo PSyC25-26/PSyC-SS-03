@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestionPresosGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">GestionPresosGUI.java</span></div><h1>GestionPresosGUI.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+
+import java.awt.*;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.*;
+import com.example.JailQ.Entidades.Delito;
+import com.example.JailQ.Entidades.Carcel;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class GestionPresosGUI extends JFrame {
+
+    private final HttpClient cliente;
+    private final String     tipoCuenta;
+
+    // ── Campos modo POLICIA ───────────────────────────────────────────────────
+    private JTextField        txtNombre, txtApellidos, txtFechaNacimiento, txtCondena;
+    private JComboBox&lt;String&gt; cbCarcel;
+    private JTextArea         txtConsola;
+    private JList&lt;Delito&gt;     listaDelitos;
+
+    // Diccionario para guardar Nombre -&gt; ID de la cárcel
+<span class="nc" id="L35">    private Map&lt;String, Integer&gt; mapaCarceles = new HashMap&lt;&gt;();</span>
+
+    // ── Campos modo FAMILIA ───────────────────────────────────────────────────
+    private JTextField txtBusquedaNombre;
+    private JTextField txtBusquedaApellidos;
+    private JPanel     panelResultado;
+    private JLabel     lblEstadoBusqueda;
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Constructor
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Construye la ventana en el modo correspondiente al tipo de cuenta.
+     *
+     * @param tipoCuenta &quot;POLICIA&quot; para gestión completa, &quot;FAMILIA&quot; para consulta.
+     */
+<span class="nc" id="L52">    public GestionPresosGUI(String tipoCuenta) {</span>
+<span class="nc" id="L53">        this.tipoCuenta = tipoCuenta;</span>
+<span class="nc" id="L54">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+
+<span class="nc" id="L56">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L57">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L58">        setLayout(new BorderLayout(10, 10));</span>
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (&quot;FAMILIA&quot;.equals(tipoCuenta)) {</span>
+<span class="nc" id="L61">            iniciarModoFamilia();</span>
+        } else {
+<span class="nc" id="L63">            iniciarModoPolicia();</span>
+        }
+<span class="nc" id="L65">    }</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Modo FAMILIA: búsqueda por nombre + apellidos
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Configura la ventana en modo FAMILIA: solo muestra un formulario de
+     * búsqueda por nombre y apellidos y presenta los datos del preso encontrado.
+     */
+    private void iniciarModoFamilia() {
+<span class="nc" id="L76">        setTitle(&quot;JailQ - Consulta de Preso&quot;);</span>
+<span class="nc" id="L77">        setSize(480, 500);</span>
+
+        // ── Panel de búsqueda ──────────────────────────────────────────────
+<span class="nc" id="L80">        JPanel panelBusqueda = new JPanel(new GridLayout(5, 1, 6, 6));</span>
+<span class="nc" id="L81">        panelBusqueda.setBorder(BorderFactory.createTitledBorder(&quot;Buscar preso&quot;));</span>
+
+<span class="nc" id="L83">        panelBusqueda.add(new JLabel(&quot;Nombre:&quot;));</span>
+<span class="nc" id="L84">        txtBusquedaNombre = new JTextField();</span>
+<span class="nc" id="L85">        txtBusquedaNombre.setName(&quot;txtBusquedaNombre&quot;);</span>
+<span class="nc" id="L86">        txtBusquedaNombre.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="nc" id="L87">        panelBusqueda.add(txtBusquedaNombre);</span>
+
+<span class="nc" id="L89">        panelBusqueda.add(new JLabel(&quot;Apellidos:&quot;));</span>
+<span class="nc" id="L90">        txtBusquedaApellidos = new JTextField();</span>
+<span class="nc" id="L91">        txtBusquedaApellidos.setName(&quot;txtBusquedaApellidos&quot;);</span>
+<span class="nc" id="L92">        txtBusquedaApellidos.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="nc" id="L93">        panelBusqueda.add(txtBusquedaApellidos);</span>
+
+<span class="nc" id="L95">        JButton btnBuscar = new JButton(&quot;Buscar&quot;);</span>
+<span class="nc" id="L96">        btnBuscar.setName(&quot;btnBuscar&quot;);</span>
+<span class="nc" id="L97">        btnBuscar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L98">        btnBuscar.setFocusPainted(false);</span>
+<span class="nc" id="L99">        btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L100">        btnBuscar.addActionListener(e -&gt; buscarPresoPorNombreApellidos());</span>
+<span class="nc" id="L101">        panelBusqueda.add(btnBuscar);</span>
+
+        // ── Panel de resultado ─────────────────────────────────────────────
+<span class="nc" id="L104">        panelResultado = new JPanel(new GridLayout(0, 2, 8, 8));</span>
+<span class="nc" id="L105">        panelResultado.setBorder(BorderFactory.createTitledBorder(&quot;Datos del preso&quot;));</span>
+<span class="nc" id="L106">        panelResultado.setVisible(false);</span>
+
+        // ── Estado ────────────────────────────────────────────────────────
+<span class="nc" id="L109">        lblEstadoBusqueda = new JLabel(&quot; &quot;, SwingConstants.CENTER);</span>
+<span class="nc" id="L110">        lblEstadoBusqueda.setName(&quot;lblEstadoBusqueda&quot;);</span>
+<span class="nc" id="L111">        lblEstadoBusqueda.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+
+        // ── Botón volver ──────────────────────────────────────────────────
+<span class="nc" id="L114">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="nc" id="L115">        btnVolver.setName(&quot;btnVolverFam&quot;);</span>
+<span class="nc" id="L116">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L117">        btnVolver.setFocusPainted(false);</span>
+<span class="nc" id="L118">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L119">        btnVolver.addActionListener(e -&gt; dispose());</span>
+
+<span class="nc" id="L121">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
+<span class="nc" id="L122">        panelSur.add(lblEstadoBusqueda, BorderLayout.NORTH);</span>
+<span class="nc" id="L123">        panelSur.add(btnVolver,         BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L125">        add(panelBusqueda,                   BorderLayout.NORTH);</span>
+<span class="nc" id="L126">        add(new JScrollPane(panelResultado), BorderLayout.CENTER);</span>
+<span class="nc" id="L127">        add(panelSur,                        BorderLayout.SOUTH);</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Busca un preso por nombre y apellidos exactos (sin distinguir mayúsculas)
+     * descargando la lista completa de GET /preso/todos y filtrando en cliente.
+     * Si encuentra coincidencia, muestra todos los datos del preso.
+     */
+    private void buscarPresoPorNombreApellidos() {
+<span class="nc" id="L136">        String nombre    = txtBusquedaNombre.getText().trim();</span>
+<span class="nc" id="L137">        String apellidos = txtBusquedaApellidos.getText().trim();</span>
+
+<span class="nc bnc" id="L139" title="All 4 branches missed.">        if (nombre.isEmpty() || apellidos.isEmpty()) {</span>
+<span class="nc" id="L140">            lblEstadoBusqueda.setForeground(Color.RED);</span>
+<span class="nc" id="L141">            lblEstadoBusqueda.setText(&quot;Introduce nombre y apellidos para buscar.&quot;);</span>
+<span class="nc" id="L142">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L146">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L147">                    .uri(URI.create(&quot;http://localhost:8080/preso/todos&quot;))</span>
+<span class="nc" id="L148">                    .GET()</span>
+<span class="nc" id="L149">                    .build();</span>
+
+<span class="nc" id="L151">            HttpResponse&lt;String&gt; response =</span>
+<span class="nc" id="L152">                    cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            if (response.statusCode() != 200) {</span>
+<span class="nc" id="L155">                lblEstadoBusqueda.setForeground(Color.RED);</span>
+<span class="nc" id="L156">                lblEstadoBusqueda.setText(&quot;Error del servidor: &quot; + response.statusCode());</span>
+<span class="nc" id="L157">                return;</span>
+            }
+
+<span class="nc" id="L160">            String presoJson = buscarEnJson(response.body(), nombre, apellidos);</span>
+
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (presoJson == null) {</span>
+<span class="nc" id="L163">                panelResultado.setVisible(false);</span>
+<span class="nc" id="L164">                lblEstadoBusqueda.setForeground(Color.RED);</span>
+<span class="nc" id="L165">                lblEstadoBusqueda.setText(&quot;No se encontró ningún preso con ese nombre y apellidos.&quot;);</span>
+            } else {
+<span class="nc" id="L167">                mostrarDatosPreso(presoJson);</span>
+<span class="nc" id="L168">                lblEstadoBusqueda.setForeground(new Color(0, 128, 0));</span>
+<span class="nc" id="L169">                lblEstadoBusqueda.setText(&quot;Preso encontrado.&quot;);</span>
+            }
+
+<span class="nc" id="L172">        } catch (Exception ex) {</span>
+<span class="nc" id="L173">            lblEstadoBusqueda.setForeground(Color.RED);</span>
+<span class="nc" id="L174">            lblEstadoBusqueda.setText(&quot;No se pudo conectar con el servidor.&quot;);</span>
+<span class="nc" id="L175">        }</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * Recorre el array JSON buscando el objeto cuyo campo &quot;nombre&quot; y &quot;apellidos&quot;
+     * coincidan con los términos buscados (ignorando mayúsculas).
+     *
+     * Usa conteo de llaves en lugar de regex para manejar correctamente los
+     * objetos anidados (p.ej. el campo &quot;carcel&quot;:{...}) sin que interfieran
+     * con la separación entre presos.
+     *
+     * @param json      Respuesta completa de GET /preso/todos
+     * @param nombre    Nombre a buscar
+     * @param apellidos Apellidos a buscar
+     * @return El bloque JSON del preso encontrado, o null si no existe
+     */
+    private String buscarEnJson(String json, String nombre, String apellidos) {
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        for (String objeto : dividirObjetos(json)) {</span>
+<span class="nc" id="L193">            String nombreJson    = extraerValorJson(objeto, &quot;nombre&quot;);</span>
+<span class="nc" id="L194">            String apellidosJson = extraerValorJson(objeto, &quot;apellidos&quot;);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (nombreJson.equalsIgnoreCase(nombre)</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">                    &amp;&amp; apellidosJson.equalsIgnoreCase(apellidos)) {</span>
+<span class="nc" id="L197">                return objeto;</span>
+            }
+<span class="nc" id="L199">        }</span>
+<span class="nc" id="L200">        return null;</span>
+    }
+
+    /**
+     * Divide el JSON del array en objetos individuales contando llaves de
+     * apertura y cierre, lo que permite manejar correctamente cualquier nivel
+     * de anidamiento sin que los objetos internos (como &quot;carcel&quot;) rompan el parseo.
+     *
+     * @param json String con el array JSON completo
+     * @return Lista de bloques JSON, uno por preso
+     */
+    private List&lt;String&gt; dividirObjetos(String json) {
+<span class="nc" id="L212">        List&lt;String&gt; resultado = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L213">        int nivel  = 0;</span>
+<span class="nc" id="L214">        int inicio = -1;</span>
+
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        for (int i = 0; i &lt; json.length(); i++) {</span>
+<span class="nc" id="L217">            char c = json.charAt(i);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (c == '{') {</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                if (nivel == 0) inicio = i;</span>
+<span class="nc" id="L220">                nivel++;</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            } else if (c == '}') {</span>
+<span class="nc" id="L222">                nivel--;</span>
+<span class="nc bnc" id="L223" title="All 4 branches missed.">                if (nivel == 0 &amp;&amp; inicio != -1) {</span>
+<span class="nc" id="L224">                    resultado.add(json.substring(inicio, i + 1));</span>
+<span class="nc" id="L225">                    inicio = -1;</span>
+                }
+            }
+        }
+<span class="nc" id="L229">        return resultado;</span>
+    }
+
+    /**
+     * Parsea el JSON del preso y rellena el panel de resultado con
+     * todos sus campos en formato etiqueta-valor.
+     *
+     * @param presoJson Bloque JSON de un único preso
+     */
+    private void mostrarDatosPreso(String presoJson) {
+<span class="nc" id="L239">        panelResultado.removeAll();</span>
+
+<span class="nc" id="L241">        agregarFilaResultado(&quot;Nombre&quot;,           extraerValorJson(presoJson, &quot;nombre&quot;));</span>
+<span class="nc" id="L242">        agregarFilaResultado(&quot;Apellidos&quot;,        extraerValorJson(presoJson, &quot;apellidos&quot;));</span>
+<span class="nc" id="L243">        agregarFilaResultado(&quot;Fecha nacimiento&quot;, extraerValorJson(presoJson, &quot;fechaNacimiento&quot;));</span>
+<span class="nc" id="L244">        agregarFilaResultado(&quot;Fecha ingreso&quot;,    extraerValorJson(presoJson, &quot;fechaIngreso&quot;));</span>
+<span class="nc" id="L245">        agregarFilaResultado(&quot;Condena (años)&quot;,   extraerValorJson(presoJson, &quot;condena&quot;));</span>
+<span class="nc" id="L246">        agregarFilaResultado(&quot;Delitos&quot;,          extraerDelitosJson(presoJson));</span>
+<span class="nc" id="L247">        agregarFilaResultado(&quot;Cárcel&quot;,           extraerNombreCarcelJson(presoJson));</span>
+
+<span class="nc" id="L249">        panelResultado.setVisible(true);</span>
+<span class="nc" id="L250">        panelResultado.revalidate();</span>
+<span class="nc" id="L251">        panelResultado.repaint();</span>
+<span class="nc" id="L252">    }</span>
+
+    /** Añade una fila etiqueta-valor al panel de resultado. */
+    private void agregarFilaResultado(String etiqueta, String valor) {
+<span class="nc" id="L256">        JLabel lbl = new JLabel(etiqueta + &quot;:&quot;);</span>
+<span class="nc" id="L257">        lbl.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        JLabel val = new JLabel(valor.isEmpty() ? &quot;—&quot; : valor);</span>
+<span class="nc" id="L260">        val.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+
+<span class="nc" id="L262">        panelResultado.add(lbl);</span>
+<span class="nc" id="L263">        panelResultado.add(val);</span>
+<span class="nc" id="L264">    }</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Modo POLICIA: formulario completo de registro
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Configura la ventana en modo POLICIA: muestra el formulario completo
+     * para registrar nuevos presos, idéntico al comportamiento anterior.
+     */
+    private void iniciarModoPolicia() {
+<span class="nc" id="L275">        setTitle(&quot;JailQ - Gestión de Presos&quot;);</span>
+<span class="nc" id="L276">        setSize(500, 750);</span>
+<span class="nc" id="L277">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+
+<span class="nc" id="L279">        JPanel panelFormulario = new JPanel(new GridLayout(6, 1, 10, 10));</span>
+<span class="nc" id="L280">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Registrar Nuevo Preso&quot;));</span>
+
+<span class="nc" id="L282">        txtNombre = new JTextField();</span>
+<span class="nc" id="L283">        txtNombre.setName(&quot;txtNombre&quot;); </span>
+        
+<span class="nc" id="L285">        txtApellidos = new JTextField();</span>
+<span class="nc" id="L286">        txtApellidos.setName(&quot;txtApellidos&quot;); </span>
+        
+<span class="nc" id="L288">        txtFechaNacimiento = new JTextField();</span>
+<span class="nc" id="L289">        txtFechaNacimiento.setName(&quot;txtFechaNacimiento&quot;); </span>
+        
+<span class="nc" id="L291">        txtCondena = new JTextField();</span>
+<span class="nc" id="L292">        txtCondena.setName(&quot;txtCondena&quot;); </span>
+
+<span class="nc" id="L294">        cbCarcel = new JComboBox&lt;&gt;();</span>
+<span class="nc" id="L295">        cbCarcel.setName(&quot;cbCarcel&quot;); </span>
+        //Cargamos las cárceles desde la base de datos al iniciar
+<span class="nc" id="L297">        cargarCarcelesDesdeBD();</span>
+
+<span class="nc" id="L299">        listaDelitos = new JList&lt;&gt;(Delito.values());</span>
+<span class="nc" id="L300">        listaDelitos.setName(&quot;listaDelitos&quot;); </span>
+<span class="nc" id="L301">        listaDelitos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);</span>
+<span class="nc" id="L302">        JScrollPane scrollDelitos = new JScrollPane(listaDelitos);</span>
+<span class="nc" id="L303">        scrollDelitos.setPreferredSize(new Dimension(0, 150));</span>
+
+<span class="nc" id="L305">        panelFormulario.add(crearCelda(&quot;Nombre:&quot;, txtNombre));</span>
+<span class="nc" id="L306">        panelFormulario.add(crearCelda(&quot;Apellidos:&quot;, txtApellidos));</span>
+<span class="nc" id="L307">        panelFormulario.add(crearCelda(&quot;Fecha Nacimiento (AAAA-MM-DD):&quot;, txtFechaNacimiento));</span>
+<span class="nc" id="L308">        panelFormulario.add(crearCelda(&quot;Condena (años):&quot;, txtCondena));</span>
+<span class="nc" id="L309">        panelFormulario.add(crearCeldaPanel(&quot;Cárcel:&quot;, cbCarcel));</span>
+<span class="nc" id="L310">        panelFormulario.add(crearCeldaPanel(&quot;Delito:&quot;, scrollDelitos));</span>
+
+<span class="nc" id="L312">        JButton btnAnadir = new JButton(&quot;Registrar Preso&quot;);</span>
+<span class="nc" id="L313">        btnAnadir.setName(&quot;btnAnadir&quot;);</span>
+<span class="nc" id="L314">        btnAnadir.addActionListener(e -&gt; enviarPreso());</span>
+
+<span class="nc" id="L316">        JPanel panelCentral = new JPanel(new BorderLayout(5, 5));</span>
+<span class="nc" id="L317">        panelCentral.add(panelFormulario, BorderLayout.CENTER);</span>
+<span class="nc" id="L318">        panelCentral.add(btnAnadir, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L320">        txtConsola = new JTextArea(5, 30);</span>
+<span class="nc" id="L321">        txtConsola.setName(&quot;txtConsola&quot;); </span>
+<span class="nc" id="L322">        txtConsola.setEditable(false);</span>
+<span class="nc" id="L323">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
+<span class="nc" id="L324">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Estado del Servidor&quot;));</span>
+
+        // ── Botón Volver ──────────────────────────────────────────────────────
+<span class="nc" id="L327">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="nc" id="L328">        btnVolver.setName(&quot;btnVolver&quot;); </span>
+<span class="nc" id="L329">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L330">        btnVolver.setFocusPainted(false);</span>
+<span class="nc" id="L331">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L332">        btnVolver.addActionListener(e -&gt; dispose());</span>
+ 
+<span class="nc" id="L334">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
+<span class="nc" id="L335">        panelSur.add(scrollConsola, BorderLayout.CENTER);</span>
+<span class="nc" id="L336">        panelSur.add(btnVolver, BorderLayout.SOUTH);</span>
+ 
+<span class="nc" id="L338">        add(panelCentral, BorderLayout.CENTER);</span>
+<span class="nc" id="L339">        add(panelSur,     BorderLayout.SOUTH);</span>
+		
+<span class="nc" id="L341">    }</span>
+
+    /**
+     * Hace un GET a /carcel para obtener las cárceles reales
+     */
+    private void cargarCarcelesDesdeBD() {
+        try {
+<span class="nc" id="L348">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L349">                    .uri(URI.create(&quot;http://localhost:8080/carcel&quot;))</span>
+<span class="nc" id="L350">                    .GET()</span>
+<span class="nc" id="L351">                    .build();</span>
+
+<span class="nc" id="L353">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="nc" id="L356">                ObjectMapper mapper = new ObjectMapper();</span>
+                // Convertimos el JSON en una lista de objetos Carcel
+<span class="nc" id="L358">                List&lt;Carcel&gt; carceles = mapper.readValue(response.body(), new TypeReference&lt;List&lt;Carcel&gt;&gt;(){});</span>
+
+<span class="nc" id="L360">                cbCarcel.removeAllItems();</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">                for (Carcel c : carceles) {</span>
+<span class="nc" id="L362">                    cbCarcel.addItem(c.getNombre());</span>
+<span class="nc" id="L363">                    mapaCarceles.put(c.getNombre(), c.getIdCarcel());</span>
+<span class="nc" id="L364">                }</span>
+            }
+<span class="nc" id="L366">        } catch (Exception e) {</span>
+<span class="nc" id="L367">            System.err.println(&quot;No se pudieron cargar las cárceles: &quot; + e.getMessage());</span>
+<span class="nc" id="L368">            cbCarcel.addItem(&quot;Error al cargar datos&quot;);</span>
+<span class="nc" id="L369">        }</span>
+<span class="nc" id="L370">    }</span>
+
+    private void enviarPreso() {
+        try {
+<span class="nc" id="L374">            String nombreCarcel = (String) cbCarcel.getSelectedItem();</span>
+<span class="nc" id="L375">            Integer idCarcel = mapaCarceles.get(nombreCarcel);</span>
+
+<span class="nc bnc" id="L377" title="All 2 branches missed.">            if (idCarcel == null) {</span>
+<span class="nc" id="L378">                txtConsola.setText(&quot;Error: Selecciona una cárcel válida.&quot;);</span>
+<span class="nc" id="L379">                return;</span>
+            }
+
+<span class="nc" id="L382">            ObjectMapper mapper = new ObjectMapper();</span>
+<span class="nc" id="L383">            Map&lt;String, Object&gt; jsonMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L384">            jsonMap.put(&quot;nombre&quot;, txtNombre.getText());</span>
+<span class="nc" id="L385">            jsonMap.put(&quot;apellidos&quot;, txtApellidos.getText());</span>
+<span class="nc" id="L386">            jsonMap.put(&quot;fechaNacimiento&quot;, txtFechaNacimiento.getText());</span>
+<span class="nc" id="L387">            jsonMap.put(&quot;fechaIngreso&quot;, LocalDate.now().toString());</span>
+<span class="nc" id="L388">            jsonMap.put(&quot;condena&quot;, Double.parseDouble(txtCondena.getText().replace(&quot;,&quot;, &quot;.&quot;)));</span>
+<span class="nc" id="L389">            jsonMap.put(&quot;delitos&quot;, listaDelitos.getSelectedValuesList());</span>
+            
+            //Enviamos el ID como Integer, que es lo que espera el Backend
+<span class="nc" id="L392">            jsonMap.put(&quot;carcel&quot;, idCarcel);</span>
+
+<span class="nc" id="L394">            String jsonBody = mapper.writeValueAsString(jsonMap);</span>
+
+<span class="nc" id="L396">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L397">                    .uri(URI.create(&quot;http://localhost:8080/preso/crear&quot;))</span>
+<span class="nc" id="L398">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="nc" id="L399">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
+<span class="nc" id="L400">                    .build();</span>
+
+<span class="nc" id="L402">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L404" title="All 4 branches missed.">            if (response.statusCode() == 201 || response.statusCode() == 200) {</span>
+<span class="nc" id="L405">                txtConsola.setText(&quot;ÉXITO: Preso registrado.\n&quot; + response.body());</span>
+<span class="nc" id="L406">                limpiarFormulario();</span>
+            } else {
+<span class="nc" id="L408">                txtConsola.setText(&quot;ERROR &quot; + response.statusCode() + &quot;:\n&quot; + response.body());</span>
+            }
+
+<span class="nc" id="L411">        } catch (Exception ex) {</span>
+<span class="nc" id="L412">            txtConsola.setText(&quot;Error: &quot; + ex.getMessage());</span>
+<span class="nc" id="L413">        }</span>
+<span class="nc" id="L414">    }</span>
+
+    private void limpiarFormulario() {
+<span class="nc" id="L417">        txtNombre.setText(&quot;&quot;);</span>
+<span class="nc" id="L418">        txtApellidos.setText(&quot;&quot;);</span>
+<span class="nc" id="L419">        txtFechaNacimiento.setText(&quot;&quot;);</span>
+<span class="nc" id="L420">        txtCondena.setText(&quot;&quot;);</span>
+<span class="nc bnc" id="L421" title="All 2 branches missed.">        if (cbCarcel.getItemCount() &gt; 0) cbCarcel.setSelectedIndex(0);</span>
+<span class="nc" id="L422">        listaDelitos.clearSelection();</span>
+<span class="nc" id="L423">    }</span>
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Utilidades de extracción JSON (modo FAMILIA)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Extrae el valor de un campo simple del JSON ignorando el bloque
+     * &quot;carcel&quot;:{...} para evitar capturar campos del objeto anidado.
+     */
+    private String extraerValorJson(String json, String campo) {
+        // Eliminamos el bloque carcel:{...} antes de buscar para evitar
+        // que el regex capture campos del objeto anidado (ej. &quot;nombre&quot;:&quot;Oiar&quot;)
+<span class="nc" id="L436">        String jsonSinCarcel = json.replaceAll(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\\}&quot;, &quot;&quot;);</span>
+<span class="nc" id="L437">        Pattern p = Pattern.compile(&quot;\&quot;&quot; + campo + &quot;\&quot;\\s*:\\s*\&quot;?([^,\&quot;\\}\\]]+)\&quot;?&quot;);</span>
+<span class="nc" id="L438">        Matcher m = p.matcher(jsonSinCarcel);</span>
+<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (m.find()) {</span>
+<span class="nc" id="L440">            return m.group(1).trim().replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
+        }
+<span class="nc" id="L442">        return &quot;&quot;;</span>
+    }
+
+    /** Extrae el array de delitos del JSON y lo formatea separado por comas. */
+    private String extraerDelitosJson(String json) {
+<span class="nc" id="L447">        Pattern p = Pattern.compile(&quot;\&quot;delitos\&quot;\\s*:\\s*\\[([^\\]]*)\\]&quot;);</span>
+<span class="nc" id="L448">        Matcher m = p.matcher(json);</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (m.find()) {</span>
+<span class="nc" id="L450">            return m.group(1).replaceAll(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;,&quot;, &quot;, &quot;).trim();</span>
+        }
+<span class="nc" id="L452">        return &quot;—&quot;;</span>
+    }
+
+    /** Extrae el nombre de la cárcel del objeto anidado &quot;carcel&quot;:{...}. */
+    private String extraerNombreCarcelJson(String json) {
+<span class="nc" id="L457">        Pattern p = Pattern.compile(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\&quot;nombre\&quot;\\s*:\\s*\&quot;([^\&quot;]+)\&quot;&quot;);</span>
+<span class="nc" id="L458">        Matcher m = p.matcher(json);</span>
+<span class="nc bnc" id="L459" title="All 2 branches missed.">        if (m.find()) {</span>
+<span class="nc" id="L460">            return m.group(1);</span>
+        }
+<span class="nc" id="L462">        return &quot;&quot;;</span>
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Utilidades de layout (modo POLICIA)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private JPanel crearCelda(String etiqueta, JTextField campo) {
+<span class="nc" id="L470">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
+<span class="nc" id="L471">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
+<span class="nc" id="L472">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
+<span class="nc" id="L473">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
+        ));
+<span class="nc" id="L475">        panel.add(new JLabel(etiqueta));</span>
+<span class="nc" id="L476">        panel.add(campo);</span>
+<span class="nc" id="L477">        return panel;</span>
+    }
+
+    private JPanel crearCeldaPanel(String etiqueta, javax.swing.JComponent componente) {
+<span class="nc" id="L481">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
+<span class="nc" id="L482">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
+<span class="nc" id="L483">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
+<span class="nc" id="L484">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
+        ));
+<span class="nc" id="L486">        panel.add(new JLabel(etiqueta));</span>
+<span class="nc" id="L487">        panel.add(componente);</span>
+<span class="nc" id="L488">        return panel;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

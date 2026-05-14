@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cuenta.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Entidades</a> &gt; <span class="el_source">Cuenta.java</span></div><h1>Cuenta.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Entidades;
+
+import org.jspecify.annotations.Nullable;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+
+/**
+ * Entidad que representa una cuenta de usuario dentro del sistema.
+ * 
+ * Una cuenta contiene la información personal del usuario y sus
+ * credenciales de acceso, así como el tipo de cuenta que determina
+ * su rol dentro de la aplicación.
+ */
+@Entity
+<span class="fc" id="L19">public class Cuenta {</span>
+    /**
+     * Identificador único de la cuenta.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private @Nullable Integer idCuentas;
+
+    /**
+     * Tipo de cuenta que define el rol del usuario en el sistema.
+     */
+    @Column(name = &quot;TipoCuenta&quot;, nullable = false)
+    private TipoCuenta tipoCuenta;
+
+    /**
+     * Nombre del usuario propietario de la cuenta.
+     */
+    private String nombre;
+
+    /**
+     * Apellidos del usuario propietario de la cuenta.
+     */
+    private String apellidos;
+
+    /**
+     * Nombre de usuario utilizado para iniciar sesión.
+     * Este campo no puede ser nulo.
+     */
+    @Column(nullable = false)
+    private String username;
+
+    /**
+     * Contraseña utilizada para la autenticación del usuario.
+     * Este campo no puede ser nulo.
+     */
+    @Column(nullable = false)
+    private String password;
+
+    /**
+     * Obtiene el identificador de la cuenta.
+     * 
+     * @return identificador único de la cuenta
+     */
+    public Integer getIdCuentas() {
+<span class="nc" id="L63">        return idCuentas;</span>
+    }
+
+    /**
+     * Establece el identificador de la cuenta.
+     * 
+     * @param idCuentas nuevo identificador de la cuenta
+     */
+    public void setIdCuentas(Integer idCuentas) {
+<span class="nc" id="L72">        this.idCuentas = idCuentas;</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * Obtiene el tipo de cuenta.
+     * 
+     * @return tipo de cuenta del usuario
+     */
+    public TipoCuenta getTipoCuenta() {
+<span class="fc" id="L81">        return tipoCuenta;</span>
+    }
+
+    /**
+     * Establece el tipo de cuenta del usuario.
+     * 
+     * @param tipoCuenta tipo de cuenta a asignar
+     */
+    public void setTipoCuenta(TipoCuenta tipoCuenta) {
+<span class="fc" id="L90">        this.tipoCuenta = tipoCuenta;</span>
+<span class="fc" id="L91">    }</span>
+
+    /**
+     * Obtiene el nombre del usuario.
+     * 
+     * @return nombre del usuario
+     */
+    public String getNombre() {
+<span class="nc" id="L99">        return nombre;</span>
+    }
+
+    /**
+     * Establece el nombre del usuario.
+     * 
+     * @param nombre nombre del usuario
+     */
+    public void setNombre(String nombre) {
+<span class="nc" id="L108">        this.nombre = nombre;</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * Obtiene los apellidos del usuario.
+     * 
+     * @return apellidos del usuario
+     */
+    public String getApellidos() {
+<span class="nc" id="L117">        return apellidos;</span>
+    }
+
+    /**
+     * Establece los apellidos del usuario.
+     * 
+     * @param apellidos apellidos del usuario
+     */
+    public void setApellidos(String apellidos) {
+<span class="nc" id="L126">        this.apellidos = apellidos;</span>
+<span class="nc" id="L127">    }</span>
+
+    /**
+     * Obtiene el nombre de usuario de la cuenta.
+     * 
+     * @return username del usuario
+     */
+    public String getUsername() {
+<span class="fc" id="L135">        return username;</span>
+    }
+
+    /**
+     * Establece el nombre de usuario de la cuenta.
+     * 
+     * @param username nombre de usuario
+     */
+    public void setUsername(String username) {
+<span class="fc" id="L144">        this.username = username;</span>
+<span class="fc" id="L145">    }</span>
+
+    /**
+     * Obtiene la contraseña de la cuenta.
+     * 
+     * @return contraseña del usuario
+     */
+    public String getPassword() {
+<span class="fc" id="L153">        return password;</span>
+    }
+
+    /**
+     * Establece la contraseña de la cuenta.
+     * 
+     * @param password contraseña del usuario
+     */
+    public void setPassword(String password) {
+<span class="fc" id="L162">        this.password = password;</span>
+<span class="fc" id="L163">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

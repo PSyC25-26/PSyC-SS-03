@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarcelService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Service</a> &gt; <span class="el_source">CarcelService.java</span></div><h1>CarcelService.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Service;
+
+import com.example.JailQ.Dao.CarcelDAO;
+import com.example.JailQ.Entidades.Carcel;
+import com.example.JailQ.Dao.PresoDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * Servicio encargado de la lógica de negocio relacionada con las cárceles.
+ * * Proporciona métodos para:
+ * &lt;ul&gt;
+ * &lt;li&gt;Crear nuevas cárceles&lt;/li&gt;
+ * &lt;li&gt;Eliminar cárceles&lt;/li&gt;
+ * &lt;li&gt;Obtener todas las cárceles&lt;/li&gt;
+ * &lt;li&gt;Obtener una cárcel por su ID&lt;/li&gt;
+ * &lt;/ul&gt;
+ * * Este servicio actúa como intermediario entre el controlador (Controller)
+ * y el acceso a datos (DAO).
+ */
+@Service
+public class CarcelService {
+
+    /** Logger para registrar eventos y errores en el servicio */
+<span class="fc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(CarcelService.class);</span>
+
+
+
+    /** DAO utilizado para acceder a la base de datos de cárceles */
+    private final CarcelDAO carcelDAO;
+
+
+
+    private final PresoDAO presoDAO;
+
+    /**
+     * Obtiene un recuento de cuántos presos hay registrados en cada cárcel.
+     * * @return Un mapa donde la clave es el nombre de la cárcel y el valor es la cantidad de presos.
+     */
+    public Map&lt;String, Long&gt; obtenerOcupacionPorCarcel() {
+<span class="nc" id="L50">        Map&lt;String, Long&gt; estadisticas = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L51">        Iterable&lt;Carcel&gt; todasLasCarceles = carcelDAO.findAll();</span>
+        
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (Carcel carcel : todasLasCarceles) {</span>
+<span class="nc" id="L54">            long totalPresos = presoDAO.countByCarcel(carcel);</span>
+<span class="nc" id="L55">            estadisticas.put(carcel.getNombre(), totalPresos);</span>
+<span class="nc" id="L56">        }</span>
+        
+<span class="nc" id="L58">        return estadisticas;</span>
+    }
+
+
+    /**
+     * Constructor del servicio que inyecta el DAO de cárceles.
+     *
+     * @param carcelDAO DAO utilizado para persistir y consultar entidades Carcel
+     */
+    @Autowired
+<span class="fc" id="L68">    public CarcelService(CarcelDAO carcelDAO, PresoDAO presoDAO) {</span>
+<span class="fc" id="L69">        this.carcelDAO = carcelDAO;</span>
+<span class="fc" id="L70">        this.presoDAO = presoDAO;</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Añade una nueva cárcel tras validar los campos obligatorios.
+     *
+     * @param nuevaCarcel Objeto Carcel a guardar
+     * @return La cárcel guardada con su ID generado
+     * @throws IllegalArgumentException si los datos son inválidos
+     */
+    public Carcel anadirCarcel(Carcel nuevaCarcel) {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (nuevaCarcel == null) {</span>
+<span class="fc" id="L82">            throw new IllegalArgumentException(&quot;No se ha recibido ningún dato de la cárcel.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L85" title="1 of 4 branches missed.">        if (nuevaCarcel.getNombre() == null || nuevaCarcel.getNombre().trim().isEmpty()) {</span>
+<span class="fc" id="L86">            throw new IllegalArgumentException(&quot;El nombre de la cárcel es obligatorio.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L89" title="1 of 4 branches missed.">        if (nuevaCarcel.getLocalidad() == null || nuevaCarcel.getLocalidad().trim().isEmpty()) {</span>
+<span class="fc" id="L90">            throw new IllegalArgumentException(&quot;La localidad es obligatoria.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L93" title="1 of 4 branches missed.">        if (nuevaCarcel.getCapacidad() == null || nuevaCarcel.getCapacidad() &lt;= 0) {</span>
+<span class="fc" id="L94">            throw new IllegalArgumentException(&quot;La capacidad debe ser un número mayor que cero.&quot;);</span>
+        }
+
+        // Cambio: System.out por logger.info
+<span class="fc" id="L98">        logger.info(&quot;Cárcel validada correctamente. Procediendo a guardar...&quot;);</span>
+<span class="fc" id="L99">        return carcelDAO.save(nuevaCarcel);</span>
+    }
+
+    /**
+     * Elimina una cárcel de la base de datos según su ID.
+     *
+     * @param id El identificador de la cárcel a eliminar
+     * @return true si se eliminó correctamente, false si no se encontró
+     * @throws IllegalArgumentException si el ID es nulo
+     */
+    public boolean eliminarCarcel(Integer id) {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L111">            throw new IllegalArgumentException(&quot;El ID de la cárcel no puede ser nulo.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (carcelDAO.existsById(id)) {</span>
+<span class="fc" id="L115">            carcelDAO.deleteById(id);</span>
+            // Cambio: System.out por logger.info con parámetro {}
+<span class="fc" id="L117">            logger.info(&quot;Cárcel con ID {} eliminada correctamente.&quot;, id);</span>
+<span class="fc" id="L118">            return true;</span>
+        } else {
+            // Cambio: System.err por logger.error o warn según prioridad de los apuntes
+<span class="fc" id="L121">            logger.warn(&quot;No se encontró ninguna cárcel con el ID: {}&quot;, id);</span>
+<span class="fc" id="L122">            return false;</span>
+        }
+    }
+
+    /**
+     * Obtiene todas las cárceles almacenadas en la base de datos.
+     *
+     * @return Lista de cárceles
+     */
+    public List&lt;Carcel&gt; obtenerCarceles() {
+<span class="fc" id="L132">        List&lt;Carcel&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L133">        carcelDAO.findAll().forEach(lista::add);</span>
+<span class="fc" id="L134">        return lista;</span>
+    }
+
+    /**
+     * Obtiene una cárcel según su ID.
+     *
+     * @param id identificador de la cárcel
+     * @return la cárcel encontrada
+     * @throws IllegalArgumentException si no existe
+     */
+    public Carcel obtenerCarcelPorId(Integer id) {
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L146">            throw new IllegalArgumentException(&quot;El ID no puede ser nulo.&quot;);</span>
+        }
+
+<span class="fc" id="L149">        return carcelDAO.findById(id)</span>
+<span class="fc" id="L150">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;No se encontró ninguna cárcel con ese ID.&quot;));</span>
+    }
+
+    /**
+     * Obtiene la cantidad de presos de una cárcel específica mediante su ID.
+     *
+     * @param id Identificador de la cárcel
+     * @return Número de presos en dicha cárcel
+     * @throws IllegalArgumentException si la cárcel no existe
+     */
+    public long obtenerOcupacionDeCarcel(Integer id) {
+        // Reutilizamos la lógica de búsqueda que ya existe en el servicio
+<span class="fc" id="L162">        Carcel carcel = obtenerCarcelPorId(id);</span>
+        
+        // Usamos el método de conteo que definimos en el DAO anteriormente
+<span class="fc" id="L165">        return presoDAO.countByCarcel(carcel);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

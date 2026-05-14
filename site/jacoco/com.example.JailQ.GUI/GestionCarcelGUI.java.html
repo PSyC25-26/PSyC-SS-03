@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestionCarcelGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.GUI</a> &gt; <span class="el_source">GestionCarcelGUI.java</span></div><h1>GestionCarcelGUI.java</h1><pre class="source lang-java linenums">package com.example.JailQ.GUI;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+
+/**
+ * Interfaz Gráfica de Usuario (GUI) para la gestión y creación de nuevas cárceles dentro del sistema JailQ.
+ *
+ * &lt;p&gt;Esta ventana permite:
+ * &lt;ul&gt;
+ *     &lt;li&gt;Introducir los datos básicos de una cárcel (nombre, descripción, localidad y capacidad).&lt;/li&gt;
+ *     &lt;li&gt;Enviar dichos datos al backend mediante una petición HTTP POST.&lt;/li&gt;
+ *     &lt;li&gt;Visualizar la respuesta del servidor en una consola integrada.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;La interfaz está diseñada con Swing y utiliza {@link HttpClient} para la comunicación con el servidor.
+ *
+ */
+public class GestionCarcelGUI extends JFrame {
+
+    private JTextField txtNombre, txtLocalidad, txtCapacidad;
+    private JTextArea txtDescripcion;
+    private JTextArea txtConsola;
+    private final HttpClient cliente;
+    /**
+     * Constructor principal de la clase.
+     *
+     * &lt;p&gt;Configura:
+     * &lt;ul&gt;
+     *     &lt;li&gt;El cliente HTTP para las peticiones al backend.&lt;/li&gt;
+     *     &lt;li&gt;Los componentes visuales del formulario.&lt;/li&gt;
+     *     &lt;li&gt;La consola inferior donde se muestran los resultados.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;La ventana se inicializa con un diseño basado en {@link BorderLayout}.
+     */
+<span class="nc" id="L43">    public GestionCarcelGUI() {</span>
+<span class="nc" id="L44">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+
+<span class="nc" id="L46">        setTitle(&quot;JailQ - Gestión de Cárceles&quot;);</span>
+<span class="nc" id="L47">        setSize(450, 580);</span>
+<span class="nc" id="L48">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L49">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L50">        setLayout(new BorderLayout());</span>
+
+        // Panel del formulario principal
+<span class="nc" id="L53">        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 5, 5));</span>
+<span class="nc" id="L54">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Añadir Nueva Cárcel&quot;));</span>
+
+        // Campo: Nombre
+<span class="nc" id="L57">        panelFormulario.add(new JLabel(&quot;Nombre:&quot;));</span>
+<span class="nc" id="L58">        txtNombre = new JTextField();</span>
+<span class="nc" id="L59">        txtNombre.setName(&quot;txtNombre&quot;); </span>
+<span class="nc" id="L60">        panelFormulario.add(txtNombre);</span>
+
+        // Campo: Descripción
+<span class="nc" id="L63">        panelFormulario.add(new JLabel(&quot;Descripción:&quot;));</span>
+<span class="nc" id="L64">        txtDescripcion = new JTextArea(3, 20);</span>
+<span class="nc" id="L65">        txtDescripcion.setName(&quot;txtDescripcion&quot;); </span>
+<span class="nc" id="L66">        JScrollPane scrollDesc = new JScrollPane(txtDescripcion);</span>
+<span class="nc" id="L67">        panelFormulario.add(scrollDesc);</span>
+
+        // Campo: Localidad
+<span class="nc" id="L70">        panelFormulario.add(new JLabel(&quot;Localidad:&quot;));</span>
+<span class="nc" id="L71">        txtLocalidad = new JTextField();</span>
+<span class="nc" id="L72">        txtLocalidad.setName(&quot;txtLocalidad&quot;); </span>
+<span class="nc" id="L73">        panelFormulario.add(txtLocalidad);</span>
+
+        // Campo: Capacidad
+<span class="nc" id="L76">        panelFormulario.add(new JLabel(&quot;Capacidad:&quot;));</span>
+<span class="nc" id="L77">        txtCapacidad = new JTextField();</span>
+<span class="nc" id="L78">        txtCapacidad.setName(&quot;txtCapacidad&quot;); </span>
+<span class="nc" id="L79">        panelFormulario.add(txtCapacidad);</span>
+
+        // Botón de envío
+<span class="nc" id="L82">        JButton btnAnadir = new JButton(&quot;Añadir Cárcel&quot;);</span>
+<span class="nc" id="L83">        btnAnadir.setName(&quot;btnAnadir&quot;); </span>
+<span class="nc" id="L84">        btnAnadir.addActionListener(e -&gt; anadirCarcel());</span>
+<span class="nc" id="L85">        panelFormulario.add(new JLabel(&quot;&quot;));</span>
+<span class="nc" id="L86">        panelFormulario.add(btnAnadir);</span>
+
+        // Panel de estadísticas avanzadas
+<span class="nc" id="L89">        JPanel panelEstadisticas = new JPanel(new FlowLayout());</span>
+<span class="nc" id="L90">        panelEstadisticas.setBorder(BorderFactory.createTitledBorder(&quot;Estadísticas&quot;));</span>
+
+<span class="nc" id="L92">JButton btnEstadisticas = new JButton(&quot;Ver Estadísticas&quot;);</span>
+<span class="nc" id="L93">btnEstadisticas.setName(&quot;btnEstadisticas&quot;); </span>
+<span class="nc" id="L94">btnEstadisticas.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="nc" id="L95">        btnEstadisticas.setFocusPainted(false);</span>
+<span class="nc" id="L96">        btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L97">        btnEstadisticas.addActionListener(e -&gt; new EstadisticasAvanzadasGUI().setVisible(true));</span>
+<span class="nc" id="L98">        panelEstadisticas.add(btnEstadisticas);</span>
+
+        // Consola inferior
+<span class="nc" id="L101">        txtConsola = new JTextArea(10, 30);</span>
+<span class="nc" id="L102">        txtConsola.setName(&quot;txtConsola&quot;); </span>
+<span class="nc" id="L103">        txtConsola.setEditable(false);</span>
+<span class="nc" id="L104">        txtConsola.setLineWrap(true);</span>
+<span class="nc" id="L105">        txtConsola.setWrapStyleWord(true);</span>
+
+<span class="nc" id="L107">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
+<span class="nc" id="L108">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Resultado del Servidor&quot;));</span>
+
+<span class="nc" id="L110">	    JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="nc" id="L111">        btnVolver.setName(&quot;btnVolver&quot;); </span>
+<span class="nc" id="L112">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L113">        btnVolver.setFocusPainted(false);</span>
+<span class="nc" id="L114">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L115">        btnVolver.addActionListener(e -&gt; dispose());</span>
+
+        // Panel norte: formulario + estadísticas
+<span class="nc" id="L118">        JPanel panelNorte = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L119">        panelNorte.add(panelFormulario,  BorderLayout.NORTH);</span>
+<span class="nc" id="L120">        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L122">        JPanel panelInferior = new JPanel(new BorderLayout(5, 5));</span>
+<span class="nc" id="L123">        panelInferior.add(scrollConsola, BorderLayout.CENTER);</span>
+<span class="nc" id="L124">        panelInferior.add(btnVolver,     BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L126">        add(panelNorte,    BorderLayout.NORTH);</span>
+<span class="nc" id="L127">        add(panelInferior, BorderLayout.CENTER);</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Envía una petición HTTP POST al backend para registrar una nueva cárcel.
+     *
+     * &lt;p&gt;El proceso incluye:
+     * &lt;ol&gt;
+     *     &lt;li&gt;Construcción del cuerpo JSON con los datos del formulario.&lt;/li&gt;
+     *     &lt;li&gt;Envío de la petición a {@code http://localhost:8080/carcel/crear}.&lt;/li&gt;
+     *     &lt;li&gt;Interpretación del código de estado devuelto por el servidor.&lt;/li&gt;
+     *     &lt;li&gt;Actualización de la consola con el resultado.&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * &lt;p&gt;En caso de error, se muestra un mensaje indicando la posible causa.
+     */
+    private void anadirCarcel() {
+        try {
+<span class="nc" id="L145">            String jsonBody = String.format(</span>
+                    &quot;{\&quot;nombre\&quot;:\&quot;%s\&quot;, \&quot;descripcion\&quot;:\&quot;%s\&quot;, \&quot;localidad\&quot;:\&quot;%s\&quot;, \&quot;capacidad\&quot;:%s}&quot;,
+<span class="nc" id="L147">                    txtNombre.getText(),</span>
+<span class="nc" id="L148">                    txtDescripcion.getText(),</span>
+<span class="nc" id="L149">                    txtLocalidad.getText(),</span>
+<span class="nc" id="L150">                    txtCapacidad.getText()</span>
+            );
+
+<span class="nc" id="L153">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L154">                    .uri(URI.create(&quot;http://localhost:8080/carcel/crear&quot;))</span>
+<span class="nc" id="L155">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="nc" id="L156">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
+<span class="nc" id="L157">                    .build();</span>
+
+<span class="nc" id="L159">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (response.statusCode() == 201) {</span>
+<span class="nc" id="L162">                txtConsola.setText(&quot;ÉXITO (201): Cárcel creada.\n&quot; + response.body());</span>
+<span class="nc" id="L163">                limpiarFormulario();</span>
+            } else {
+<span class="nc" id="L165">                txtConsola.setText(&quot;ERROR (&quot; + response.statusCode() + &quot;):\n&quot; + response.body());</span>
+            }
+
+<span class="nc" id="L168">        } catch (Exception ex) {</span>
+<span class="nc" id="L169">            txtConsola.setText(&quot;Excepción: &quot; + ex.getMessage() +</span>
+                    &quot;\n¿Está encendido el servidor Spring Boot?&quot;);
+<span class="nc" id="L171">        }</span>
+<span class="nc" id="L172">    }</span>
+
+    /**
+     * Restablece todos los campos del formulario a su estado inicial.
+     *
+     * &lt;p&gt;Se utiliza tras un registro exitoso para permitir introducir una nueva cárcel sin residuos de datos previos.
+     */
+    private void limpiarFormulario() {
+<span class="nc" id="L180">        txtNombre.setText(&quot;&quot;);</span>
+<span class="nc" id="L181">        txtDescripcion.setText(&quot;&quot;);</span>
+<span class="nc" id="L182">        txtLocalidad.setText(&quot;&quot;);</span>
+<span class="nc" id="L183">        txtCapacidad.setText(&quot;&quot;);</span>
+<span class="nc" id="L184">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

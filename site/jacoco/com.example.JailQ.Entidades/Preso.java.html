@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Preso.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JailQ</a> &gt; <a href="index.source.html" class="el_package">com.example.JailQ.Entidades</a> &gt; <span class="el_source">Preso.java</span></div><h1>Preso.java</h1><pre class="source lang-java linenums">package com.example.JailQ.Entidades;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.jspecify.annotations.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
+/**
+ * Entidad que representa a un preso dentro del sistema.
+ * Contiene información personal, detalles de la condena,
+ * delitos cometidos y fechas relevantes como ingreso y nacimiento.
+ */
+@Entity
+<span class="fc" id="L30">public class Preso {</span>
+   /**
+    * Identificador único del preso.
+    */
+   @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
+   private @Nullable Integer idPreso;
+
+   /**
+    * Nombre del preso.
+    * Este campo es obligatorio.
+    */
+   @Column(nullable = false)
+   private String nombre;
+
+   /**
+    * Apellidos del preso.
+    * Este campo es obligatorio.
+    */
+   @Column(nullable = false)
+   private String apellidos;
+
+   /**
+    * Fecha de nacimiento del preso.
+    * Este campo es obligatorio.
+    */
+   @Column(nullable = false)
+   private LocalDate fechaNacimiento;
+
+   /**
+    * Duración de la condena en años.
+    * Este campo es obligatorio.
+    */
+   @Column(nullable = false)
+   private Integer condena;
+
+   /**
+    * Lista de delitos cometidos por el preso.
+    * 
+    * &lt;p&gt;
+    * Este campo es obligatorio y representa todos los delitos asociados
+    * al preso dentro del sistema. Se almacena como una colección de tipo
+    * {@link Delito} en la tabla &lt;code&gt;preso_delitos&lt;/code&gt;, y cada elemento
+    * se persiste como una cadena de texto correspondiente al nombre del enum.
+    * &lt;/p&gt;
+    * 
+    * &lt;p&gt;
+    * Se utiliza {@link java.util.List} para mantener el orden de los delitos,
+    * y se inicializa como un {@link java.util.ArrayList}.
+    * &lt;/p&gt;
+    */
+<span class="fc" id="L81">   @ElementCollection</span>
+   @Enumerated(EnumType.STRING)
+   @CollectionTable(name = &quot;preso_delitos&quot;, joinColumns = @JoinColumn(name = &quot;preso_id&quot;))
+   @Column(name = &quot;delito&quot;, nullable = false)
+   private List&lt;Delito&gt; delitos = new ArrayList&lt;&gt;();
+
+   /**
+    * Fecha de ingreso del preso al centro penitenciario.
+    * Este campo es obligatorio.
+    */
+   @Column(nullable = false)
+   private LocalDate fechaIngreso;
+
+   /**
+   * Cárcel en la que se encuentra el preso.
+   * Relación de muchos a uno (muchos presos pueden estar en una cárcel).
+   */
+   @ManyToOne
+   @JoinColumn(name = &quot;id_carcel&quot;, nullable = false)
+   private Carcel carcel;
+
+   /**
+    * Obtiene el identificador del preso.
+    * 
+    * @return id del preso
+    */
+   public Integer getId() {
+<span class="nc" id="L108">      return idPreso;</span>
+   }
+
+   /**
+    * Establece el identificador del preso.
+    * 
+    * @param idPreso nuevo id del preso
+    */
+   public void setId(Integer idPreso) {
+<span class="fc" id="L117">      this.idPreso = idPreso;</span>
+<span class="fc" id="L118">   }</span>
+
+   /**
+    * Obtiene el nombre del preso.
+    * 
+    * @return nombre del preso
+    */
+   public String getNombre() {
+<span class="fc" id="L126">      return nombre;</span>
+   }
+
+   /**
+    * Establece el nombre del preso.
+    * 
+    * @param nombre nombre del preso
+    */
+   public void setNombre(String nombre) {
+<span class="fc" id="L135">      this.nombre = nombre;</span>
+<span class="fc" id="L136">   }</span>
+
+   /**
+    * Obtiene los apellidos del preso.
+    * 
+    * @return apellidos del preso
+    */
+   public String getApellidos() {
+<span class="fc" id="L144">      return apellidos;</span>
+   }
+
+   /**
+    * Establece los apellidos del preso.
+    * 
+    * @param apellidos apellidos del preso
+    */
+   public void setApellidos(String apellidos) {
+<span class="fc" id="L153">      this.apellidos = apellidos;</span>
+<span class="fc" id="L154">   }</span>
+
+   /**
+    * Obtiene la fecha de nacimiento del preso.
+    * 
+    * @return fecha de nacimiento
+    */
+   public LocalDate getFechaNacimiento() {
+<span class="fc" id="L162">      return fechaNacimiento;</span>
+   }
+
+   /**
+    * Establece la fecha de nacimiento del preso.
+    * 
+    * @param fechaNacimiento fecha de nacimiento
+    */
+   public void setFechaNacimiento(LocalDate fechaNacimiento) {
+<span class="fc" id="L171">      this.fechaNacimiento = fechaNacimiento;</span>
+<span class="fc" id="L172">   }</span>
+
+   /**
+    * Obtiene la duración de la condena en años.
+    * 
+    * @return duración de la condena
+    */
+   public Integer getCondena() {
+<span class="fc" id="L180">      return condena;</span>
+   }
+
+   /**
+    * Establece la duración de la condena.
+    * 
+    * @param condena duración en años
+    */
+   public void setCondena(Integer condena) {
+<span class="fc" id="L189">      this.condena = condena;</span>
+<span class="fc" id="L190">   }</span>
+
+   /**
+    * Obtiene la lista de delitos cometidos por el preso.
+    *
+    * &lt;p&gt;
+    * La lista mantiene el orden en el que se agregaron los delitos y
+    * contiene instancias del enum {@link Delito} correspondientes
+    * a cada delito asociado al preso.
+    * &lt;/p&gt;
+    *
+    * @return lista de delitos del preso
+    */
+   public List&lt;Delito&gt; getDelitos() {
+<span class="fc" id="L204">      return delitos;</span>
+   }
+
+   /**
+    * Establece la lista de delitos cometidos por el preso.
+    *
+    * &lt;p&gt;
+    * La lista pasada reemplaza cualquier contenido previo y no debe ser nula.
+    * Es recomendable inicializarla como un {@link java.util.ArrayList} si se crea
+    * desde fuera.
+    * &lt;/p&gt;
+    *
+    * @param delitos lista de delitos que se asignará al preso
+    */
+   public void setDelitos(List&lt;Delito&gt; delitos) {
+<span class="fc" id="L219">      this.delitos = delitos;</span>
+<span class="fc" id="L220">   }</span>
+
+   /**
+    * Agrega un delito a la lista de delitos del preso.
+    *
+    * @param delito el {@link Delito} a agregar
+    */
+   public void addDelito(Delito delito) {
+<span class="fc bfc" id="L228" title="All 2 branches covered.">      if (delito != null) {</span>
+<span class="fc" id="L229">         this.delitos.add(delito);</span>
+      }
+<span class="fc" id="L231">   }</span>
+
+   /**
+    * Elimina un delito de la lista de delitos del preso.
+    *
+    * @param delito el {@link Delito} a eliminar
+    * @return true si el delito existía y fue eliminado, false si no estaba
+    */
+   public boolean removeDelito(Delito delito) {
+<span class="fc" id="L240">      return this.delitos.remove(delito);</span>
+   }
+
+   /**
+    * Obtiene la fecha de ingreso del preso al centro penitenciario.
+    * 
+    * @return fecha de ingreso
+    */
+   public LocalDate getFechaIngreso() {
+<span class="fc" id="L249">      return fechaIngreso;</span>
+   }
+
+   /**
+    * Establece la fecha de ingreso del preso.
+    * 
+    * @param fechaIngreso fecha de ingreso
+    */
+   public void setFechaIngreso(LocalDate fechaIngreso) {
+<span class="fc" id="L258">      this.fechaIngreso = fechaIngreso;</span>
+<span class="fc" id="L259">   }</span>
+
+   /**
+   * Obtiene la cárcel a la que pertenece el preso.
+   * @return Objeto Carcel
+   */
+   public Carcel getCarcel() {
+<span class="fc" id="L266">         return carcel;</span>
+   }
+
+  /**
+   * Asigna una cárcel al preso.
+   * @param carcel Objeto Carcel a asignar
+   */
+   public void setCarcel(Carcel carcel) {
+<span class="fc" id="L274">         this.carcel = carcel;</span>
+<span class="fc" id="L275">   }</span>
+
+
+   /**
+     * Permite que Jackson reciba un ID numérico en el JSON y lo asocie a la cárcel.
+     * Esto habilita el uso de &quot;carcel&quot;: 1 en el Body de la petición.
+     */
+    @JsonProperty(&quot;carcel&quot;)
+    public void setCarcelById(Integer id) {
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        if (id != null) {</span>
+<span class="nc" id="L285">            this.carcel = new Carcel();</span>
+<span class="nc" id="L286">            this.carcel.setIdCarcel(id);</span>
+        }
+<span class="nc" id="L288">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
