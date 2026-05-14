@@ -21,10 +21,10 @@ public class GestionPresosGUITest {
 
     @BeforeEach
     public void setUp() {
-        // Ejecutamos la ventana en modo POLICIA
         GestionPresosGUI frame = GuiActionRunner.execute(() -> new GestionPresosGUI("POLICIA"));
         window = new FrameFixture(frame);
         window.show();
+        window.resizeTo(new java.awt.Dimension(800, 600)); // ensure fits in virtual screen
     }
 
     @AfterEach
