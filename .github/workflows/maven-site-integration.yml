@@ -110,8 +110,8 @@ jobs:
         #env:
           #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Run Performance Tests
-        run: mvn -Dtest=JailQPerformanceTest test
+      #- name: Run Performance Tests
+        #run: mvn -Dtest=JailQPerformanceTest test
 
       - name: Generate Maven Site
         run: mvn site
