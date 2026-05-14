@@ -27,15 +27,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2. Instalar Doxygen 1.17.0 (misma versión que en local) y Graphviz
-      # Se descarga el binario oficial en lugar del paquete Ubuntu (1.9.8)
+      # 2. Instalar Doxygen 1.13.2 desde GitHub releases y Graphviz
       - name: Instalar Doxygen y Graphviz
         run: |
           sudo apt-get update
           sudo apt-get install -y graphviz
-          wget -q https://doxygen.nl/files/doxygen-1.17.0.linux.bin.tar.gz
-          tar -xzf doxygen-1.17.0.linux.bin.tar.gz
-          sudo cp doxygen-1.17.0/bin/doxygen /usr/local/bin/doxygen
+          wget -q https://github.com/doxygen/doxygen/releases/download/Release_1_13_2/doxygen-1.13.2.linux.bin.tar.gz
+          tar -xzf doxygen-1.13.2.linux.bin.tar.gz
+          sudo cp doxygen-1.13.2/bin/doxygen /usr/local/bin/doxygen
           doxygen --version
 
       # 3. Verificar versiones
@@ -57,8 +56,6 @@ jobs:
         run: ls JailQ/target/doxygen/html/ | head -10
 
       # 6. Publicar en gh-pages/doxygen/
-      # destination_dir: doxygen → publica en /doxygen/ dentro de gh-pages
-      # keep_files: true → no borra otros artefactos en gh-pages (Sphinx, etc.)
       - name: Deploy a gh-pages/doxygen/
         uses: peaceiris/actions-gh-pages@v4
         with:
