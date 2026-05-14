@@ -1,5 +1,21 @@
 <map id="src/main/java/com/example/JailQ/Service/CuentaService.java" name="src/main/java/com/example/JailQ/Service/CuentaService.java">
-<area shape="rect" id="Node000001" title=" " alt="" coords="13,5,252,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,260,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,46,135,79,130,79,130,46"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1116,5,1355,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,260,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1116,35,739,57,506,75,272,96,224,101,224,96,271,91,505,69,739,52,1115,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="284,93,501,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1116,38,845,61,516,96,515,90,845,56,1115,33"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="525,93,743,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1116,45,757,96,756,90,1115,40"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="767,93,1093,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1169,48,1010,92,1009,87,1168,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1117,93,1353,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1238,46,1238,79,1233,79,1233,46"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1377,101,1515,126"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1283,43,1406,93,1404,98,1281,48"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="1539,101,1641,126"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1325,43,1528,91,1541,94,1539,99,1527,96,1324,48"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1666,101,1789,126"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1355,40,1499,62,1655,91,1673,95,1671,100,1653,96,1498,67,1355,45"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1813,101,1983,126"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1355,36,1564,59,1801,91,1829,95,1828,101,1800,96,1563,64,1354,41"/>
 </map>

@@ -1,5 +1,15 @@
 <map id="src/main/java/com/example/JailQ/Entidades/Cuenta.java" name="src/main/java/com/example/JailQ/Entidades/Cuenta.java">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,212,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="19,93,199,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,46,111,79,106,79,106,46"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="557,5,764,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,185,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="558,43,199,96,198,90,557,38"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="209,101,397,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="583,48,365,100,363,95,582,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="422,93,641,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="633,48,573,88,570,83,630,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="665,101,917,126"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="691,43,763,91,760,95,688,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="942,101,1105,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="741,43,962,95,961,100,740,48"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1129,101,1329,126"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="765,39,1117,91,1149,96,1148,101,1116,96,764,44"/>
 </map>

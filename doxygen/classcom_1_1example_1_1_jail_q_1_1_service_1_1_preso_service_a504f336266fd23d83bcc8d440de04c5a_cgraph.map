@@ -1,0 +1,21 @@
+<map id="anadirPreso" name="anadirPreso">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,269,104,294"/>
+<area shape="rect" id="Node000002" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a8e00a76b8f8b94835cf0e9b429481f05" title=" " alt="" coords="152,5,369,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="55,268,63,227,79,170,108,109,127,80,150,55,156,51,159,55,154,59,131,84,112,111,84,172,68,228,60,269"/>
+<area shape="rect" id="Node000003" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a22439efc8220775386aa26b43b79b9be" title=" " alt="" coords="152,69,369,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="58,267,69,237,88,197,115,155,150,119,158,114,161,118,154,123,119,159,93,200,74,239,63,269"/>
+<area shape="rect" id="Node000004" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a35ddf038bdaea3a1a68a8d21114985fa" title=" " alt="" coords="152,133,369,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="64,266,99,225,123,203,151,183,163,176,166,181,153,188,127,207,103,229,68,270"/>
+<area shape="rect" id="Node000005" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a6eac292e5103d60499392829feae06b0" title=" " alt="" coords="152,197,369,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="92,266,151,247,176,239,178,244,153,252,94,271"/>
+<area shape="rect" id="Node000006" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a63735e44e047916aeb273c647d6c4cfd" title=" " alt="" coords="152,261,369,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="104,279,138,279,138,284,104,284"/>
+<area shape="rect" id="Node000007" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_carcel.html#ac21b1eceea5e363ab9639bbfeeaf101b" title=" " alt="" coords="152,325,369,365"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="94,292,153,311,178,319,176,324,151,316,92,297"/>
+<area shape="rect" id="Node000008" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_carcel.html#a8058fad6395d483ae064e4f95df93e0e" title=" " alt="" coords="152,389,369,429"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="68,293,103,334,127,356,153,375,166,382,163,386,151,380,123,360,99,337,64,296"/>
+<area shape="rect" id="Node000009" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#a8058fad6395d483ae064e4f95df93e0e" title=" " alt="" coords="152,453,369,493"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="63,293,74,323,93,363,119,404,154,439,161,444,158,449,150,443,115,407,88,366,69,326,58,295"/>
+<area shape="rect" id="Node000010" href="$classcom_1_1example_1_1_jail_q_1_1_entidades_1_1_preso.html#aa7b75f380390c4428dcc68e719ffe59e" title=" " alt="" coords="152,517,369,557"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="60,294,68,334,84,391,112,451,131,479,154,503,159,508,156,512,150,507,127,482,108,454,79,393,63,336,55,295"/>
+</map>

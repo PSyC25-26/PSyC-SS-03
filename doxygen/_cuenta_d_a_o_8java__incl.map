@@ -1,5 +1,7 @@
 <map id="src/main/java/com/example/JailQ/Dao/CuentaDAO.java" name="src/main/java/com/example/JailQ/Dao/CuentaDAO.java">
-<area shape="rect" id="Node000001" title=" " alt="" coords="35,5,238,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="167,5,370,45"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,93,268,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,46,139,79,134,79,134,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="241,48,179,88,176,84,238,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="292,93,509,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="299,43,362,84,359,88,297,48"/>
 </map>
