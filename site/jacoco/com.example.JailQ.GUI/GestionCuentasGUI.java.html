@@ -33,88 +33,88 @@ public class GestionCuentasGUI extends JFrame {
      * todos los componentes visuales de la ventana (paneles, campos de texto y botones).
      */
 
-<span class="nc" id="L36">    public GestionCuentasGUI() {</span>
-<span class="nc" id="L37">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+<span class="fc" id="L36">    public GestionCuentasGUI() {</span>
+<span class="fc" id="L37">        cliente = HttpClientSingleton.getInstance().getClient();</span>
 
-<span class="nc" id="L39">        setTitle(&quot;JailQ - Gestión de Cuentas&quot;);</span>
-<span class="nc" id="L40">        setSize(400, 550);</span>
-<span class="nc" id="L41">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L42">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L43">        setLayout(new BorderLayout());</span>
+<span class="fc" id="L39">        setTitle(&quot;JailQ - Gestión de Cuentas&quot;);</span>
+<span class="fc" id="L40">        setSize(400, 550);</span>
+<span class="fc" id="L41">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L42">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L43">        setLayout(new BorderLayout());</span>
 
         // --- PANEL SUPERIOR: Formulario para añadir ---
-<span class="nc" id="L46">        JPanel panelFormulario = new JPanel(new GridLayout(6, 2, 5, 5));</span>
-<span class="nc" id="L47">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Añadir Nueva Cuenta&quot;));</span>
+<span class="fc" id="L46">        JPanel panelFormulario = new JPanel(new GridLayout(6, 2, 5, 5));</span>
+<span class="fc" id="L47">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Añadir Nueva Cuenta&quot;));</span>
 
-<span class="nc" id="L49">        panelFormulario.add(new JLabel(&quot;Nombre:&quot;));</span>
-<span class="nc" id="L50">        txtNombre = new JTextField();</span>
-<span class="nc" id="L51">        txtNombre.setName(&quot;txtNombre&quot;); </span>
-<span class="nc" id="L52">        panelFormulario.add(txtNombre);</span>
+<span class="fc" id="L49">        panelFormulario.add(new JLabel(&quot;Nombre:&quot;));</span>
+<span class="fc" id="L50">        txtNombre = new JTextField();</span>
+<span class="fc" id="L51">        txtNombre.setName(&quot;txtNombre&quot;); </span>
+<span class="fc" id="L52">        panelFormulario.add(txtNombre);</span>
 
-<span class="nc" id="L54">        panelFormulario.add(new JLabel(&quot;Apellidos:&quot;));</span>
-<span class="nc" id="L55">        txtApellidos = new JTextField();</span>
-<span class="nc" id="L56">        txtApellidos.setName(&quot;txtApellidos&quot;); </span>
-<span class="nc" id="L57">        panelFormulario.add(txtApellidos);</span>
+<span class="fc" id="L54">        panelFormulario.add(new JLabel(&quot;Apellidos:&quot;));</span>
+<span class="fc" id="L55">        txtApellidos = new JTextField();</span>
+<span class="fc" id="L56">        txtApellidos.setName(&quot;txtApellidos&quot;); </span>
+<span class="fc" id="L57">        panelFormulario.add(txtApellidos);</span>
 
-<span class="nc" id="L59">        panelFormulario.add(new JLabel(&quot;Username:&quot;));</span>
-<span class="nc" id="L60">        txtUsername = new JTextField();</span>
-<span class="nc" id="L61">        txtUsername.setName(&quot;txtUsername&quot;); </span>
-<span class="nc" id="L62">        panelFormulario.add(txtUsername);</span>
+<span class="fc" id="L59">        panelFormulario.add(new JLabel(&quot;Username:&quot;));</span>
+<span class="fc" id="L60">        txtUsername = new JTextField();</span>
+<span class="fc" id="L61">        txtUsername.setName(&quot;txtUsername&quot;); </span>
+<span class="fc" id="L62">        panelFormulario.add(txtUsername);</span>
 
-<span class="nc" id="L64">        panelFormulario.add(new JLabel(&quot;Password:&quot;));</span>
-<span class="nc" id="L65">        txtPassword = new JPasswordField();</span>
-<span class="nc" id="L66">        txtPassword.setName(&quot;txtPassword&quot;); </span>
-<span class="nc" id="L67">        panelFormulario.add(txtPassword);</span>
+<span class="fc" id="L64">        panelFormulario.add(new JLabel(&quot;Password:&quot;));</span>
+<span class="fc" id="L65">        txtPassword = new JPasswordField();</span>
+<span class="fc" id="L66">        txtPassword.setName(&quot;txtPassword&quot;); </span>
+<span class="fc" id="L67">        panelFormulario.add(txtPassword);</span>
 
-<span class="nc" id="L69">        panelFormulario.add(new JLabel(&quot;Tipo de Cuenta:&quot;));</span>
-<span class="nc" id="L70">        cbTipoCuenta = new JComboBox&lt;&gt;(new String[]{&quot;POLICIA&quot;, &quot;FAMILIA&quot;, &quot;GUBERNAMENTAL&quot;});</span>
-<span class="nc" id="L71">        cbTipoCuenta.setName(&quot;cbTipoCuenta&quot;); </span>
-<span class="nc" id="L72">        panelFormulario.add(cbTipoCuenta);</span>
+<span class="fc" id="L69">        panelFormulario.add(new JLabel(&quot;Tipo de Cuenta:&quot;));</span>
+<span class="fc" id="L70">        cbTipoCuenta = new JComboBox&lt;&gt;(new String[]{&quot;POLICIA&quot;, &quot;FAMILIA&quot;, &quot;GUBERNAMENTAL&quot;});</span>
+<span class="fc" id="L71">        cbTipoCuenta.setName(&quot;cbTipoCuenta&quot;); </span>
+<span class="fc" id="L72">        panelFormulario.add(cbTipoCuenta);</span>
 
-<span class="nc" id="L74">        JButton btnAnadir = new JButton(&quot;Añadir Cuenta&quot;);</span>
-<span class="nc" id="L75">        btnAnadir.setName(&quot;btnAnadir&quot;); </span>
-<span class="nc" id="L76">        btnAnadir.addActionListener(e -&gt; anadirCuenta());</span>
-<span class="nc" id="L77">        panelFormulario.add(new JLabel(&quot;&quot;));</span>
-<span class="nc" id="L78">        panelFormulario.add(btnAnadir);</span>
+<span class="fc" id="L74">        JButton btnAnadir = new JButton(&quot;Añadir Cuenta&quot;);</span>
+<span class="fc" id="L75">        btnAnadir.setName(&quot;btnAnadir&quot;); </span>
+<span class="fc" id="L76">        btnAnadir.addActionListener(e -&gt; anadirCuenta());</span>
+<span class="fc" id="L77">        panelFormulario.add(new JLabel(&quot;&quot;));</span>
+<span class="fc" id="L78">        panelFormulario.add(btnAnadir);</span>
 
         // --- PANEL CENTRAL: Formulario para borrar ---
-<span class="nc" id="L81">        JPanel panelBorrar = new JPanel(new FlowLayout());</span>
-<span class="nc" id="L82">        panelBorrar.setBorder(BorderFactory.createTitledBorder(&quot;Eliminar Cuenta&quot;));</span>
+<span class="fc" id="L81">        JPanel panelBorrar = new JPanel(new FlowLayout());</span>
+<span class="fc" id="L82">        panelBorrar.setBorder(BorderFactory.createTitledBorder(&quot;Eliminar Cuenta&quot;));</span>
         
-<span class="nc" id="L84">        JButton btnAbrirEliminar = new JButton(&quot;Eliminar Policía&quot;);</span>
-<span class="nc" id="L85">        btnAbrirEliminar.setName(&quot;btnAbrirEliminar&quot;); </span>
-<span class="nc" id="L86">        btnAbrirEliminar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
-<span class="nc" id="L87">        btnAbrirEliminar.setFocusPainted(false);</span>
-<span class="nc" id="L88">        btnAbrirEliminar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L89">        btnAbrirEliminar.addActionListener(e -&gt; new EliminarPoliciaGUI().setVisible(true));</span>
-<span class="nc" id="L90">        panelBorrar.add(btnAbrirEliminar);</span>
+<span class="fc" id="L84">        JButton btnAbrirEliminar = new JButton(&quot;Eliminar Policía&quot;);</span>
+<span class="fc" id="L85">        btnAbrirEliminar.setName(&quot;btnAbrirEliminar&quot;); </span>
+<span class="fc" id="L86">        btnAbrirEliminar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="fc" id="L87">        btnAbrirEliminar.setFocusPainted(false);</span>
+<span class="fc" id="L88">        btnAbrirEliminar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L89">        btnAbrirEliminar.addActionListener(e -&gt; new EliminarPoliciaGUI().setVisible(true));</span>
+<span class="fc" id="L90">        panelBorrar.add(btnAbrirEliminar);</span>
 
         // --- PANEL INFERIOR: Consola de resultados ---
-<span class="nc" id="L93">        txtConsola = new JTextArea(10, 30);</span>
-<span class="nc" id="L94">        txtConsola.setName(&quot;txtConsola&quot;); </span>
-<span class="nc" id="L95">        txtConsola.setEditable(false);</span>
-<span class="nc" id="L96">        txtConsola.setLineWrap(true);</span>
-<span class="nc" id="L97">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
-<span class="nc" id="L98">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Resultado del Servidor&quot;));</span>
+<span class="fc" id="L93">        txtConsola = new JTextArea(10, 30);</span>
+<span class="fc" id="L94">        txtConsola.setName(&quot;txtConsola&quot;); </span>
+<span class="fc" id="L95">        txtConsola.setEditable(false);</span>
+<span class="fc" id="L96">        txtConsola.setLineWrap(true);</span>
+<span class="fc" id="L97">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
+<span class="fc" id="L98">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Resultado del Servidor&quot;));</span>
 
-<span class="nc" id="L100">	    JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
-<span class="nc" id="L101">        btnVolver.setName(&quot;btnVolver&quot;); </span>
-<span class="nc" id="L102">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
-<span class="nc" id="L103">        btnVolver.setFocusPainted(false);</span>
-<span class="nc" id="L104">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L105">        btnVolver.addActionListener(e -&gt; dispose());</span>
+<span class="fc" id="L100">	    JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="fc" id="L101">        btnVolver.setName(&quot;btnVolver&quot;); </span>
+<span class="fc" id="L102">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="fc" id="L103">        btnVolver.setFocusPainted(false);</span>
+<span class="fc" id="L104">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L105">        btnVolver.addActionListener(e -&gt; dispose());</span>
 
-<span class="nc" id="L107">        JPanel panelNorte = new JPanel(new BorderLayout());</span>
-<span class="nc" id="L108">        panelNorte.add(panelFormulario, BorderLayout.NORTH);</span>
-<span class="nc" id="L109">        panelNorte.add(panelBorrar,     BorderLayout.SOUTH);</span>
+<span class="fc" id="L107">        JPanel panelNorte = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L108">        panelNorte.add(panelFormulario, BorderLayout.NORTH);</span>
+<span class="fc" id="L109">        panelNorte.add(panelBorrar,     BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L111">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
-<span class="nc" id="L112">        panelSur.add(scrollConsola, BorderLayout.CENTER);</span>
-<span class="nc" id="L113">        panelSur.add(btnVolver,     BorderLayout.SOUTH);</span>
+<span class="fc" id="L111">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
+<span class="fc" id="L112">        panelSur.add(scrollConsola, BorderLayout.CENTER);</span>
+<span class="fc" id="L113">        panelSur.add(btnVolver,     BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L115">        add(panelNorte, BorderLayout.NORTH);</span>
-<span class="nc" id="L116">        add(panelSur,   BorderLayout.CENTER);</span>
-<span class="nc" id="L117">    }</span>
+<span class="fc" id="L115">        add(panelNorte, BorderLayout.NORTH);</span>
+<span class="fc" id="L116">        add(panelSur,   BorderLayout.CENTER);</span>
+<span class="fc" id="L117">    }</span>
 
     /**
      * Recopila los datos del formulario y realiza una petición POST al servidor.
@@ -124,40 +124,40 @@ public class GestionCuentasGUI extends JFrame {
      */
     private void anadirCuenta() {
         try {
-<span class="nc" id="L127">            String jsonBody = String.format(</span>
+<span class="fc" id="L127">            String jsonBody = String.format(</span>
                 &quot;{\&quot;nombre\&quot;:\&quot;%s\&quot;, \&quot;apellidos\&quot;:\&quot;%s\&quot;, \&quot;username\&quot;:\&quot;%s\&quot;, \&quot;password\&quot;:\&quot;%s\&quot;, \&quot;tipoCuenta\&quot;:\&quot;%s\&quot;}&quot;,
-<span class="nc" id="L129">                txtNombre.getText(), txtApellidos.getText(), txtUsername.getText(),</span>
-<span class="nc" id="L130">                new String(txtPassword.getPassword()), cbTipoCuenta.getSelectedItem()</span>
+<span class="fc" id="L129">                txtNombre.getText(), txtApellidos.getText(), txtUsername.getText(),</span>
+<span class="fc" id="L130">                new String(txtPassword.getPassword()), cbTipoCuenta.getSelectedItem()</span>
             );
 
-<span class="nc" id="L133">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L134">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/crear&quot;))</span>
-<span class="nc" id="L135">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
-<span class="nc" id="L136">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
-<span class="nc" id="L137">                    .build();</span>
+<span class="fc" id="L133">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L134">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/crear&quot;))</span>
+<span class="fc" id="L135">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="fc" id="L136">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
+<span class="fc" id="L137">                    .build();</span>
 
-<span class="nc" id="L139">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L139">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L141" title="All 2 branches missed.">            if (response.statusCode() == 201) {</span>
-<span class="nc" id="L142">                txtConsola.setText(&quot;✅ ÉXITO (201): Cuenta creada.\n&quot; + response.body());</span>
-<span class="nc" id="L143">                limpiarFormulario();</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            if (response.statusCode() == 201) {</span>
+<span class="fc" id="L142">                txtConsola.setText(&quot;✅ ÉXITO (201): Cuenta creada.\n&quot; + response.body());</span>
+<span class="fc" id="L143">                limpiarFormulario();</span>
             } else {
-<span class="nc" id="L145">                txtConsola.setText(&quot;❌ ERROR (&quot; + response.statusCode() + &quot;):\n&quot; + response.body());</span>
+<span class="fc" id="L145">                txtConsola.setText(&quot;❌ ERROR (&quot; + response.statusCode() + &quot;):\n&quot; + response.body());</span>
             }
 <span class="nc" id="L147">        } catch (Exception ex) {</span>
 <span class="nc" id="L148">            txtConsola.setText(&quot;⚠️ Excepción: &quot; + ex.getMessage() + &quot;\n¿Está encendido el servidor Spring Boot?&quot;);</span>
-<span class="nc" id="L149">        }</span>
-<span class="nc" id="L150">    }</span>
+<span class="fc" id="L149">        }</span>
+<span class="fc" id="L150">    }</span>
 
     /**
      * Restablece todos los campos del formulario de creación a su estado inicial (vacíos).
      */
     private void limpiarFormulario() {
-<span class="nc" id="L156">        txtNombre.setText(&quot;&quot;);</span>
-<span class="nc" id="L157">        txtApellidos.setText(&quot;&quot;);</span>
-<span class="nc" id="L158">        txtUsername.setText(&quot;&quot;);</span>
-<span class="nc" id="L159">        txtPassword.setText(&quot;&quot;);</span>
-<span class="nc" id="L160">    }</span>
+<span class="fc" id="L156">        txtNombre.setText(&quot;&quot;);</span>
+<span class="fc" id="L157">        txtApellidos.setText(&quot;&quot;);</span>
+<span class="fc" id="L158">        txtUsername.setText(&quot;&quot;);</span>
+<span class="fc" id="L159">        txtPassword.setText(&quot;&quot;);</span>
+<span class="fc" id="L160">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
