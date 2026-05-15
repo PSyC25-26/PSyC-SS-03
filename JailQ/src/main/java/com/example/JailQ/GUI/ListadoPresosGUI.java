@@ -5,11 +5,9 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -252,28 +249,29 @@ public class ListadoPresosGUI extends JFrame {
     }
 
     private void ejecutarTraslado(String idPreso, String nombreCarcel) {
-        try {
-            String carcelCodificada = URLEncoder.encode(nombreCarcel, StandardCharsets.UTF_8);
-            String urlFinal = BASE_URL + "/trasladar/" + idPreso + "/" + carcelCodificada;
+    try {
+        // En lugar de URLEncoder, reemplazamos espacios por %20 para el PathVariable
+        String nombreLimpio = nombreCarcel.replace(" ", "%20");
+        String urlFinal = BASE_URL + "/trasladar/" + idPreso + "/" + nombreLimpio;
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(urlFinal))
-                    .POST(HttpRequest.BodyPublishers.noBody())
-                    .build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(urlFinal)) // URI.create ya maneja caracteres especiales si están escapados
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                JOptionPane.showMessageDialog(this, "Traslado exitoso a " + nombreCarcel);
-                cargarPresos();
-            } else {
-                JOptionPane.showMessageDialog(this, "Error en el traslado: " + response.body());
-            }
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error de red: " + ex.getMessage());
+        if (response.statusCode() == 200) {
+            JOptionPane.showMessageDialog(this, "Traslado exitoso a " + nombreCarcel);
+            cargarPresos();
+        } else {
+            // Esto te dirá exactamente qué intentó buscar el servidor
+            JOptionPane.showMessageDialog(this, "Error: El servidor no encontró la cárcel [" + nombreCarcel + "]");
         }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error de red: " + ex.getMessage());
     }
+}
 
     private void modificarCondenaSeleccionado() {
         int fila = tablaPresos.getSelectedRow();
