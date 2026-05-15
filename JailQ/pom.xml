@@ -143,6 +143,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<argLine>
+						@{argLine}
 						-Djava.awt.headless=false
 						--add-opens java.base/java.util=ALL-UNNAMED
 						--add-opens java.desktop/java.awt=ALL-UNNAMED
