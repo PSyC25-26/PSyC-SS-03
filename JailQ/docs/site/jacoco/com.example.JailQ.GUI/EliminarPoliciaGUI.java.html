@@ -36,93 +36,93 @@ public class EliminarPoliciaGUI extends JFrame {
     /**
      * Constructor que inicializa la interfaz gráfica y carga los datos.
      */
-<span class="nc" id="L39">    public EliminarPoliciaGUI() {</span>
-<span class="nc" id="L40">        httpClient = HttpClient.newHttpClient();</span>
+<span class="fc" id="L39">    public EliminarPoliciaGUI() {</span>
+<span class="fc" id="L40">        httpClient = HttpClient.newHttpClient();</span>
 
-<span class="nc" id="L42">        setTitle(&quot;JailQ - Eliminar cuentas de policía&quot;);</span>
-<span class="nc" id="L43">        setSize(600, 400);</span>
-<span class="nc" id="L44">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L45">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L46">        setLayout(new BorderLayout(10, 10));</span>
+<span class="fc" id="L42">        setTitle(&quot;JailQ - Eliminar cuentas de policía&quot;);</span>
+<span class="fc" id="L43">        setSize(600, 400);</span>
+<span class="fc" id="L44">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L45">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L46">        setLayout(new BorderLayout(10, 10));</span>
 
-<span class="nc" id="L48">        JLabel titulo = new JLabel(&quot;Listado de cuentas POLICIA&quot;);</span>
-<span class="nc" id="L49">        titulo.setHorizontalAlignment(SwingConstants.CENTER);</span>
-<span class="nc" id="L50">        titulo.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
-<span class="nc" id="L51">        add(titulo, BorderLayout.NORTH);</span>
+<span class="fc" id="L48">        JLabel titulo = new JLabel(&quot;Listado de cuentas POLICIA&quot;);</span>
+<span class="fc" id="L49">        titulo.setHorizontalAlignment(SwingConstants.CENTER);</span>
+<span class="fc" id="L50">        titulo.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L51">        add(titulo, BorderLayout.NORTH);</span>
 
-<span class="nc" id="L53">        modeloLista = new DefaultListModel&lt;&gt;();</span>
-<span class="nc" id="L54">        listaPolicias = new JList&lt;&gt;(modeloLista);</span>
-<span class="nc" id="L55">        listaPolicias.setName(&quot;listaPolicias&quot;);</span>
-<span class="nc" id="L56">        JScrollPane scrollPane = new JScrollPane(listaPolicias);</span>
-<span class="nc" id="L57">        scrollPane.setBorder(BorderFactory.createTitledBorder(&quot;Selecciona un policía&quot;));</span>
-<span class="nc" id="L58">        add(scrollPane, BorderLayout.CENTER);</span>
+<span class="fc" id="L53">        modeloLista = new DefaultListModel&lt;&gt;();</span>
+<span class="fc" id="L54">        listaPolicias = new JList&lt;&gt;(modeloLista);</span>
+<span class="fc" id="L55">        listaPolicias.setName(&quot;listaPolicias&quot;);</span>
+<span class="fc" id="L56">        JScrollPane scrollPane = new JScrollPane(listaPolicias);</span>
+<span class="fc" id="L57">        scrollPane.setBorder(BorderFactory.createTitledBorder(&quot;Selecciona un policía&quot;));</span>
+<span class="fc" id="L58">        add(scrollPane, BorderLayout.CENTER);</span>
 
-<span class="nc" id="L60">        JPanel panelInferior = new JPanel(new BorderLayout());</span>
-<span class="nc" id="L61">        JPanel panelBotones = new JPanel(new FlowLayout());</span>
+<span class="fc" id="L60">        JPanel panelInferior = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L61">        JPanel panelBotones = new JPanel(new FlowLayout());</span>
 
-<span class="nc" id="L63">        JButton btnRecargar = new JButton(&quot;Recargar&quot;);</span>
-<span class="nc" id="L64">        btnRecargar.setName(&quot;btnRecargar&quot;);</span>
-<span class="nc" id="L65">        btnRecargar.addActionListener(e -&gt; cargarPolicias());</span>
+<span class="fc" id="L63">        JButton btnRecargar = new JButton(&quot;Recargar&quot;);</span>
+<span class="fc" id="L64">        btnRecargar.setName(&quot;btnRecargar&quot;);</span>
+<span class="fc" id="L65">        btnRecargar.addActionListener(e -&gt; cargarPolicias());</span>
 
-<span class="nc" id="L67">        JButton btnEliminar = new JButton(&quot;Eliminar seleccionado&quot;);</span>
-<span class="nc" id="L68">        btnEliminar.setName(&quot;btnEliminar&quot;);</span>
-<span class="nc" id="L69">        btnEliminar.addActionListener(e -&gt; eliminarPoliciaSeleccionado());</span>
+<span class="fc" id="L67">        JButton btnEliminar = new JButton(&quot;Eliminar seleccionado&quot;);</span>
+<span class="fc" id="L68">        btnEliminar.setName(&quot;btnEliminar&quot;);</span>
+<span class="fc" id="L69">        btnEliminar.addActionListener(e -&gt; eliminarPoliciaSeleccionado());</span>
 
-<span class="nc" id="L71">        panelBotones.add(btnRecargar);</span>
-<span class="nc" id="L72">        panelBotones.add(btnEliminar);</span>
+<span class="fc" id="L71">        panelBotones.add(btnRecargar);</span>
+<span class="fc" id="L72">        panelBotones.add(btnEliminar);</span>
 
-<span class="nc" id="L74">        panelInferior.add(panelBotones, BorderLayout.NORTH);</span>
+<span class="fc" id="L74">        panelInferior.add(panelBotones, BorderLayout.NORTH);</span>
 
-<span class="nc" id="L76">        lblEstado = new JLabel(&quot; &quot;);</span>
-<span class="nc" id="L77">        lblEstado.setName(&quot;lblEstado&quot;);</span>
-<span class="nc" id="L78">        lblEstado.setHorizontalAlignment(SwingConstants.CENTER);</span>
-<span class="nc" id="L79">        panelInferior.add(lblEstado, BorderLayout.SOUTH);</span>
+<span class="fc" id="L76">        lblEstado = new JLabel(&quot; &quot;);</span>
+<span class="fc" id="L77">        lblEstado.setName(&quot;lblEstado&quot;);</span>
+<span class="fc" id="L78">        lblEstado.setHorizontalAlignment(SwingConstants.CENTER);</span>
+<span class="fc" id="L79">        panelInferior.add(lblEstado, BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L81">        add(panelInferior, BorderLayout.SOUTH);</span>
+<span class="fc" id="L81">        add(panelInferior, BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L83">        cargarPolicias();</span>
-<span class="nc" id="L84">    }</span>
+<span class="fc" id="L83">        cargarPolicias();</span>
+<span class="fc" id="L84">    }</span>
 
     /**
      * Realiza una petición GET al backend para obtener las cuentas de tipo POLICIA
      * y las muestra en la lista.
      */
     private void cargarPolicias() {
-<span class="nc" id="L91">        modeloLista.clear();</span>
+<span class="fc" id="L91">        modeloLista.clear();</span>
 
         try {
-<span class="nc" id="L94">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L95">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/policias&quot;))</span>
-<span class="nc" id="L96">                    .GET()</span>
-<span class="nc" id="L97">                    .build();</span>
+<span class="fc" id="L94">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L95">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/policias&quot;))</span>
+<span class="fc" id="L96">                    .GET()</span>
+<span class="fc" id="L97">                    .build();</span>
 
-<span class="nc" id="L99">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L99">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L101" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
-<span class="nc" id="L102">                String body = response.body();</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="fc" id="L102">                String body = response.body();</span>
 
-<span class="nc bnc" id="L104" title="All 4 branches missed.">                if (body == null || body.trim().equals(&quot;[]&quot;)) {</span>
-<span class="nc" id="L105">                    lblEstado.setText(&quot;No hay cuentas de policía registradas.&quot;);</span>
-<span class="nc" id="L106">                    return;</span>
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">                if (body == null || body.trim().equals(&quot;[]&quot;)) {</span>
+<span class="fc" id="L105">                    lblEstado.setText(&quot;No hay cuentas de policía registradas.&quot;);</span>
+<span class="fc" id="L106">                    return;</span>
                 }
 
-<span class="nc" id="L109">                String contenido = body.substring(1, body.length() - 1);</span>
-<span class="nc" id="L110">                String[] cuentas = contenido.split(&quot;\\},\\{&quot;);</span>
+<span class="fc" id="L109">                String contenido = body.substring(1, body.length() - 1);</span>
+<span class="fc" id="L110">                String[] cuentas = contenido.split(&quot;\\},\\{&quot;);</span>
 
-<span class="nc bnc" id="L112" title="All 2 branches missed.">                for (String cuenta : cuentas) {</span>
-<span class="nc" id="L113">                    String cuentaLimpia = cuenta.replace(&quot;{&quot;, &quot;&quot;).replace(&quot;}&quot;, &quot;&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">                for (String cuenta : cuentas) {</span>
+<span class="fc" id="L113">                    String cuentaLimpia = cuenta.replace(&quot;{&quot;, &quot;&quot;).replace(&quot;}&quot;, &quot;&quot;);</span>
 
-<span class="nc" id="L115">                    String id = extraerValor(cuentaLimpia, &quot;idCuentas&quot;);</span>
-<span class="nc" id="L116">                    String nombre = extraerValor(cuentaLimpia, &quot;nombre&quot;);</span>
-<span class="nc" id="L117">                    String apellidos = extraerValor(cuentaLimpia, &quot;apellidos&quot;);</span>
-<span class="nc" id="L118">                    String username = extraerValor(cuentaLimpia, &quot;username&quot;);</span>
+<span class="fc" id="L115">                    String id = extraerValor(cuentaLimpia, &quot;idCuentas&quot;);</span>
+<span class="fc" id="L116">                    String nombre = extraerValor(cuentaLimpia, &quot;nombre&quot;);</span>
+<span class="fc" id="L117">                    String apellidos = extraerValor(cuentaLimpia, &quot;apellidos&quot;);</span>
+<span class="fc" id="L118">                    String username = extraerValor(cuentaLimpia, &quot;username&quot;);</span>
 
-<span class="nc" id="L120">                    String texto = &quot;ID: &quot; + id + &quot; | &quot; + nombre + &quot; &quot; + apellidos + &quot; | user: &quot; + username;</span>
-<span class="nc" id="L121">                    modeloLista.addElement(texto);</span>
+<span class="fc" id="L120">                    String texto = &quot;ID: &quot; + id + &quot; | &quot; + nombre + &quot; &quot; + apellidos + &quot; | user: &quot; + username;</span>
+<span class="fc" id="L121">                    modeloLista.addElement(texto);</span>
                 }
 
-<span class="nc" id="L124">                lblEstado.setText(&quot;Policías cargados correctamente.&quot;);</span>
-<span class="nc" id="L125">            } else {</span>
+<span class="fc" id="L124">                lblEstado.setText(&quot;Policías cargados correctamente.&quot;);</span>
+<span class="fc" id="L125">            } else {</span>
 <span class="nc" id="L126">                lblEstado.setText(&quot;Error al cargar policías. Código: &quot; + response.statusCode());</span>
 <span class="nc" id="L127">                JOptionPane.showMessageDialog(</span>
                         this,
@@ -140,8 +140,8 @@ public class EliminarPoliciaGUI extends JFrame {
                     &quot;Error de conexión&quot;,
                     JOptionPane.ERROR_MESSAGE
             );
-<span class="nc" id="L143">        }</span>
-<span class="nc" id="L144">    }</span>
+<span class="fc" id="L143">        }</span>
+<span class="fc" id="L144">    }</span>
 
     /**
      * Elimina la cuenta de policía seleccionada en la lista.
@@ -149,41 +149,41 @@ public class EliminarPoliciaGUI extends JFrame {
      * Realiza una petición DELETE al backend con el ID correspondiente.
      */
     private void eliminarPoliciaSeleccionado() {
-<span class="nc" id="L152">        String seleccionado = listaPolicias.getSelectedValue();</span>
+<span class="fc" id="L152">        String seleccionado = listaPolicias.getSelectedValue();</span>
 
-<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (seleccionado == null) {</span>
-<span class="nc" id="L155">            JOptionPane.showMessageDialog(this, &quot;Selecciona una cuenta de policía.&quot;, &quot;Aviso&quot;, JOptionPane.WARNING_MESSAGE);</span>
-<span class="nc" id="L156">            return;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (seleccionado == null) {</span>
+<span class="fc" id="L155">            JOptionPane.showMessageDialog(this, &quot;Selecciona una cuenta de policía.&quot;, &quot;Aviso&quot;, JOptionPane.WARNING_MESSAGE);</span>
+<span class="fc" id="L156">            return;</span>
         }
 
-<span class="nc" id="L159">        String id = seleccionado.split(&quot;\\|&quot;)[0].replace(&quot;ID:&quot;, &quot;&quot;).trim();</span>
+<span class="fc" id="L159">        String id = seleccionado.split(&quot;\\|&quot;)[0].replace(&quot;ID:&quot;, &quot;&quot;).trim();</span>
 
-<span class="nc" id="L161">        int confirmacion = JOptionPane.showConfirmDialog(</span>
+<span class="fc" id="L161">        int confirmacion = JOptionPane.showConfirmDialog(</span>
                 this,
                 &quot;¿Seguro que quieres eliminar la cuenta seleccionada?&quot;,
                 &quot;Confirmar eliminación&quot;,
                 JOptionPane.YES_NO_OPTION
         );
 
-<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (confirmacion != JOptionPane.YES_OPTION) {</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (confirmacion != JOptionPane.YES_OPTION) {</span>
 <span class="nc" id="L169">            return;</span>
         }
 
         try {
-<span class="nc" id="L173">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L174">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/eliminar/policia/&quot; + id))</span>
-<span class="nc" id="L175">                    .DELETE()</span>
-<span class="nc" id="L176">                    .build();</span>
+<span class="fc" id="L173">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L174">                    .uri(URI.create(&quot;http://localhost:8080/cuentas/eliminar/policia/&quot; + id))</span>
+<span class="fc" id="L175">                    .DELETE()</span>
+<span class="fc" id="L176">                    .build();</span>
 
-<span class="nc" id="L178">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L178">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L180" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
-<span class="nc" id="L181">                JOptionPane.showMessageDialog(this, response.body(), &quot;Éxito&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
-<span class="nc" id="L182">                cargarPolicias();</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">            if (response.statusCode() == 200) {</span>
+<span class="fc" id="L181">                JOptionPane.showMessageDialog(this, response.body(), &quot;Éxito&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="fc" id="L182">                cargarPolicias();</span>
             } else {
-<span class="nc" id="L184">                JOptionPane.showMessageDialog(</span>
+<span class="fc" id="L184">                JOptionPane.showMessageDialog(</span>
                         this,
-<span class="nc" id="L186">                        &quot;Código: &quot; + response.statusCode() + &quot;\n\n&quot; + response.body(),</span>
+<span class="fc" id="L186">                        &quot;Código: &quot; + response.statusCode() + &quot;\n\n&quot; + response.body(),</span>
                         &quot;Error&quot;,
                         JOptionPane.ERROR_MESSAGE
                 );
@@ -191,8 +191,8 @@ public class EliminarPoliciaGUI extends JFrame {
 
 <span class="nc" id="L192">        } catch (IOException | InterruptedException e) {</span>
 <span class="nc" id="L193">            JOptionPane.showMessageDialog(this, &quot;No se pudo conectar con el servidor.&quot;, &quot;Error&quot;, JOptionPane.ERROR_MESSAGE);</span>
-<span class="nc" id="L194">        }</span>
-<span class="nc" id="L195">    }</span>
+<span class="fc" id="L194">        }</span>
+<span class="fc" id="L195">    }</span>
 
     /**
      * Extrae el valor de una clave dentro de un texto JSON simplificado.
@@ -202,20 +202,20 @@ public class EliminarPoliciaGUI extends JFrame {
      * @return Valor asociado a la clave, o cadena vacía si no se encuentra
      */
     private String extraerValor(String texto, String clave) {
-<span class="nc" id="L205">        String[] pares = texto.split(&quot;,&quot;);</span>
+<span class="fc" id="L205">        String[] pares = texto.split(&quot;,&quot;);</span>
 
-<span class="nc bnc" id="L207" title="All 2 branches missed.">        for (String par : pares) {</span>
-<span class="nc" id="L208">            String[] partes = par.split(&quot;:&quot;, 2);</span>
-<span class="nc bnc" id="L209" title="All 2 branches missed.">            if (partes.length == 2) {</span>
-<span class="nc" id="L210">                String key = partes[0].replace(&quot;\&quot;&quot;, &quot;&quot;).trim();</span>
-<span class="nc" id="L211">                String value = partes[1].replace(&quot;\&quot;&quot;, &quot;&quot;).trim();</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        for (String par : pares) {</span>
+<span class="fc" id="L208">            String[] partes = par.split(&quot;:&quot;, 2);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">            if (partes.length == 2) {</span>
+<span class="fc" id="L210">                String key = partes[0].replace(&quot;\&quot;&quot;, &quot;&quot;).trim();</span>
+<span class="fc" id="L211">                String value = partes[1].replace(&quot;\&quot;&quot;, &quot;&quot;).trim();</span>
 
-<span class="nc bnc" id="L213" title="All 2 branches missed.">                if (key.equals(clave)) {</span>
-<span class="nc" id="L214">                    return value;</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">                if (key.equals(clave)) {</span>
+<span class="fc" id="L214">                    return value;</span>
                 }
             }
         }
-<span class="nc" id="L218">        return &quot;&quot;;</span>
+<span class="fc" id="L218">        return &quot;&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

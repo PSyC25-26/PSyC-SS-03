@@ -21,9 +21,9 @@ public class HttpClientSingleton {
 
     private final HttpClient cliente;
 
-<span class="nc" id="L24">    private HttpClientSingleton() {</span>
-<span class="nc" id="L25">        this.cliente = HttpClient.newHttpClient();</span>
-<span class="nc" id="L26">    }</span>
+<span class="fc" id="L24">    private HttpClientSingleton() {</span>
+<span class="fc" id="L25">        this.cliente = HttpClient.newHttpClient();</span>
+<span class="fc" id="L26">    }</span>
 
     /**
      * Devuelve la instancia única de HttpClientSingleton.
@@ -32,14 +32,14 @@ public class HttpClientSingleton {
      * @return la única instancia del singleton
      */
     public static HttpClientSingleton getInstance() {
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (instance == null) {</span>
-<span class="nc" id="L36">            synchronized (HttpClientSingleton.class) {</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (instance == null) {</span>
-<span class="nc" id="L38">                    instance = new HttpClientSingleton();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L36">            synchronized (HttpClientSingleton.class) {</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">                if (instance == null) {</span>
+<span class="fc" id="L38">                    instance = new HttpClientSingleton();</span>
                 }
-<span class="nc" id="L40">            }</span>
+<span class="fc" id="L40">            }</span>
         }
-<span class="nc" id="L42">        return instance;</span>
+<span class="fc" id="L42">        return instance;</span>
     }
 
     /**
@@ -48,7 +48,7 @@ public class HttpClientSingleton {
      * @return la única instancia de HttpClient de la aplicación
      */
     public HttpClient getClient() {
-<span class="nc" id="L51">        return cliente;</span>
+<span class="fc" id="L51">        return cliente;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

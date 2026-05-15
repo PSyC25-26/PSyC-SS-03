@@ -40,92 +40,92 @@ public class GestionCarcelGUI extends JFrame {
      *
      * &lt;p&gt;La ventana se inicializa con un diseño basado en {@link BorderLayout}.
      */
-<span class="nc" id="L43">    public GestionCarcelGUI() {</span>
-<span class="nc" id="L44">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+<span class="fc" id="L43">    public GestionCarcelGUI() {</span>
+<span class="fc" id="L44">        cliente = HttpClientSingleton.getInstance().getClient();</span>
 
-<span class="nc" id="L46">        setTitle(&quot;JailQ - Gestión de Cárceles&quot;);</span>
-<span class="nc" id="L47">        setSize(450, 580);</span>
-<span class="nc" id="L48">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L49">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L50">        setLayout(new BorderLayout());</span>
+<span class="fc" id="L46">        setTitle(&quot;JailQ - Gestión de Cárceles&quot;);</span>
+<span class="fc" id="L47">        setSize(450, 580);</span>
+<span class="fc" id="L48">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L49">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L50">        setLayout(new BorderLayout());</span>
 
         // Panel del formulario principal
-<span class="nc" id="L53">        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 5, 5));</span>
-<span class="nc" id="L54">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Añadir Nueva Cárcel&quot;));</span>
+<span class="fc" id="L53">        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 5, 5));</span>
+<span class="fc" id="L54">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Añadir Nueva Cárcel&quot;));</span>
 
         // Campo: Nombre
-<span class="nc" id="L57">        panelFormulario.add(new JLabel(&quot;Nombre:&quot;));</span>
-<span class="nc" id="L58">        txtNombre = new JTextField();</span>
-<span class="nc" id="L59">        txtNombre.setName(&quot;txtNombre&quot;); </span>
-<span class="nc" id="L60">        panelFormulario.add(txtNombre);</span>
+<span class="fc" id="L57">        panelFormulario.add(new JLabel(&quot;Nombre:&quot;));</span>
+<span class="fc" id="L58">        txtNombre = new JTextField();</span>
+<span class="fc" id="L59">        txtNombre.setName(&quot;txtNombre&quot;); </span>
+<span class="fc" id="L60">        panelFormulario.add(txtNombre);</span>
 
         // Campo: Descripción
-<span class="nc" id="L63">        panelFormulario.add(new JLabel(&quot;Descripción:&quot;));</span>
-<span class="nc" id="L64">        txtDescripcion = new JTextArea(3, 20);</span>
-<span class="nc" id="L65">        txtDescripcion.setName(&quot;txtDescripcion&quot;); </span>
-<span class="nc" id="L66">        JScrollPane scrollDesc = new JScrollPane(txtDescripcion);</span>
-<span class="nc" id="L67">        panelFormulario.add(scrollDesc);</span>
+<span class="fc" id="L63">        panelFormulario.add(new JLabel(&quot;Descripción:&quot;));</span>
+<span class="fc" id="L64">        txtDescripcion = new JTextArea(3, 20);</span>
+<span class="fc" id="L65">        txtDescripcion.setName(&quot;txtDescripcion&quot;); </span>
+<span class="fc" id="L66">        JScrollPane scrollDesc = new JScrollPane(txtDescripcion);</span>
+<span class="fc" id="L67">        panelFormulario.add(scrollDesc);</span>
 
         // Campo: Localidad
-<span class="nc" id="L70">        panelFormulario.add(new JLabel(&quot;Localidad:&quot;));</span>
-<span class="nc" id="L71">        txtLocalidad = new JTextField();</span>
-<span class="nc" id="L72">        txtLocalidad.setName(&quot;txtLocalidad&quot;); </span>
-<span class="nc" id="L73">        panelFormulario.add(txtLocalidad);</span>
+<span class="fc" id="L70">        panelFormulario.add(new JLabel(&quot;Localidad:&quot;));</span>
+<span class="fc" id="L71">        txtLocalidad = new JTextField();</span>
+<span class="fc" id="L72">        txtLocalidad.setName(&quot;txtLocalidad&quot;); </span>
+<span class="fc" id="L73">        panelFormulario.add(txtLocalidad);</span>
 
         // Campo: Capacidad
-<span class="nc" id="L76">        panelFormulario.add(new JLabel(&quot;Capacidad:&quot;));</span>
-<span class="nc" id="L77">        txtCapacidad = new JTextField();</span>
-<span class="nc" id="L78">        txtCapacidad.setName(&quot;txtCapacidad&quot;); </span>
-<span class="nc" id="L79">        panelFormulario.add(txtCapacidad);</span>
+<span class="fc" id="L76">        panelFormulario.add(new JLabel(&quot;Capacidad:&quot;));</span>
+<span class="fc" id="L77">        txtCapacidad = new JTextField();</span>
+<span class="fc" id="L78">        txtCapacidad.setName(&quot;txtCapacidad&quot;); </span>
+<span class="fc" id="L79">        panelFormulario.add(txtCapacidad);</span>
 
         // Botón de envío
-<span class="nc" id="L82">        JButton btnAnadir = new JButton(&quot;Añadir Cárcel&quot;);</span>
-<span class="nc" id="L83">        btnAnadir.setName(&quot;btnAnadir&quot;); </span>
-<span class="nc" id="L84">        btnAnadir.addActionListener(e -&gt; anadirCarcel());</span>
-<span class="nc" id="L85">        panelFormulario.add(new JLabel(&quot;&quot;));</span>
-<span class="nc" id="L86">        panelFormulario.add(btnAnadir);</span>
+<span class="fc" id="L82">        JButton btnAnadir = new JButton(&quot;Añadir Cárcel&quot;);</span>
+<span class="fc" id="L83">        btnAnadir.setName(&quot;btnAnadir&quot;); </span>
+<span class="fc" id="L84">        btnAnadir.addActionListener(e -&gt; anadirCarcel());</span>
+<span class="fc" id="L85">        panelFormulario.add(new JLabel(&quot;&quot;));</span>
+<span class="fc" id="L86">        panelFormulario.add(btnAnadir);</span>
 
         // Panel de estadísticas avanzadas
-<span class="nc" id="L89">        JPanel panelEstadisticas = new JPanel(new FlowLayout());</span>
-<span class="nc" id="L90">        panelEstadisticas.setBorder(BorderFactory.createTitledBorder(&quot;Estadísticas&quot;));</span>
+<span class="fc" id="L89">        JPanel panelEstadisticas = new JPanel(new FlowLayout());</span>
+<span class="fc" id="L90">        panelEstadisticas.setBorder(BorderFactory.createTitledBorder(&quot;Estadísticas&quot;));</span>
 
-<span class="nc" id="L92">JButton btnEstadisticas = new JButton(&quot;Ver Estadísticas&quot;);</span>
-<span class="nc" id="L93">btnEstadisticas.setName(&quot;btnEstadisticas&quot;); </span>
-<span class="nc" id="L94">btnEstadisticas.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
-<span class="nc" id="L95">        btnEstadisticas.setFocusPainted(false);</span>
-<span class="nc" id="L96">        btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L97">        btnEstadisticas.addActionListener(e -&gt; new EstadisticasAvanzadasGUI().setVisible(true));</span>
-<span class="nc" id="L98">        panelEstadisticas.add(btnEstadisticas);</span>
+<span class="fc" id="L92">JButton btnEstadisticas = new JButton(&quot;Ver Estadísticas&quot;);</span>
+<span class="fc" id="L93">btnEstadisticas.setName(&quot;btnEstadisticas&quot;); </span>
+<span class="fc" id="L94">btnEstadisticas.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="fc" id="L95">        btnEstadisticas.setFocusPainted(false);</span>
+<span class="fc" id="L96">        btnEstadisticas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L97">        btnEstadisticas.addActionListener(e -&gt; new EstadisticasAvanzadasGUI().setVisible(true));</span>
+<span class="fc" id="L98">        panelEstadisticas.add(btnEstadisticas);</span>
 
         // Consola inferior
-<span class="nc" id="L101">        txtConsola = new JTextArea(10, 30);</span>
-<span class="nc" id="L102">        txtConsola.setName(&quot;txtConsola&quot;); </span>
-<span class="nc" id="L103">        txtConsola.setEditable(false);</span>
-<span class="nc" id="L104">        txtConsola.setLineWrap(true);</span>
-<span class="nc" id="L105">        txtConsola.setWrapStyleWord(true);</span>
+<span class="fc" id="L101">        txtConsola = new JTextArea(10, 30);</span>
+<span class="fc" id="L102">        txtConsola.setName(&quot;txtConsola&quot;); </span>
+<span class="fc" id="L103">        txtConsola.setEditable(false);</span>
+<span class="fc" id="L104">        txtConsola.setLineWrap(true);</span>
+<span class="fc" id="L105">        txtConsola.setWrapStyleWord(true);</span>
 
-<span class="nc" id="L107">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
-<span class="nc" id="L108">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Resultado del Servidor&quot;));</span>
+<span class="fc" id="L107">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
+<span class="fc" id="L108">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Resultado del Servidor&quot;));</span>
 
-<span class="nc" id="L110">	    JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
-<span class="nc" id="L111">        btnVolver.setName(&quot;btnVolver&quot;); </span>
-<span class="nc" id="L112">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
-<span class="nc" id="L113">        btnVolver.setFocusPainted(false);</span>
-<span class="nc" id="L114">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L115">        btnVolver.addActionListener(e -&gt; dispose());</span>
+<span class="fc" id="L110">	    JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="fc" id="L111">        btnVolver.setName(&quot;btnVolver&quot;); </span>
+<span class="fc" id="L112">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="fc" id="L113">        btnVolver.setFocusPainted(false);</span>
+<span class="fc" id="L114">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L115">        btnVolver.addActionListener(e -&gt; dispose());</span>
 
         // Panel norte: formulario + estadísticas
-<span class="nc" id="L118">        JPanel panelNorte = new JPanel(new BorderLayout());</span>
-<span class="nc" id="L119">        panelNorte.add(panelFormulario,  BorderLayout.NORTH);</span>
-<span class="nc" id="L120">        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);</span>
+<span class="fc" id="L118">        JPanel panelNorte = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L119">        panelNorte.add(panelFormulario,  BorderLayout.NORTH);</span>
+<span class="fc" id="L120">        panelNorte.add(panelEstadisticas, BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L122">        JPanel panelInferior = new JPanel(new BorderLayout(5, 5));</span>
-<span class="nc" id="L123">        panelInferior.add(scrollConsola, BorderLayout.CENTER);</span>
-<span class="nc" id="L124">        panelInferior.add(btnVolver,     BorderLayout.SOUTH);</span>
+<span class="fc" id="L122">        JPanel panelInferior = new JPanel(new BorderLayout(5, 5));</span>
+<span class="fc" id="L123">        panelInferior.add(scrollConsola, BorderLayout.CENTER);</span>
+<span class="fc" id="L124">        panelInferior.add(btnVolver,     BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L126">        add(panelNorte,    BorderLayout.NORTH);</span>
-<span class="nc" id="L127">        add(panelInferior, BorderLayout.CENTER);</span>
-<span class="nc" id="L128">    }</span>
+<span class="fc" id="L126">        add(panelNorte,    BorderLayout.NORTH);</span>
+<span class="fc" id="L127">        add(panelInferior, BorderLayout.CENTER);</span>
+<span class="fc" id="L128">    }</span>
 
     /**
      * Envía una petición HTTP POST al backend para registrar una nueva cárcel.
@@ -142,34 +142,34 @@ public class GestionCarcelGUI extends JFrame {
      */
     private void anadirCarcel() {
         try {
-<span class="nc" id="L145">            String jsonBody = String.format(</span>
+<span class="fc" id="L145">            String jsonBody = String.format(</span>
                     &quot;{\&quot;nombre\&quot;:\&quot;%s\&quot;, \&quot;descripcion\&quot;:\&quot;%s\&quot;, \&quot;localidad\&quot;:\&quot;%s\&quot;, \&quot;capacidad\&quot;:%s}&quot;,
-<span class="nc" id="L147">                    txtNombre.getText(),</span>
-<span class="nc" id="L148">                    txtDescripcion.getText(),</span>
-<span class="nc" id="L149">                    txtLocalidad.getText(),</span>
-<span class="nc" id="L150">                    txtCapacidad.getText()</span>
+<span class="fc" id="L147">                    txtNombre.getText(),</span>
+<span class="fc" id="L148">                    txtDescripcion.getText(),</span>
+<span class="fc" id="L149">                    txtLocalidad.getText(),</span>
+<span class="fc" id="L150">                    txtCapacidad.getText()</span>
             );
 
-<span class="nc" id="L153">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L154">                    .uri(URI.create(&quot;http://localhost:8080/carcel/crear&quot;))</span>
-<span class="nc" id="L155">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
-<span class="nc" id="L156">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
-<span class="nc" id="L157">                    .build();</span>
+<span class="fc" id="L153">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L154">                    .uri(URI.create(&quot;http://localhost:8080/carcel/crear&quot;))</span>
+<span class="fc" id="L155">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="fc" id="L156">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
+<span class="fc" id="L157">                    .build();</span>
 
-<span class="nc" id="L159">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L159">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (response.statusCode() == 201) {</span>
-<span class="nc" id="L162">                txtConsola.setText(&quot;ÉXITO (201): Cárcel creada.\n&quot; + response.body());</span>
-<span class="nc" id="L163">                limpiarFormulario();</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (response.statusCode() == 201) {</span>
+<span class="fc" id="L162">                txtConsola.setText(&quot;ÉXITO (201): Cárcel creada.\n&quot; + response.body());</span>
+<span class="fc" id="L163">                limpiarFormulario();</span>
             } else {
-<span class="nc" id="L165">                txtConsola.setText(&quot;ERROR (&quot; + response.statusCode() + &quot;):\n&quot; + response.body());</span>
+<span class="fc" id="L165">                txtConsola.setText(&quot;ERROR (&quot; + response.statusCode() + &quot;):\n&quot; + response.body());</span>
             }
 
 <span class="nc" id="L168">        } catch (Exception ex) {</span>
 <span class="nc" id="L169">            txtConsola.setText(&quot;Excepción: &quot; + ex.getMessage() +</span>
                     &quot;\n¿Está encendido el servidor Spring Boot?&quot;);
-<span class="nc" id="L171">        }</span>
-<span class="nc" id="L172">    }</span>
+<span class="fc" id="L171">        }</span>
+<span class="fc" id="L172">    }</span>
 
     /**
      * Restablece todos los campos del formulario a su estado inicial.
@@ -177,10 +177,10 @@ public class GestionCarcelGUI extends JFrame {
      * &lt;p&gt;Se utiliza tras un registro exitoso para permitir introducir una nueva cárcel sin residuos de datos previos.
      */
     private void limpiarFormulario() {
-<span class="nc" id="L180">        txtNombre.setText(&quot;&quot;);</span>
-<span class="nc" id="L181">        txtDescripcion.setText(&quot;&quot;);</span>
-<span class="nc" id="L182">        txtLocalidad.setText(&quot;&quot;);</span>
-<span class="nc" id="L183">        txtCapacidad.setText(&quot;&quot;);</span>
-<span class="nc" id="L184">    }</span>
+<span class="fc" id="L180">        txtNombre.setText(&quot;&quot;);</span>
+<span class="fc" id="L181">        txtDescripcion.setText(&quot;&quot;);</span>
+<span class="fc" id="L182">        txtLocalidad.setText(&quot;&quot;);</span>
+<span class="fc" id="L183">        txtCapacidad.setText(&quot;&quot;);</span>
+<span class="fc" id="L184">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -25,122 +25,122 @@ public class EstadisticasAvanzadasGUI extends JFrame {
     private JProgressBar barraOcupacion;
     private JButton btnActualizar;
 
-<span class="nc" id="L28">    public EstadisticasAvanzadasGUI() {</span>
-<span class="nc" id="L29">        httpClient = HttpClient.newHttpClient();</span>
-<span class="nc" id="L30">        objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L28">    public EstadisticasAvanzadasGUI() {</span>
+<span class="fc" id="L29">        httpClient = HttpClient.newHttpClient();</span>
+<span class="fc" id="L30">        objectMapper = new ObjectMapper();</span>
 
-<span class="nc" id="L32">        setTitle(&quot;JailQ - Ocupación Detallada&quot;);</span>
-<span class="nc" id="L33">        setSize(450, 300);</span>
-<span class="nc" id="L34">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L35">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L36">        setLayout(new BorderLayout(15, 15));</span>
+<span class="fc" id="L32">        setTitle(&quot;JailQ - Ocupación Detallada&quot;);</span>
+<span class="fc" id="L33">        setSize(450, 300);</span>
+<span class="fc" id="L34">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L35">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L36">        setLayout(new BorderLayout(15, 15));</span>
 
         // --- PANEL SUPERIOR: Selector de Cárcel ---
-<span class="nc" id="L39">        JPanel panelNorte = new JPanel(new FlowLayout());</span>
-<span class="nc" id="L40">        panelNorte.setBorder(BorderFactory.createEmptyBorder(15, 10, 0, 10));</span>
-<span class="nc" id="L41">        panelNorte.add(new JLabel(&quot;Selecciona una Cárcel:&quot;));</span>
+<span class="fc" id="L39">        JPanel panelNorte = new JPanel(new FlowLayout());</span>
+<span class="fc" id="L40">        panelNorte.setBorder(BorderFactory.createEmptyBorder(15, 10, 0, 10));</span>
+<span class="fc" id="L41">        panelNorte.add(new JLabel(&quot;Selecciona una Cárcel:&quot;));</span>
         
-<span class="nc" id="L43">        comboCarceles = new JComboBox&lt;&gt;();</span>
-<span class="nc" id="L44">        comboCarceles.setName(&quot;comboCarceles&quot;); </span>
-<span class="nc" id="L45">        comboCarceles.setPreferredSize(new Dimension(200, 30));</span>
-<span class="nc" id="L46">        comboCarceles.addActionListener(e -&gt; mostrarDatosSeleccionados());</span>
-<span class="nc" id="L47">        panelNorte.add(comboCarceles);</span>
+<span class="fc" id="L43">        comboCarceles = new JComboBox&lt;&gt;();</span>
+<span class="fc" id="L44">        comboCarceles.setName(&quot;comboCarceles&quot;); </span>
+<span class="fc" id="L45">        comboCarceles.setPreferredSize(new Dimension(200, 30));</span>
+<span class="fc" id="L46">        comboCarceles.addActionListener(e -&gt; mostrarDatosSeleccionados());</span>
+<span class="fc" id="L47">        panelNorte.add(comboCarceles);</span>
 
-<span class="nc" id="L49">        btnActualizar = new JButton(&quot;↻ Cargar/Actualizar&quot;);</span>
-<span class="nc" id="L50">        btnActualizar.setName(&quot;btnActualizar&quot;); </span>
-<span class="nc" id="L51">        btnActualizar.addActionListener(e -&gt; descargarDatos());</span>
-<span class="nc" id="L52">        panelNorte.add(btnActualizar);</span>
+<span class="fc" id="L49">        btnActualizar = new JButton(&quot;↻ Cargar/Actualizar&quot;);</span>
+<span class="fc" id="L50">        btnActualizar.setName(&quot;btnActualizar&quot;); </span>
+<span class="fc" id="L51">        btnActualizar.addActionListener(e -&gt; descargarDatos());</span>
+<span class="fc" id="L52">        panelNorte.add(btnActualizar);</span>
 
-<span class="nc" id="L54">        add(panelNorte, BorderLayout.NORTH);</span>
+<span class="fc" id="L54">        add(panelNorte, BorderLayout.NORTH);</span>
 
         // --- PANEL CENTRAL: Barra de progreso e información ---
-<span class="nc" id="L57">        JPanel panelCentro = new JPanel(new GridLayout(3, 1, 5, 5));</span>
-<span class="nc" id="L58">        panelCentro.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 30));</span>
+<span class="fc" id="L57">        JPanel panelCentro = new JPanel(new GridLayout(3, 1, 5, 5));</span>
+<span class="fc" id="L58">        panelCentro.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 30));</span>
 
-<span class="nc" id="L60">        JLabel lblTituloBarra = new JLabel(&quot;Nivel de Ocupación:&quot;, SwingConstants.CENTER);</span>
-<span class="nc" id="L61">        lblTituloBarra.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 14));</span>
-<span class="nc" id="L62">        panelCentro.add(lblTituloBarra);</span>
+<span class="fc" id="L60">        JLabel lblTituloBarra = new JLabel(&quot;Nivel de Ocupación:&quot;, SwingConstants.CENTER);</span>
+<span class="fc" id="L61">        lblTituloBarra.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 14));</span>
+<span class="fc" id="L62">        panelCentro.add(lblTituloBarra);</span>
 
-<span class="nc" id="L64">        barraOcupacion = new JProgressBar();</span>
-<span class="nc" id="L65">        barraOcupacion.setName(&quot;barraOcupacion&quot;); </span>
-<span class="nc" id="L66">        barraOcupacion.setStringPainted(true); // Para que se vea el texto dentro de la barra</span>
-<span class="nc" id="L67">        barraOcupacion.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 14));</span>
-<span class="nc" id="L68">        panelCentro.add(barraOcupacion);</span>
+<span class="fc" id="L64">        barraOcupacion = new JProgressBar();</span>
+<span class="fc" id="L65">        barraOcupacion.setName(&quot;barraOcupacion&quot;); </span>
+<span class="fc" id="L66">        barraOcupacion.setStringPainted(true); // Para que se vea el texto dentro de la barra</span>
+<span class="fc" id="L67">        barraOcupacion.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 14));</span>
+<span class="fc" id="L68">        panelCentro.add(barraOcupacion);</span>
 
-<span class="nc" id="L70">        lblPorcentaje = new JLabel(&quot;Esperando datos...&quot;, SwingConstants.CENTER);</span>
-<span class="nc" id="L71">        lblPorcentaje.setName(&quot;lblPorcentaje&quot;); </span>
-<span class="nc" id="L72">        lblPorcentaje.setFont(new Font(&quot;Arial&quot;, Font.ITALIC, 14));</span>
-<span class="nc" id="L73">        panelCentro.add(lblPorcentaje);</span>
+<span class="fc" id="L70">        lblPorcentaje = new JLabel(&quot;Esperando datos...&quot;, SwingConstants.CENTER);</span>
+<span class="fc" id="L71">        lblPorcentaje.setName(&quot;lblPorcentaje&quot;); </span>
+<span class="fc" id="L72">        lblPorcentaje.setFont(new Font(&quot;Arial&quot;, Font.ITALIC, 14));</span>
+<span class="fc" id="L73">        panelCentro.add(lblPorcentaje);</span>
 
-<span class="nc" id="L75">        add(panelCentro, BorderLayout.CENTER);</span>
+<span class="fc" id="L75">        add(panelCentro, BorderLayout.CENTER);</span>
 
         // Cargar los datos automáticamente al abrir
-<span class="nc" id="L78">        descargarDatos();</span>
-<span class="nc" id="L79">    }</span>
+<span class="fc" id="L78">        descargarDatos();</span>
+<span class="fc" id="L79">    }</span>
 
     /**
      * Se conecta al servidor, descarga la lista y rellena el JComboBox.
      */
     private void descargarDatos() {
-<span class="nc" id="L85">        comboCarceles.removeAllItems();</span>
-<span class="nc" id="L86">        lblPorcentaje.setText(&quot;Conectando con el servidor...&quot;);</span>
+<span class="fc" id="L85">        comboCarceles.removeAllItems();</span>
+<span class="fc" id="L86">        lblPorcentaje.setText(&quot;Conectando con el servidor...&quot;);</span>
 
         try {
-<span class="nc" id="L89">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L90">                    .uri(URI.create(&quot;http://localhost:8080/carcel/estadisticas-completas&quot;))</span>
-<span class="nc" id="L91">                    .GET()</span>
-<span class="nc" id="L92">                    .build();</span>
+<span class="fc" id="L89">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L90">                    .uri(URI.create(&quot;http://localhost:8080/carcel/estadisticas-completas&quot;))</span>
+<span class="fc" id="L91">                    .GET()</span>
+<span class="fc" id="L92">                    .build();</span>
 
-<span class="nc" id="L94">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L94">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">            if (response.statusCode() == 200) {</span>
                 // Traducimos el JSON mágico a una lista de objetos de Java
-<span class="nc" id="L98">                List&lt;CarcelDatos&gt; lista = objectMapper.readValue(response.body(), new TypeReference&lt;List&lt;CarcelDatos&gt;&gt;(){});</span>
+<span class="fc" id="L98">                List&lt;CarcelDatos&gt; lista = objectMapper.readValue(response.body(), new TypeReference&lt;List&lt;CarcelDatos&gt;&gt;(){});</span>
                 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">                for (CarcelDatos carcel : lista) {</span>
-<span class="nc" id="L101">                    comboCarceles.addItem(carcel);</span>
-<span class="nc" id="L102">                }</span>
-<span class="nc" id="L103">                lblPorcentaje.setText(&quot;Datos cargados correctamente.&quot;);</span>
-<span class="nc" id="L104">            } else {</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                for (CarcelDatos carcel : lista) {</span>
+<span class="fc" id="L101">                    comboCarceles.addItem(carcel);</span>
+<span class="fc" id="L102">                }</span>
+<span class="fc" id="L103">                lblPorcentaje.setText(&quot;Datos cargados correctamente.&quot;);</span>
+<span class="fc" id="L104">            } else {</span>
 <span class="nc" id="L105">                lblPorcentaje.setText(&quot;Error al cargar: &quot; + response.statusCode());</span>
             }
 <span class="nc" id="L107">        } catch (Exception ex) {</span>
 <span class="nc" id="L108">            lblPorcentaje.setText(&quot;Error de conexión. ¿Servidor encendido?&quot;);</span>
-<span class="nc" id="L109">        }</span>
-<span class="nc" id="L110">    }</span>
+<span class="fc" id="L109">        }</span>
+<span class="fc" id="L110">    }</span>
 
     /**
      * Calcula los porcentajes y actualiza la barra de progreso.
      */
     private void mostrarDatosSeleccionados() {
-<span class="nc" id="L116">        CarcelDatos seleccion = (CarcelDatos) comboCarceles.getSelectedItem();</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (seleccion != null) {</span>
-<span class="nc" id="L118">            int max = seleccion.capacidad;</span>
-<span class="nc" id="L119">            int actual = seleccion.ocupacion;</span>
-<span class="nc" id="L120">            double porcentaje = (double) actual / max * 100;</span>
+<span class="fc" id="L116">        CarcelDatos seleccion = (CarcelDatos) comboCarceles.getSelectedItem();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (seleccion != null) {</span>
+<span class="fc" id="L118">            int max = seleccion.capacidad;</span>
+<span class="fc" id="L119">            int actual = seleccion.ocupacion;</span>
+<span class="fc" id="L120">            double porcentaje = (double) actual / max * 100;</span>
 
             // Configuramos la barra
-<span class="nc" id="L123">            barraOcupacion.setMaximum(max);</span>
-<span class="nc" id="L124">            barraOcupacion.setValue(actual);</span>
-<span class="nc" id="L125">            barraOcupacion.setString(actual + &quot; / &quot; + max);</span>
+<span class="fc" id="L123">            barraOcupacion.setMaximum(max);</span>
+<span class="fc" id="L124">            barraOcupacion.setValue(actual);</span>
+<span class="fc" id="L125">            barraOcupacion.setString(actual + &quot; / &quot; + max);</span>
 
             // Configuramos el texto de abajo
-<span class="nc" id="L128">            lblPorcentaje.setText(String.format(&quot;La cárcel está al %.1f%% de su capacidad.&quot;, porcentaje));</span>
+<span class="fc" id="L128">            lblPorcentaje.setText(String.format(&quot;La cárcel está al %.1f%% de su capacidad.&quot;, porcentaje));</span>
 
             // ¡Toque visual extra! Cambiamos el color de la barra según la saturación
-<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (porcentaje &gt;= 90) {</span>
-<span class="nc" id="L132">                barraOcupacion.setForeground(Color.RED); // Crítico</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">            } else if (porcentaje &gt;= 75) {</span>
-<span class="nc" id="L134">                barraOcupacion.setForeground(Color.ORANGE); // Aviso</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            if (porcentaje &gt;= 90) {</span>
+<span class="fc" id="L132">                barraOcupacion.setForeground(Color.RED); // Crítico</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">            } else if (porcentaje &gt;= 75) {</span>
+<span class="fc" id="L134">                barraOcupacion.setForeground(Color.ORANGE); // Aviso</span>
             } else {
-<span class="nc" id="L136">                barraOcupacion.setForeground(new Color(50, 205, 50)); // Verde (Correcto)</span>
+<span class="fc" id="L136">                barraOcupacion.setForeground(new Color(50, 205, 50)); // Verde (Correcto)</span>
             }
         }
-<span class="nc" id="L139">    }</span>
+<span class="fc" id="L139">    }</span>
 
     // --- CLASE INTERNA PARA MAPEAR EL JSON ---
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L143">    static class CarcelDatos {</span>
+<span class="fc" id="L143">    static class CarcelDatos {</span>
         public int id;
         public String nombre;
         public int capacidad;
@@ -149,7 +149,7 @@ public class EstadisticasAvanzadasGUI extends JFrame {
         // El toString() es crucial: es lo que Swing muestra en el menú desplegable
         @Override
         public String toString() {
-<span class="nc" id="L152">            return nombre;</span>
+<span class="fc" id="L152">            return nombre;</span>
         }
     }
 }

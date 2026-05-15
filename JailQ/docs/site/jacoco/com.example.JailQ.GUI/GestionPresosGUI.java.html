@@ -32,7 +32,7 @@ public class GestionPresosGUI extends JFrame {
     private JList&lt;Delito&gt;     listaDelitos;
 
     // Diccionario para guardar Nombre -&gt; ID de la cárcel
-<span class="nc" id="L35">    private Map&lt;String, Integer&gt; mapaCarceles = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L35">    private Map&lt;String, Integer&gt; mapaCarceles = new HashMap&lt;&gt;();</span>
 
     // ── Campos modo FAMILIA ───────────────────────────────────────────────────
     private JTextField txtBusquedaNombre;
@@ -49,20 +49,20 @@ public class GestionPresosGUI extends JFrame {
      *
      * @param tipoCuenta &quot;POLICIA&quot; para gestión completa, &quot;FAMILIA&quot; para consulta.
      */
-<span class="nc" id="L52">    public GestionPresosGUI(String tipoCuenta) {</span>
-<span class="nc" id="L53">        this.tipoCuenta = tipoCuenta;</span>
-<span class="nc" id="L54">        cliente = HttpClientSingleton.getInstance().getClient();</span>
+<span class="fc" id="L52">    public GestionPresosGUI(String tipoCuenta) {</span>
+<span class="fc" id="L53">        this.tipoCuenta = tipoCuenta;</span>
+<span class="fc" id="L54">        cliente = HttpClientSingleton.getInstance().getClient();</span>
 
-<span class="nc" id="L56">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L57">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L58">        setLayout(new BorderLayout(10, 10));</span>
+<span class="fc" id="L56">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L57">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L58">        setLayout(new BorderLayout(10, 10));</span>
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (&quot;FAMILIA&quot;.equals(tipoCuenta)) {</span>
-<span class="nc" id="L61">            iniciarModoFamilia();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (&quot;FAMILIA&quot;.equals(tipoCuenta)) {</span>
+<span class="fc" id="L61">            iniciarModoFamilia();</span>
         } else {
-<span class="nc" id="L63">            iniciarModoPolicia();</span>
+<span class="fc" id="L63">            iniciarModoPolicia();</span>
         }
-<span class="nc" id="L65">    }</span>
+<span class="fc" id="L65">    }</span>
 
     // ──────────────────────────────────────────────────────────────────────────
     // Modo FAMILIA: búsqueda por nombre + apellidos
@@ -73,59 +73,59 @@ public class GestionPresosGUI extends JFrame {
      * búsqueda por nombre y apellidos y presenta los datos del preso encontrado.
      */
     private void iniciarModoFamilia() {
-<span class="nc" id="L76">        setTitle(&quot;JailQ - Consulta de Preso&quot;);</span>
-<span class="nc" id="L77">        setSize(480, 500);</span>
+<span class="fc" id="L76">        setTitle(&quot;JailQ - Consulta de Preso&quot;);</span>
+<span class="fc" id="L77">        setSize(480, 500);</span>
 
         // ── Panel de búsqueda ──────────────────────────────────────────────
-<span class="nc" id="L80">        JPanel panelBusqueda = new JPanel(new GridLayout(5, 1, 6, 6));</span>
-<span class="nc" id="L81">        panelBusqueda.setBorder(BorderFactory.createTitledBorder(&quot;Buscar preso&quot;));</span>
+<span class="fc" id="L80">        JPanel panelBusqueda = new JPanel(new GridLayout(5, 1, 6, 6));</span>
+<span class="fc" id="L81">        panelBusqueda.setBorder(BorderFactory.createTitledBorder(&quot;Buscar preso&quot;));</span>
 
-<span class="nc" id="L83">        panelBusqueda.add(new JLabel(&quot;Nombre:&quot;));</span>
-<span class="nc" id="L84">        txtBusquedaNombre = new JTextField();</span>
-<span class="nc" id="L85">        txtBusquedaNombre.setName(&quot;txtBusquedaNombre&quot;);</span>
-<span class="nc" id="L86">        txtBusquedaNombre.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
-<span class="nc" id="L87">        panelBusqueda.add(txtBusquedaNombre);</span>
+<span class="fc" id="L83">        panelBusqueda.add(new JLabel(&quot;Nombre:&quot;));</span>
+<span class="fc" id="L84">        txtBusquedaNombre = new JTextField();</span>
+<span class="fc" id="L85">        txtBusquedaNombre.setName(&quot;txtBusquedaNombre&quot;);</span>
+<span class="fc" id="L86">        txtBusquedaNombre.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="fc" id="L87">        panelBusqueda.add(txtBusquedaNombre);</span>
 
-<span class="nc" id="L89">        panelBusqueda.add(new JLabel(&quot;Apellidos:&quot;));</span>
-<span class="nc" id="L90">        txtBusquedaApellidos = new JTextField();</span>
-<span class="nc" id="L91">        txtBusquedaApellidos.setName(&quot;txtBusquedaApellidos&quot;);</span>
-<span class="nc" id="L92">        txtBusquedaApellidos.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
-<span class="nc" id="L93">        panelBusqueda.add(txtBusquedaApellidos);</span>
+<span class="fc" id="L89">        panelBusqueda.add(new JLabel(&quot;Apellidos:&quot;));</span>
+<span class="fc" id="L90">        txtBusquedaApellidos = new JTextField();</span>
+<span class="fc" id="L91">        txtBusquedaApellidos.setName(&quot;txtBusquedaApellidos&quot;);</span>
+<span class="fc" id="L92">        txtBusquedaApellidos.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 13));</span>
+<span class="fc" id="L93">        panelBusqueda.add(txtBusquedaApellidos);</span>
 
-<span class="nc" id="L95">        JButton btnBuscar = new JButton(&quot;Buscar&quot;);</span>
-<span class="nc" id="L96">        btnBuscar.setName(&quot;btnBuscar&quot;);</span>
-<span class="nc" id="L97">        btnBuscar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
-<span class="nc" id="L98">        btnBuscar.setFocusPainted(false);</span>
-<span class="nc" id="L99">        btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L100">        btnBuscar.addActionListener(e -&gt; buscarPresoPorNombreApellidos());</span>
-<span class="nc" id="L101">        panelBusqueda.add(btnBuscar);</span>
+<span class="fc" id="L95">        JButton btnBuscar = new JButton(&quot;Buscar&quot;);</span>
+<span class="fc" id="L96">        btnBuscar.setName(&quot;btnBuscar&quot;);</span>
+<span class="fc" id="L97">        btnBuscar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
+<span class="fc" id="L98">        btnBuscar.setFocusPainted(false);</span>
+<span class="fc" id="L99">        btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="pc" id="L100">        btnBuscar.addActionListener(e -&gt; buscarPresoPorNombreApellidos());</span>
+<span class="fc" id="L101">        panelBusqueda.add(btnBuscar);</span>
 
         // ── Panel de resultado ─────────────────────────────────────────────
-<span class="nc" id="L104">        panelResultado = new JPanel(new GridLayout(0, 2, 8, 8));</span>
-<span class="nc" id="L105">        panelResultado.setBorder(BorderFactory.createTitledBorder(&quot;Datos del preso&quot;));</span>
-<span class="nc" id="L106">        panelResultado.setVisible(false);</span>
+<span class="fc" id="L104">        panelResultado = new JPanel(new GridLayout(0, 2, 8, 8));</span>
+<span class="fc" id="L105">        panelResultado.setBorder(BorderFactory.createTitledBorder(&quot;Datos del preso&quot;));</span>
+<span class="fc" id="L106">        panelResultado.setVisible(false);</span>
 
         // ── Estado ────────────────────────────────────────────────────────
-<span class="nc" id="L109">        lblEstadoBusqueda = new JLabel(&quot; &quot;, SwingConstants.CENTER);</span>
-<span class="nc" id="L110">        lblEstadoBusqueda.setName(&quot;lblEstadoBusqueda&quot;);</span>
-<span class="nc" id="L111">        lblEstadoBusqueda.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="fc" id="L109">        lblEstadoBusqueda = new JLabel(&quot; &quot;, SwingConstants.CENTER);</span>
+<span class="fc" id="L110">        lblEstadoBusqueda.setName(&quot;lblEstadoBusqueda&quot;);</span>
+<span class="fc" id="L111">        lblEstadoBusqueda.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
 
         // ── Botón volver ──────────────────────────────────────────────────
-<span class="nc" id="L114">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
-<span class="nc" id="L115">        btnVolver.setName(&quot;btnVolverFam&quot;);</span>
-<span class="nc" id="L116">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
-<span class="nc" id="L117">        btnVolver.setFocusPainted(false);</span>
-<span class="nc" id="L118">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L119">        btnVolver.addActionListener(e -&gt; dispose());</span>
+<span class="fc" id="L114">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="fc" id="L115">        btnVolver.setName(&quot;btnVolverFam&quot;);</span>
+<span class="fc" id="L116">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="fc" id="L117">        btnVolver.setFocusPainted(false);</span>
+<span class="fc" id="L118">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="pc" id="L119">        btnVolver.addActionListener(e -&gt; dispose());</span>
 
-<span class="nc" id="L121">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
-<span class="nc" id="L122">        panelSur.add(lblEstadoBusqueda, BorderLayout.NORTH);</span>
-<span class="nc" id="L123">        panelSur.add(btnVolver,         BorderLayout.SOUTH);</span>
+<span class="fc" id="L121">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
+<span class="fc" id="L122">        panelSur.add(lblEstadoBusqueda, BorderLayout.NORTH);</span>
+<span class="fc" id="L123">        panelSur.add(btnVolver,         BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L125">        add(panelBusqueda,                   BorderLayout.NORTH);</span>
-<span class="nc" id="L126">        add(new JScrollPane(panelResultado), BorderLayout.CENTER);</span>
-<span class="nc" id="L127">        add(panelSur,                        BorderLayout.SOUTH);</span>
-<span class="nc" id="L128">    }</span>
+<span class="fc" id="L125">        add(panelBusqueda,                   BorderLayout.NORTH);</span>
+<span class="fc" id="L126">        add(new JScrollPane(panelResultado), BorderLayout.CENTER);</span>
+<span class="fc" id="L127">        add(panelSur,                        BorderLayout.SOUTH);</span>
+<span class="fc" id="L128">    }</span>
 
     /**
      * Busca un preso por nombre y apellidos exactos (sin distinguir mayúsculas)
@@ -272,155 +272,155 @@ public class GestionPresosGUI extends JFrame {
      * para registrar nuevos presos, idéntico al comportamiento anterior.
      */
     private void iniciarModoPolicia() {
-<span class="nc" id="L275">        setTitle(&quot;JailQ - Gestión de Presos&quot;);</span>
-<span class="nc" id="L276">        setSize(500, 750);</span>
-<span class="nc" id="L277">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L275">        setTitle(&quot;JailQ - Gestión de Presos&quot;);</span>
+<span class="fc" id="L276">        setSize(500, 750);</span>
+<span class="fc" id="L277">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
 
-<span class="nc" id="L279">        JPanel panelFormulario = new JPanel(new GridLayout(6, 1, 10, 10));</span>
-<span class="nc" id="L280">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Registrar Nuevo Preso&quot;));</span>
+<span class="fc" id="L279">        JPanel panelFormulario = new JPanel(new GridLayout(6, 1, 10, 10));</span>
+<span class="fc" id="L280">        panelFormulario.setBorder(BorderFactory.createTitledBorder(&quot;Registrar Nuevo Preso&quot;));</span>
 
-<span class="nc" id="L282">        txtNombre = new JTextField();</span>
-<span class="nc" id="L283">        txtNombre.setName(&quot;txtNombre&quot;); </span>
+<span class="fc" id="L282">        txtNombre = new JTextField();</span>
+<span class="fc" id="L283">        txtNombre.setName(&quot;txtNombre&quot;); </span>
         
-<span class="nc" id="L285">        txtApellidos = new JTextField();</span>
-<span class="nc" id="L286">        txtApellidos.setName(&quot;txtApellidos&quot;); </span>
+<span class="fc" id="L285">        txtApellidos = new JTextField();</span>
+<span class="fc" id="L286">        txtApellidos.setName(&quot;txtApellidos&quot;); </span>
         
-<span class="nc" id="L288">        txtFechaNacimiento = new JTextField();</span>
-<span class="nc" id="L289">        txtFechaNacimiento.setName(&quot;txtFechaNacimiento&quot;); </span>
+<span class="fc" id="L288">        txtFechaNacimiento = new JTextField();</span>
+<span class="fc" id="L289">        txtFechaNacimiento.setName(&quot;txtFechaNacimiento&quot;); </span>
         
-<span class="nc" id="L291">        txtCondena = new JTextField();</span>
-<span class="nc" id="L292">        txtCondena.setName(&quot;txtCondena&quot;); </span>
+<span class="fc" id="L291">        txtCondena = new JTextField();</span>
+<span class="fc" id="L292">        txtCondena.setName(&quot;txtCondena&quot;); </span>
 
-<span class="nc" id="L294">        cbCarcel = new JComboBox&lt;&gt;();</span>
-<span class="nc" id="L295">        cbCarcel.setName(&quot;cbCarcel&quot;); </span>
+<span class="fc" id="L294">        cbCarcel = new JComboBox&lt;&gt;();</span>
+<span class="fc" id="L295">        cbCarcel.setName(&quot;cbCarcel&quot;); </span>
         //Cargamos las cárceles desde la base de datos al iniciar
-<span class="nc" id="L297">        cargarCarcelesDesdeBD();</span>
+<span class="fc" id="L297">        cargarCarcelesDesdeBD();</span>
 
-<span class="nc" id="L299">        listaDelitos = new JList&lt;&gt;(Delito.values());</span>
-<span class="nc" id="L300">        listaDelitos.setName(&quot;listaDelitos&quot;); </span>
-<span class="nc" id="L301">        listaDelitos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);</span>
-<span class="nc" id="L302">        JScrollPane scrollDelitos = new JScrollPane(listaDelitos);</span>
-<span class="nc" id="L303">        scrollDelitos.setPreferredSize(new Dimension(0, 150));</span>
+<span class="fc" id="L299">        listaDelitos = new JList&lt;&gt;(Delito.values());</span>
+<span class="fc" id="L300">        listaDelitos.setName(&quot;listaDelitos&quot;); </span>
+<span class="fc" id="L301">        listaDelitos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);</span>
+<span class="fc" id="L302">        JScrollPane scrollDelitos = new JScrollPane(listaDelitos);</span>
+<span class="fc" id="L303">        scrollDelitos.setPreferredSize(new Dimension(0, 150));</span>
 
-<span class="nc" id="L305">        panelFormulario.add(crearCelda(&quot;Nombre:&quot;, txtNombre));</span>
-<span class="nc" id="L306">        panelFormulario.add(crearCelda(&quot;Apellidos:&quot;, txtApellidos));</span>
-<span class="nc" id="L307">        panelFormulario.add(crearCelda(&quot;Fecha Nacimiento (AAAA-MM-DD):&quot;, txtFechaNacimiento));</span>
-<span class="nc" id="L308">        panelFormulario.add(crearCelda(&quot;Condena (años):&quot;, txtCondena));</span>
-<span class="nc" id="L309">        panelFormulario.add(crearCeldaPanel(&quot;Cárcel:&quot;, cbCarcel));</span>
-<span class="nc" id="L310">        panelFormulario.add(crearCeldaPanel(&quot;Delito:&quot;, scrollDelitos));</span>
+<span class="fc" id="L305">        panelFormulario.add(crearCelda(&quot;Nombre:&quot;, txtNombre));</span>
+<span class="fc" id="L306">        panelFormulario.add(crearCelda(&quot;Apellidos:&quot;, txtApellidos));</span>
+<span class="fc" id="L307">        panelFormulario.add(crearCelda(&quot;Fecha Nacimiento (AAAA-MM-DD):&quot;, txtFechaNacimiento));</span>
+<span class="fc" id="L308">        panelFormulario.add(crearCelda(&quot;Condena (años):&quot;, txtCondena));</span>
+<span class="fc" id="L309">        panelFormulario.add(crearCeldaPanel(&quot;Cárcel:&quot;, cbCarcel));</span>
+<span class="fc" id="L310">        panelFormulario.add(crearCeldaPanel(&quot;Delito:&quot;, scrollDelitos));</span>
 
-<span class="nc" id="L312">        JButton btnAnadir = new JButton(&quot;Registrar Preso&quot;);</span>
-<span class="nc" id="L313">        btnAnadir.setName(&quot;btnAnadir&quot;);</span>
-<span class="nc" id="L314">        btnAnadir.addActionListener(e -&gt; enviarPreso());</span>
+<span class="fc" id="L312">        JButton btnAnadir = new JButton(&quot;Registrar Preso&quot;);</span>
+<span class="fc" id="L313">        btnAnadir.setName(&quot;btnAnadir&quot;);</span>
+<span class="fc" id="L314">        btnAnadir.addActionListener(e -&gt; enviarPreso());</span>
 
-<span class="nc" id="L316">        JPanel panelCentral = new JPanel(new BorderLayout(5, 5));</span>
-<span class="nc" id="L317">        panelCentral.add(panelFormulario, BorderLayout.CENTER);</span>
-<span class="nc" id="L318">        panelCentral.add(btnAnadir, BorderLayout.SOUTH);</span>
+<span class="fc" id="L316">        JPanel panelCentral = new JPanel(new BorderLayout(5, 5));</span>
+<span class="fc" id="L317">        panelCentral.add(panelFormulario, BorderLayout.CENTER);</span>
+<span class="fc" id="L318">        panelCentral.add(btnAnadir, BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L320">        txtConsola = new JTextArea(5, 30);</span>
-<span class="nc" id="L321">        txtConsola.setName(&quot;txtConsola&quot;); </span>
-<span class="nc" id="L322">        txtConsola.setEditable(false);</span>
-<span class="nc" id="L323">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
-<span class="nc" id="L324">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Estado del Servidor&quot;));</span>
+<span class="fc" id="L320">        txtConsola = new JTextArea(5, 30);</span>
+<span class="fc" id="L321">        txtConsola.setName(&quot;txtConsola&quot;); </span>
+<span class="fc" id="L322">        txtConsola.setEditable(false);</span>
+<span class="fc" id="L323">        JScrollPane scrollConsola = new JScrollPane(txtConsola);</span>
+<span class="fc" id="L324">        scrollConsola.setBorder(BorderFactory.createTitledBorder(&quot;Estado del Servidor&quot;));</span>
 
         // ── Botón Volver ──────────────────────────────────────────────────────
-<span class="nc" id="L327">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
-<span class="nc" id="L328">        btnVolver.setName(&quot;btnVolver&quot;); </span>
-<span class="nc" id="L329">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
-<span class="nc" id="L330">        btnVolver.setFocusPainted(false);</span>
-<span class="nc" id="L331">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="nc" id="L332">        btnVolver.addActionListener(e -&gt; dispose());</span>
+<span class="fc" id="L327">        JButton btnVolver = new JButton(&quot;← Volver al Menú Principal&quot;);</span>
+<span class="fc" id="L328">        btnVolver.setName(&quot;btnVolver&quot;); </span>
+<span class="fc" id="L329">        btnVolver.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, 12));</span>
+<span class="fc" id="L330">        btnVolver.setFocusPainted(false);</span>
+<span class="fc" id="L331">        btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L332">        btnVolver.addActionListener(e -&gt; dispose());</span>
  
-<span class="nc" id="L334">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
-<span class="nc" id="L335">        panelSur.add(scrollConsola, BorderLayout.CENTER);</span>
-<span class="nc" id="L336">        panelSur.add(btnVolver, BorderLayout.SOUTH);</span>
+<span class="fc" id="L334">        JPanel panelSur = new JPanel(new BorderLayout(5, 5));</span>
+<span class="fc" id="L335">        panelSur.add(scrollConsola, BorderLayout.CENTER);</span>
+<span class="fc" id="L336">        panelSur.add(btnVolver, BorderLayout.SOUTH);</span>
  
-<span class="nc" id="L338">        add(panelCentral, BorderLayout.CENTER);</span>
-<span class="nc" id="L339">        add(panelSur,     BorderLayout.SOUTH);</span>
+<span class="fc" id="L338">        add(panelCentral, BorderLayout.CENTER);</span>
+<span class="fc" id="L339">        add(panelSur,     BorderLayout.SOUTH);</span>
 		
-<span class="nc" id="L341">    }</span>
+<span class="fc" id="L341">    }</span>
 
     /**
      * Hace un GET a /carcel para obtener las cárceles reales
      */
     private void cargarCarcelesDesdeBD() {
         try {
-<span class="nc" id="L348">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L349">                    .uri(URI.create(&quot;http://localhost:8080/carcel&quot;))</span>
-<span class="nc" id="L350">                    .GET()</span>
-<span class="nc" id="L351">                    .build();</span>
+<span class="fc" id="L348">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L349">                    .uri(URI.create(&quot;http://localhost:8080/carcel&quot;))</span>
+<span class="fc" id="L350">                    .GET()</span>
+<span class="fc" id="L351">                    .build();</span>
 
-<span class="nc" id="L353">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L353">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L355" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
-<span class="nc" id="L356">                ObjectMapper mapper = new ObjectMapper();</span>
+<span class="pc bpc" id="L355" title="1 of 2 branches missed.">            if (response.statusCode() == 200) {</span>
+<span class="fc" id="L356">                ObjectMapper mapper = new ObjectMapper();</span>
                 // Convertimos el JSON en una lista de objetos Carcel
-<span class="nc" id="L358">                List&lt;Carcel&gt; carceles = mapper.readValue(response.body(), new TypeReference&lt;List&lt;Carcel&gt;&gt;(){});</span>
+<span class="fc" id="L358">                List&lt;Carcel&gt; carceles = mapper.readValue(response.body(), new TypeReference&lt;List&lt;Carcel&gt;&gt;(){});</span>
 
-<span class="nc" id="L360">                cbCarcel.removeAllItems();</span>
-<span class="nc bnc" id="L361" title="All 2 branches missed.">                for (Carcel c : carceles) {</span>
-<span class="nc" id="L362">                    cbCarcel.addItem(c.getNombre());</span>
-<span class="nc" id="L363">                    mapaCarceles.put(c.getNombre(), c.getIdCarcel());</span>
-<span class="nc" id="L364">                }</span>
+<span class="fc" id="L360">                cbCarcel.removeAllItems();</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">                for (Carcel c : carceles) {</span>
+<span class="fc" id="L362">                    cbCarcel.addItem(c.getNombre());</span>
+<span class="fc" id="L363">                    mapaCarceles.put(c.getNombre(), c.getIdCarcel());</span>
+<span class="fc" id="L364">                }</span>
             }
 <span class="nc" id="L366">        } catch (Exception e) {</span>
 <span class="nc" id="L367">            System.err.println(&quot;No se pudieron cargar las cárceles: &quot; + e.getMessage());</span>
 <span class="nc" id="L368">            cbCarcel.addItem(&quot;Error al cargar datos&quot;);</span>
-<span class="nc" id="L369">        }</span>
-<span class="nc" id="L370">    }</span>
+<span class="fc" id="L369">        }</span>
+<span class="fc" id="L370">    }</span>
 
     private void enviarPreso() {
         try {
-<span class="nc" id="L374">            String nombreCarcel = (String) cbCarcel.getSelectedItem();</span>
-<span class="nc" id="L375">            Integer idCarcel = mapaCarceles.get(nombreCarcel);</span>
+<span class="fc" id="L374">            String nombreCarcel = (String) cbCarcel.getSelectedItem();</span>
+<span class="fc" id="L375">            Integer idCarcel = mapaCarceles.get(nombreCarcel);</span>
 
-<span class="nc bnc" id="L377" title="All 2 branches missed.">            if (idCarcel == null) {</span>
+<span class="pc bpc" id="L377" title="1 of 2 branches missed.">            if (idCarcel == null) {</span>
 <span class="nc" id="L378">                txtConsola.setText(&quot;Error: Selecciona una cárcel válida.&quot;);</span>
 <span class="nc" id="L379">                return;</span>
             }
 
-<span class="nc" id="L382">            ObjectMapper mapper = new ObjectMapper();</span>
-<span class="nc" id="L383">            Map&lt;String, Object&gt; jsonMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L384">            jsonMap.put(&quot;nombre&quot;, txtNombre.getText());</span>
-<span class="nc" id="L385">            jsonMap.put(&quot;apellidos&quot;, txtApellidos.getText());</span>
-<span class="nc" id="L386">            jsonMap.put(&quot;fechaNacimiento&quot;, txtFechaNacimiento.getText());</span>
-<span class="nc" id="L387">            jsonMap.put(&quot;fechaIngreso&quot;, LocalDate.now().toString());</span>
-<span class="nc" id="L388">            jsonMap.put(&quot;condena&quot;, Double.parseDouble(txtCondena.getText().replace(&quot;,&quot;, &quot;.&quot;)));</span>
-<span class="nc" id="L389">            jsonMap.put(&quot;delitos&quot;, listaDelitos.getSelectedValuesList());</span>
+<span class="fc" id="L382">            ObjectMapper mapper = new ObjectMapper();</span>
+<span class="fc" id="L383">            Map&lt;String, Object&gt; jsonMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L384">            jsonMap.put(&quot;nombre&quot;, txtNombre.getText());</span>
+<span class="fc" id="L385">            jsonMap.put(&quot;apellidos&quot;, txtApellidos.getText());</span>
+<span class="fc" id="L386">            jsonMap.put(&quot;fechaNacimiento&quot;, txtFechaNacimiento.getText());</span>
+<span class="fc" id="L387">            jsonMap.put(&quot;fechaIngreso&quot;, LocalDate.now().toString());</span>
+<span class="fc" id="L388">            jsonMap.put(&quot;condena&quot;, Double.parseDouble(txtCondena.getText().replace(&quot;,&quot;, &quot;.&quot;)));</span>
+<span class="fc" id="L389">            jsonMap.put(&quot;delitos&quot;, listaDelitos.getSelectedValuesList());</span>
             
             //Enviamos el ID como Integer, que es lo que espera el Backend
-<span class="nc" id="L392">            jsonMap.put(&quot;carcel&quot;, idCarcel);</span>
+<span class="fc" id="L392">            jsonMap.put(&quot;carcel&quot;, idCarcel);</span>
 
-<span class="nc" id="L394">            String jsonBody = mapper.writeValueAsString(jsonMap);</span>
+<span class="fc" id="L394">            String jsonBody = mapper.writeValueAsString(jsonMap);</span>
 
-<span class="nc" id="L396">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L397">                    .uri(URI.create(&quot;http://localhost:8080/preso/crear&quot;))</span>
-<span class="nc" id="L398">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
-<span class="nc" id="L399">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
-<span class="nc" id="L400">                    .build();</span>
+<span class="fc" id="L396">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L397">                    .uri(URI.create(&quot;http://localhost:8080/preso/crear&quot;))</span>
+<span class="fc" id="L398">                    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</span>
+<span class="fc" id="L399">                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))</span>
+<span class="fc" id="L400">                    .build();</span>
 
-<span class="nc" id="L402">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L402">            HttpResponse&lt;String&gt; response = cliente.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc bnc" id="L404" title="All 4 branches missed.">            if (response.statusCode() == 201 || response.statusCode() == 200) {</span>
-<span class="nc" id="L405">                txtConsola.setText(&quot;ÉXITO: Preso registrado.\n&quot; + response.body());</span>
-<span class="nc" id="L406">                limpiarFormulario();</span>
+<span class="pc bpc" id="L404" title="1 of 4 branches missed.">            if (response.statusCode() == 201 || response.statusCode() == 200) {</span>
+<span class="fc" id="L405">                txtConsola.setText(&quot;ÉXITO: Preso registrado.\n&quot; + response.body());</span>
+<span class="fc" id="L406">                limpiarFormulario();</span>
             } else {
-<span class="nc" id="L408">                txtConsola.setText(&quot;ERROR &quot; + response.statusCode() + &quot;:\n&quot; + response.body());</span>
+<span class="fc" id="L408">                txtConsola.setText(&quot;ERROR &quot; + response.statusCode() + &quot;:\n&quot; + response.body());</span>
             }
 
-<span class="nc" id="L411">        } catch (Exception ex) {</span>
-<span class="nc" id="L412">            txtConsola.setText(&quot;Error: &quot; + ex.getMessage());</span>
-<span class="nc" id="L413">        }</span>
-<span class="nc" id="L414">    }</span>
+<span class="fc" id="L411">        } catch (Exception ex) {</span>
+<span class="fc" id="L412">            txtConsola.setText(&quot;Error: &quot; + ex.getMessage());</span>
+<span class="fc" id="L413">        }</span>
+<span class="fc" id="L414">    }</span>
 
     private void limpiarFormulario() {
-<span class="nc" id="L417">        txtNombre.setText(&quot;&quot;);</span>
-<span class="nc" id="L418">        txtApellidos.setText(&quot;&quot;);</span>
-<span class="nc" id="L419">        txtFechaNacimiento.setText(&quot;&quot;);</span>
-<span class="nc" id="L420">        txtCondena.setText(&quot;&quot;);</span>
-<span class="nc bnc" id="L421" title="All 2 branches missed.">        if (cbCarcel.getItemCount() &gt; 0) cbCarcel.setSelectedIndex(0);</span>
-<span class="nc" id="L422">        listaDelitos.clearSelection();</span>
-<span class="nc" id="L423">    }</span>
+<span class="fc" id="L417">        txtNombre.setText(&quot;&quot;);</span>
+<span class="fc" id="L418">        txtApellidos.setText(&quot;&quot;);</span>
+<span class="fc" id="L419">        txtFechaNacimiento.setText(&quot;&quot;);</span>
+<span class="fc" id="L420">        txtCondena.setText(&quot;&quot;);</span>
+<span class="pc bpc" id="L421" title="1 of 2 branches missed.">        if (cbCarcel.getItemCount() &gt; 0) cbCarcel.setSelectedIndex(0);</span>
+<span class="fc" id="L422">        listaDelitos.clearSelection();</span>
+<span class="fc" id="L423">    }</span>
 
     // ──────────────────────────────────────────────────────────────────────────
     // Utilidades de extracción JSON (modo FAMILIA)
@@ -467,25 +467,25 @@ public class GestionPresosGUI extends JFrame {
     // ──────────────────────────────────────────────────────────────────────────
 
     private JPanel crearCelda(String etiqueta, JTextField campo) {
-<span class="nc" id="L470">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
-<span class="nc" id="L471">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
-<span class="nc" id="L472">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
-<span class="nc" id="L473">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
+<span class="fc" id="L470">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
+<span class="fc" id="L471">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
+<span class="fc" id="L472">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
+<span class="fc" id="L473">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
         ));
-<span class="nc" id="L475">        panel.add(new JLabel(etiqueta));</span>
-<span class="nc" id="L476">        panel.add(campo);</span>
-<span class="nc" id="L477">        return panel;</span>
+<span class="fc" id="L475">        panel.add(new JLabel(etiqueta));</span>
+<span class="fc" id="L476">        panel.add(campo);</span>
+<span class="fc" id="L477">        return panel;</span>
     }
 
     private JPanel crearCeldaPanel(String etiqueta, javax.swing.JComponent componente) {
-<span class="nc" id="L481">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
-<span class="nc" id="L482">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
-<span class="nc" id="L483">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
-<span class="nc" id="L484">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
+<span class="fc" id="L481">        JPanel panel = new JPanel(new GridLayout(2, 1));</span>
+<span class="fc" id="L482">        panel.setBorder(BorderFactory.createCompoundBorder(</span>
+<span class="fc" id="L483">            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),</span>
+<span class="fc" id="L484">            BorderFactory.createEmptyBorder(5, 5, 5, 5)</span>
         ));
-<span class="nc" id="L486">        panel.add(new JLabel(etiqueta));</span>
-<span class="nc" id="L487">        panel.add(componente);</span>
-<span class="nc" id="L488">        return panel;</span>
+<span class="fc" id="L486">        panel.add(new JLabel(etiqueta));</span>
+<span class="fc" id="L487">        panel.add(componente);</span>
+<span class="fc" id="L488">        return panel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
