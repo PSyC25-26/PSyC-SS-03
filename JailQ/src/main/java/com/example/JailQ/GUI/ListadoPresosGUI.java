@@ -250,12 +250,11 @@ public class ListadoPresosGUI extends JFrame {
 
     private void ejecutarTraslado(String idPreso, String nombreCarcel) {
     try {
-        // En lugar de URLEncoder, reemplazamos espacios por %20 para el PathVariable
         String nombreLimpio = nombreCarcel.replace(" ", "%20");
         String urlFinal = BASE_URL + "/trasladar/" + idPreso + "/" + nombreLimpio;
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlFinal)) // URI.create ya maneja caracteres especiales si están escapados
+                .uri(URI.create(urlFinal))
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
@@ -265,7 +264,6 @@ public class ListadoPresosGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Traslado exitoso a " + nombreCarcel);
             cargarPresos();
         } else {
-            // Esto te dirá exactamente qué intentó buscar el servidor
             JOptionPane.showMessageDialog(this, "Error: El servidor no encontró la cárcel [" + nombreCarcel + "]");
         }
     } catch (Exception ex) {
