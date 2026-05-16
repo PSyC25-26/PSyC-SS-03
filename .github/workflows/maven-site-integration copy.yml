@@ -133,7 +133,7 @@ jobs:
 
       # SonarQube Analysis
       - name: SonarQube Analysis
-        run: mvn -B sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        run: mvn -B sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN2 }}
 
       # Performance tests (require running app)
       - name: Run Performance Tests
