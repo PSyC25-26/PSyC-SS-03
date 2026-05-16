@@ -9,11 +9,11 @@
 - [Para ejecutar los test](#Para_ejecutar_los_test)
 
 ## Documentación técnica
-Next you can find the pages corresponding to:
+Aquí encontrarás las páginas de documentación técnica:
 
-1. [Documentation landing page](https://psyc25-26.github.io/PSyC-SS-03/) created with Sphinx
-2. [Technical documentation](https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html) created with Doxygen
-3. [Test reports](https://psyc25-26.github.io/PSyC-SS-03/site/project-reports.html) created after running Coberture, Unit test, Performance and Integration tests
+1. [Documentation landing page](https://psyc25-26.github.io/PSyC-SS-03/) creado con Sphinx
+2. [Technical documentation](https://psyc25-26.github.io/PSyC-SS-03/doxygen/index.html) creado con Doxygen
+3. [Test reports](https://psyc25-26.github.io/PSyC-SS-03/site/project-reports.html) creado después de los tests de cobertura, JUNIT, rendimiento e integración
    
 ## Descripción
 Software de gestión para cárceles, que proporciona información sobre cárceles y presos a distintos agentes (policía, familias,...), además de permitir filtrar presos y trasladarlos entre cárceles.
@@ -47,7 +47,7 @@ Para consultar la bd en MySQL debes abrir una conexión a:
 1. Clone el repositorio
 `git clone https://github.com/PSyC25-26/PSyC-SS-03.git PSyC-SS-03`
 
-2. Habra Docker Desktop
+2. Abra Docker Desktop
 
 3. Ejecute la aplicación mediante Spring Boot Dashboard --> **con.example.JailQ.JailQApplication**
 De esta manera se crearán los contenedores pertinentes y se hará conexión con la BD
