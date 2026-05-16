@@ -132,13 +132,7 @@ jobs:
           mvn -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest test
 
       - name: SonarQube Analysis
-        run: |
-          mvn -B sonar:sonar \
-            -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
-            -Dsonar.organization=aitanagf \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        run: mvn -B sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       # Performance tests (require running app)
       - name: Run Performance Tests
