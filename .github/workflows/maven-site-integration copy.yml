@@ -129,7 +129,7 @@ jobs:
       # Integration + GUI tests (require Xvfb + running app + seeded DB)
       - name: Run Tests
         run: |
-          mvn -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest test
+          mvn -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest test
 
       - name: SonarQube Analysis
         run: |
