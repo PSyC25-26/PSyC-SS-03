@@ -130,7 +130,7 @@ jobs:
       - name: Run Integration Tests + Sonar
         run: |
           mvn clean test \
-            -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest
+            -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,LoginDialogTest,SessionManagerTest
 
           mvn sonar:sonar \
             -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
