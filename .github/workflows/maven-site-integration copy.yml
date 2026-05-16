@@ -133,11 +133,10 @@ jobs:
 
       - name: SonarQube Analysis
         run: |
-          mvn -B verify sonar:sonar \
-          -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
-          -Dsonar.host.url=https://sonarcloud.io
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          mvn -B verify org.sonarsource.scanner.cli:sonar-scanner-cli:latest \
+            -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       # Performance tests (require running app)
       - name: Run Performance Tests
