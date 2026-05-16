@@ -89,7 +89,9 @@ Seleccione un preso de la lista y pulse "Trasladar Preso". A continuación se mo
 Al finalizar, en el menú principal, pulse "cerrar sesión". Esto le devolverá a al menu inicial.
 
 ## Para_ejecutar_los_test
-Para ejecutar los test se debe primero ejecutar la ventana principal en pararelo e insertar como mínimo una cárcel y un preso. Esto también debe hacerse a la hora de ejecutar cualquier comando que ejecute los test (como `mvn clean install -U`).
+Para ejecutar los test se debe primero ejecutar la ventana principal en pararelo e insertar como mínimo una cárcel y un preso. Si se quiere ejecutar los test de integración, se debe dejar de hacer cualquier otra cosa en el dispositivo, únicamente ejecutar los test. No se puede visualizar otra pantalla o hacer clic en otro lugar.
+
+Esto también debe hacerse a la hora de ejecutar cualquier comando que ejecute los test (como `mvn clean install -U`).
 
 Se proporciona el comando para ejecutar los test:
 1. Tests: `mvn test`
