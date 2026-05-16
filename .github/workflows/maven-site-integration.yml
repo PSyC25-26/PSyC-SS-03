@@ -127,8 +127,18 @@ jobs:
         run: mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test jacoco:report
 
       # Integration + GUI tests (require Xvfb + running app + seeded DB)
-      - name: Run Integration and GUI tests
-        run: mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test
+      - name: Run Tests
+        run: |
+          mvn -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest test
+
+      # SonarQube Analysis
+      - name: SonarQube Analysis
+        run: |
+          mvn -B sonar:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=psyc25-26 \
+            -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       # Performance tests (require running app)
       - name: Run Performance Tests
