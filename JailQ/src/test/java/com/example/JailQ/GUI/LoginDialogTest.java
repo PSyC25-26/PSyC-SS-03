@@ -19,15 +19,23 @@ public class LoginDialogTest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         // Ejecutamos la ventana pasando null como padre, ya que para el test no nos hace falta JailQMainGUI
         LoginDialog dialog = GuiActionRunner.execute(() -> new LoginDialog(null));
         window = new DialogFixture(dialog);
-        window.show(); 
+        window.show();
+
     }
 
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test
