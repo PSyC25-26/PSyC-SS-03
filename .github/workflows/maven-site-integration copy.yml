@@ -131,7 +131,7 @@ jobs:
         run: |
           mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=aitanagf
+          -Dsonar.projectKey=PSyC25-26_PSyC-SS-03
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
