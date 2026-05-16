@@ -131,6 +131,7 @@ jobs:
         run: |
           mvn -Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest test
 
+      # SonarQube Analysis
       - name: SonarQube Analysis
         run: mvn -B sonar:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
