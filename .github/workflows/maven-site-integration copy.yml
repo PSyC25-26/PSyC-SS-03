@@ -1,0 +1,183 @@
+name: Maven Build, Tests, Performance & Docs
+
+on:
+  push:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 18-23/2 * * *'
+    - cron: '0 0-6/2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: JailQ
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3307/mydatabase?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: secret
+      DISPLAY: :99
+      # JAVA_TOOL_OPTIONS is inherited by all JVM processes including Surefire forks
+      # This ensures Swing tests can create windows via Xvfb
+      JAVA_TOOL_OPTIONS: -Djava.awt.headless=false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Start MySQL via Docker Compose
+        run: docker compose up -d mysql
+
+      - name: Wait for MySQL
+        run: |
+          echo "Waiting for MySQL..."
+          until docker exec mysql-container mysqladmin ping -h 127.0.0.1 -uroot -pverysecret --silent; do
+            sleep 3
+          done
+
+      - name: Seed database (Carcel, Cuenta, Preso)
+        run: |
+          echo "Creating initial test data..."
+
+          docker exec mysql-container mysql -umyuser -psecret mydatabase <<'SQLEOF'
+
+          -- CARCEL
+          INSERT INTO carcel (id_carcel, nombre, descripcion, localidad, capacidad)
+          VALUES (1, 'Carcel Central', 'Centro penitenciario principal', 'Bilbao', 500);
+
+          -- CUENTA
+          INSERT INTO cuenta (id_cuentas, tipo_cuenta, nombre, apellidos, username, password)
+          VALUES (1, 'POLICIA', 'Admin', 'Sistema', 'admin', 'admin123');
+
+          -- PRESO
+          INSERT INTO preso (
+              id_preso,
+              nombre,
+              apellidos,
+              fecha_nacimiento,
+              condena,
+              fecha_ingreso,
+              id_carcel
+          )
+          VALUES (
+              1,
+              'Juan',
+              'Perez',
+              '1990-01-01',
+              10,
+              '2024-01-01',
+              1
+          );
+
+          -- DELITOS
+          INSERT INTO preso_delitos (preso_id, delito)
+          VALUES (1, 'ROBO');
+
+          SQLEOF
+
+      - name: Install tools (Doxygen + Graphviz + Pandoc + Xvfb)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz pandoc xvfb
+
+      # Virtual display required for Swing GUI tests
+      # 1920x1080 to ensure all windows fit within screen boundaries
+      - name: Set up virtual display (Xvfb)
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          sleep 2
+          echo "Xvfb started on display :99 at 1920x1080"
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
+      # spring-boot:run compiles and starts the app automatically
+      # Required for GUI tests and performance tests
+      - name: Start Spring Boot application
+        run: |
+          mvn spring-boot:run &
+          echo $! > app.pid
+
+      # Wait for Spring Boot to be ready before running any tests
+      - name: Wait for Spring Boot to start
+        run: |
+          echo "Waiting for Spring Boot..."
+          until curl -s http://localhost:8080/carcel > /dev/null 2>&1; do
+            sleep 2
+          done
+          echo "Spring Boot is ready"
+
+      # Unit tests only (no GUI, no integration, no performance)
+      - name: Run Unit tests + JaCoCo
+        run: mvn "-Dtest=CarcelServiceTest,CuentaLoginTest,CuentaServiceTest,PresoServiceTest,PresoUnitTest" test jacoco:report
+
+      # Integration + GUI tests (require Xvfb + running app + seeded DB)
+      - name: Run Integration Tests + Sonar
+        run: |
+          mvn "-Dtest=JailQIntegrationTest,EliminarPoliciaGUITest,EstadisticasAvanzadasGUITest,FiltrarPresosPorDelitoGUITest,GestionCarcelGUITest,GestionCuentasGUITest,GestionPresosGUITest,JailQMainGUITest,ListadoPresosGUITest,LoginDialogTest,SessionManagerTest" test \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=aitanagf
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Performance tests (require running app)
+      - name: Run Performance Tests
+        run: mvn -Dtest=JailQPerformanceTest test
+
+      - name: Generate Maven Site
+        run: mvn site
+
+      - name: Copy performance reports
+        run: |
+          mkdir -p docs/performance
+          cp -r target/junitperf/* docs/performance/ || true
+
+      - name: Generate docs folder
+        run: |
+          mkdir -p docs/site
+          mkdir -p docs/doxygen
+          pandoc ../README.md -o docs/index.html
+          cp -r target/site/* docs/site/ || true
+          cp -r target/doxygen/* docs/doxygen/ || true
+
+      - name: Commit and push docs
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add -f docs
+          git commit -m "Update docs [CI skip]" || echo "No changes"
+          git push
+
+      # Combine site and performance into one folder to avoid
+      # gh-pages push conflicts from multiple sequential deploy steps
+      - name: Prepare gh-pages output
+        run: |
+          mkdir -p gh-pages-output/site
+          mkdir -p gh-pages-output/performance
+          cp -r target/site/* gh-pages-output/site/ || true
+          cp -r target/junitperf/* gh-pages-output/performance/ || true
+
+      - name: Deploy site and performance to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./JailQ/gh-pages-output
+          destination_dir: .
+          publish_branch: gh-pages
+          keep_files: true
+          commit_message: "docs: actualizar site y performance [skip ci]"
