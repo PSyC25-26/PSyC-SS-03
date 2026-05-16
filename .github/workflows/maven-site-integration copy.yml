@@ -133,10 +133,12 @@ jobs:
 
       - name: SonarQube Analysis
         run: |
-          mvn -B verify org.sonarsource.scanner.cli:sonar-scanner-cli:latest \
+          mvn -B sonar:sonar \
             -Dsonar.projectKey=PSyC25-26_PSyC-SS-03 \
+            -Dsonar.organization=aitanagf \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
       # Performance tests (require running app)
       - name: Run Performance Tests
