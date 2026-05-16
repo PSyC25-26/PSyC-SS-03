@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Frame;
+
 public class EliminarPoliciaGUITest {
 
     private FrameFixture window;
@@ -19,15 +21,25 @@ public class EliminarPoliciaGUITest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         // Ejecutamos la ventana. Servidor backend encendido 
         EliminarPoliciaGUI frame = GuiActionRunner.execute(() -> new EliminarPoliciaGUI());
         window = new FrameFixture(frame);
-        window.show(); 
+        window.show();
+        try { Thread.sleep(1000); } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test
@@ -77,12 +89,17 @@ public class EliminarPoliciaGUITest {
     public void testEliminarPoliciaYConfirmarConSi() {
         if (window.list("listaPolicias").contents().length > 0) {
             window.list("listaPolicias").selectItem(0);
+            try { Thread.sleep(200); } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             window.button("btnEliminar").click();
             
             // Le damos al botón "Sí"
             window.optionPane().yesButton().click(); 
             
-            try { Thread.sleep(500); } catch (InterruptedException e) {}
+            try { Thread.sleep(500); } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             window.optionPane().okButton().click();
         }
     }
@@ -93,7 +110,9 @@ public class EliminarPoliciaGUITest {
         window.button("btnRecargar").click();
         
         // Le damos medio segundo al servidor para responder a la petición GET
-        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        try { Thread.sleep(500); } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         
         // Verificamos que la interfaz no se ha bloqueado y la lista sigue visible
         window.list("listaPolicias").requireVisible();

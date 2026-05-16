@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Frame;
+
 public class ListadoPresosGUITest {
 
     private FrameFixture window;
@@ -19,6 +21,9 @@ public class ListadoPresosGUITest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         // Ejecutamos la ventana. Servidor backend encendido 
         ListadoPresosGUI frame = GuiActionRunner.execute(() -> new ListadoPresosGUI());
         window = new FrameFixture(frame);
@@ -28,6 +33,10 @@ public class ListadoPresosGUITest {
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test

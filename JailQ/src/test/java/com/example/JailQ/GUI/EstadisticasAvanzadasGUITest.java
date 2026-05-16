@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Frame;
+
 public class EstadisticasAvanzadasGUITest {
 
     private FrameFixture window;
@@ -19,6 +21,9 @@ public class EstadisticasAvanzadasGUITest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         // Ejecutamos la ventana. Servidor backend encendido 
         EstadisticasAvanzadasGUI frame = GuiActionRunner.execute(() -> new EstadisticasAvanzadasGUI());
         window = new FrameFixture(frame);
@@ -28,6 +33,10 @@ public class EstadisticasAvanzadasGUITest {
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test

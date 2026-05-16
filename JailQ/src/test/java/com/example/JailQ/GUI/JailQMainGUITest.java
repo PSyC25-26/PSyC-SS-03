@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Frame;
+
 public class JailQMainGUITest {
 
     private FrameFixture window;
@@ -19,6 +21,9 @@ public class JailQMainGUITest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         JailQMainGUI frame = GuiActionRunner.execute(() -> new JailQMainGUI());
         window = new FrameFixture(frame);
         window.show();
@@ -27,6 +32,10 @@ public class JailQMainGUITest {
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test
@@ -129,5 +138,4 @@ public class JailQMainGUITest {
         // Ejecutamos la acción del botón de cuentas para pintarlo de verde en JaCoCo
         window.button("btnCuentas").click();
     }
-
 }

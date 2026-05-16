@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Frame;
 import java.util.regex.Pattern;
 
 public class GestionCuentasGUITest {
@@ -21,6 +22,9 @@ public class GestionCuentasGUITest {
 
     @BeforeEach
     public void setUp() {
+        for (Frame frame : Frame.getFrames()) {
+            frame.dispose();
+        }
         GestionCuentasGUI frame = GuiActionRunner.execute(() -> new GestionCuentasGUI());
         window = new FrameFixture(frame);
         window.show();
@@ -29,6 +33,10 @@ public class GestionCuentasGUITest {
     @AfterEach
     public void tearDown() {
         window.cleanUp();
+        GuiActionRunner.execute(() -> window.target().dispose());
+        if (window.robot() != null) {
+            window.robot().cleanUp();
+        }
     }
 
     @Test
