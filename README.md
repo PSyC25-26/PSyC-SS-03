@@ -105,3 +105,6 @@ Para visualizar los test de JaCoCo dirijase a la carpeta: *target/site/jacoco/in
 
 Al tener una aplicación con interfaz gráfica generada con JSwing no hemos podido generar contenedores de manera natural. Esto nos ha afectado en el docker-compose.yml, donde no hemos podido crear el contenedor para la aplicación y en el workflow implementado, ya que los test necesitan que se ejecute la ventana principal mientras se lanzan. Se ha dejado el código correspondiente comentado.
 
+El workflow de integración continua incluye tests GUI ejecutados sobre un entorno virtual (Xvfb) junto con servicios como Spring Boot y MySQL en Docker. En las ejecuciones programadas (schedule) de GitHub Actions, los runners pueden encontrarse más saturados, lo que ocasionalmente provoca errores por timeout en algunos tests gráficos. Estos fallos suelen ser intermitentes y normalmente están relacionados con limitaciones temporales de rendimiento del entorno de CI, no con errores reales del proyecto.
+
+Por este motivo, si un workflow programado falla en alguno de los tests GUI, se recomienda volver a ejecutar el workflow manualmente desde la pestaña Actions de GitHub antes de considerar que existe un problema real en la aplicación. Si el fallo desaparece en la ejecución manual, puede asumirse que se trataba de un falso negativo producido por el entorno de ejecución.
