@@ -24,6 +24,6 @@ JailQ,com.example.JailQ.GUI,EliminarPoliciaGUI,35,389,3,17,10,88,3,13,0,6
 JailQ,com.example.JailQ.GUI,ListadoPresosGUI.new DefaultTableModel() {...},0,13,0,0,0,2,0,2,0,2
 JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI,11,336,1,9,3,69,1,9,0,5
 JailQ,com.example.JailQ.GUI,FiltrarPresosPorDelitoGUI,83,835,16,20,17,150,15,12,0,9
-JailQ,com.example.JailQ.Facade,PresoController,196,164,0,2,35,30,3,7,3,6
+JailQ,com.example.JailQ.Facade,PresoController,27,333,0,2,6,59,0,10,0,9
 JailQ,com.example.JailQ.Facade,CuentaController,48,215,2,4,10,41,2,8,0,7
 JailQ,com.example.JailQ.Facade,CarcelController,13,344,0,4,3,64,0,11,0,9
