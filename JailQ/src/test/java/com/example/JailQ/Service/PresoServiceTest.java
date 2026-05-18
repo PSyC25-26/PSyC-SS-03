@@ -2,6 +2,7 @@ package com.example.JailQ.Service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,9 @@ import com.example.JailQ.Entidades.Preso;
  * <li>Validaciones de fecha de ingreso</li>
  * <li>Obtención de todos los presos y por ID</li>
  * <li>Eliminación de presos existentes e inexistentes</li>
+ * <li>Modificación de condena</li>
+ * <li>Traslado de presos entre cárceles</li>
+ * <li>Filtrado de presos por delito</li>
  * </ul>
  * </p>
  */
@@ -346,5 +350,185 @@ class PresoServiceTest {
         assertEquals("Alcatraz", p.getCarcel().getNombre());
 
         //verify(presoDAO).save(p); //Para confirmar que el mock guarda al preso.
+    }
+
+    /**
+     * Test que verifica que lanza excepción al modificar la condena con ID nulo.
+     */
+    @Test
+    void testModificarCondena_idNulo_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si el ID es nulo
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.modificarCondena(null, 5));
+    }
+
+    /**
+     * Test que verifica que lanza excepción al modificar la condena con condena nula.
+     */
+    @Test
+    void testModificarCondena_condenaNula_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si la condena es nula
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.modificarCondena(1, null));
+    }
+
+    /**
+     * Test que verifica que lanza excepción al modificar la condena con condena cero.
+     */
+    @Test
+    void testModificarCondena_condenaCero_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si la condena es 0 o negativa
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.modificarCondena(1, 0));
+    }
+
+    /**
+     * Test que verifica que lanza excepción al modificar la condena de un preso
+     * que no existe en la base de datos.
+     */
+    @Test
+    void testModificarCondena_presoNoExiste_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si el preso no existe en la BD
+        when(presoDAO.findById(99)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.modificarCondena(99, 5));
+    }
+
+    /**
+     * Test que verifica que la condena se modifica correctamente cuando los datos
+     * son válidos y el preso existe.
+     */
+    @Test
+    void testModificarCondena_exitoso() {
+        // Comprobamos que la condena se modifica correctamente
+        Preso preso = new Preso();
+        preso.setId(1);
+        preso.setCondena(3);
+        when(presoDAO.findById(1)).thenReturn(Optional.of(preso));
+        when(presoDAO.save(preso)).thenReturn(preso);
+
+        Preso resultado = presoService.modificarCondena(1, 10);
+        assertEquals(10, resultado.getCondena());
+    }
+
+    /**
+     * Test que verifica que lanza excepción al trasladar un preso que no existe.
+     */
+    @Test
+    void testTrasladarPreso_presoNoExiste_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si el preso no existe
+        when(presoDAO.findById(99)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.trasladarPreso(99, "Martutene"));
+    }
+
+    /**
+     * Test que verifica que lanza excepción al trasladar a una cárcel que no existe.
+     */
+    @Test
+    void testTrasladarPreso_carcelNoExiste_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si la cárcel de destino no existe
+        Preso preso = new Preso();
+        preso.setId(1);
+        when(presoDAO.findById(1)).thenReturn(Optional.of(preso));
+        when(carcelDAO.findByNombre("Inexistente")).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.trasladarPreso(1, "Inexistente"));
+    }
+
+    /**
+     * Test que verifica que el traslado exitoso asigna correctamente la nueva cárcel.
+     */
+    @Test
+    void testTrasladarPreso_exitoso() {
+        // Comprobamos que el traslado se realiza correctamente
+        Preso preso = new Preso();
+        preso.setId(1);
+        Carcel destino = new Carcel();
+        destino.setNombre("Martutene");
+
+        when(presoDAO.findById(1)).thenReturn(Optional.of(preso));
+        when(carcelDAO.findByNombre("Martutene")).thenReturn(Optional.of(destino));
+        when(presoDAO.save(preso)).thenReturn(preso);
+
+        presoService.trasladarPreso(1, "Martutene");
+        assertEquals(destino, preso.getCarcel());
+    }
+
+    /**
+     * Test que verifica que lanza excepción al filtrar presos con delito nulo.
+     */
+    @Test
+    void testFiltrarPorDelito_delitoNulo_lanzaExcepcion() {
+        // Comprobamos que lanza excepción si el delito es nulo
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.filtrarPorDelito(null));
+    }
+
+    /**
+     * Test que verifica que presos con lista de delitos nula no causan errores
+     * y que solo se devuelven los que contienen el delito buscado.
+     */
+    @Test
+    void testFiltrarPorDelito_presoConDelitoNulo() {
+        // Comprobamos que presos con lista de delitos nula no crashean
+        // y que solo se devuelven los presos que sí tienen el delito
+        Preso presoSinDelitos = new Preso();
+        presoSinDelitos.setDelitos(null);
+
+        Preso presoConDelito = new Preso();
+        presoConDelito.setDelitos(new ArrayList<>(List.of(Delito.ROBO)));
+
+        when(presoDAO.findAll()).thenReturn(List.of(presoSinDelitos, presoConDelito));
+
+        List<Preso> resultado = presoService.filtrarPorDelito(Delito.ROBO);
+        assertEquals(1, resultado.size());
+    }
+
+    /**
+     * Test que verifica que lanza excepción cuando la fecha de ingreso es
+     * anterior a la fecha de nacimiento del preso.
+     */
+    @Test
+    void testAnadirPreso_fechaIngresoAntesDeNacimiento_lanzaExcepcion() {
+        // Comprobamos la rama donde la fecha de ingreso es anterior al nacimiento
+        Preso preso = new Preso();
+        preso.setNombre("Test");
+        preso.setApellidos("Apellido");
+        preso.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+        preso.setFechaIngreso(LocalDate.of(1985, 1, 1)); // anterior al nacimiento
+        preso.setCondena(5);
+
+        Carcel carcel = new Carcel();
+        carcel.setIdCarcel(1);
+        preso.setCarcel(carcel);
+
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.anadirPreso(preso));
+    }
+
+    /**
+     * Test que verifica que lanza excepción cuando la cárcel indicada no existe
+     * en la base de datos al añadir un preso.
+     */
+    @Test
+    void testAnadirPreso_carcelNoExisteEnBD_lanzaExcepcion() {
+        // Comprobamos la rama donde la cárcel no existe en la base de datos
+        Preso preso = new Preso();
+        preso.setNombre("Test");
+        preso.setApellidos("Apellido");
+        preso.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+        preso.setFechaIngreso(LocalDate.now());
+        preso.setCondena(5);
+
+        Carcel carcel = new Carcel();
+        carcel.setIdCarcel(99);
+        preso.setCarcel(carcel);
+
+        when(carcelDAO.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+            () -> presoService.anadirPreso(preso));
     }
 }
