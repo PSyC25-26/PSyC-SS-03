@@ -92,4 +92,21 @@ class PresoUnitTest {
         assertFalse(removed);
         assertEquals(0, preso.getDelitos().size());
     }
+
+/**
+     * Prueba que verifica la correcta asignación y lectura de las propiedades básicas de la entidad Preso.
+     */
+    @Test
+    @DisplayName("Verificar asignación de propiedades básicas de Preso")    
+    void testGettersYSettersPreso() {
+        preso.setId(123); // Usando el método real expuesto por tu entidad
+        preso.setNombre("Carlos");
+        preso.setApellidos("Sánchez");
+        preso.setCondena(8);
+
+        assertEquals(123, preso.getId()); // Usando el método real expuesto por tu entidad
+        assertEquals("Carlos", preso.getNombre());
+        assertEquals("Sánchez", preso.getApellidos());
+        assertEquals(8, preso.getCondena());
+    }
 }

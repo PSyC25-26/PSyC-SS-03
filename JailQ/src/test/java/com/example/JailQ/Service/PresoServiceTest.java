@@ -531,4 +531,28 @@ class PresoServiceTest {
         assertThrows(IllegalArgumentException.class,
             () -> presoService.anadirPreso(preso));
     }
+
+    /**
+     * Forzar la simulación del camino alternativo (retorno false) en PresoService para eliminar.
+     */
+    @Test
+    void testEliminarPresoRetornaFalseDebidoANoExistencia() {
+        when(presoDAO.existsById(999)).thenReturn(false);
+        boolean resultado = presoService.eliminar(999);
+        assertFalse(resultado);
+        verify(presoDAO, never()).deleteById(999);
+    }
+
+    /**
+     * Forzar la simulación de camino fallido en PresoService para trasladarPreso cuando la cárcel no existe.
+     */
+    @Test
+    void testTrasladarPresoRetornaExcepcionPorCarcelInexistente() {
+        Preso preso = new Preso();
+        preso.setId(1);
+        when(presoDAO.findById(1)).thenReturn(Optional.of(preso));
+        when(carcelDAO.findByNombre("CarcelInvalida")).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> presoService.trasladarPreso(1, "CarcelInvalida"));
+    }
 }

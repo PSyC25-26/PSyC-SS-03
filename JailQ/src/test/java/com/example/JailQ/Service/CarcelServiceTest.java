@@ -2,19 +2,15 @@ package com.example.JailQ.Service;
 
 import com.example.JailQ.Dao.CarcelDAO;
 import com.example.JailQ.Entidades.Carcel;
-import com.example.JailQ.Entidades.Preso;
 import com.example.JailQ.Dao.PresoDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
-import java.time.LocalDate;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import org.springframework.test.util.ReflectionTestUtils;
 
 
 

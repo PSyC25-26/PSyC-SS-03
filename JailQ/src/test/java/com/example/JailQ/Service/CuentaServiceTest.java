@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.*;    
 
 /**
  * Test unitario para {@link CuentaService}.
@@ -316,5 +316,25 @@ class CuentaServiceTest {
         Cuenta result = cuentaService.loginPolicia("policia1", "1234");
         assertNotNull(result);
         assertEquals(TipoCuenta.FAMILIA, result.getTipoCuenta());
+    }
+
+
+    /**
+     * Forzar la simulación del camino fallido (false) en CuentaService para eliminarCuenta.
+     */
+    @Test
+    void testEliminarCuentaRetornaFalse() {
+        when(cuentaDAO.existsById(999)).thenReturn(false);
+        boolean resultado = cuentaService.eliminarCuenta(999);
+        assertFalse(resultado);
+    }
+
+    /**
+     * Forzar la simulación del camino fallido (false) en CuentaService para eliminarCuentaPolicia.
+     */
+    @Test
+    void testEliminarCuentaPoliciaRetornaFalseDebidoANoExistencia() {
+        when(cuentaDAO.findById(999)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> cuentaService.eliminarCuentaPolicia(999));
     }
 }

@@ -1,8 +1,6 @@
-package com.example.Entidades;
+package com.example.JailQ.Entidades;
 
-import com.example.JailQ.Entidades.Preso;
-import com.example.JailQ.Entidades.Carcel;
-import com.example.JailQ.Entidades.Delito;
+
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
