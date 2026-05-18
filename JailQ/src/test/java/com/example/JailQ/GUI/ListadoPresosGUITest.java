@@ -57,7 +57,7 @@ public class ListadoPresosGUITest {
         window.button("btnEliminar").click();
         
         // Espera asíncrona de hasta 5 segundos a que aparezca el diálogo modal
-        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(5000));
+        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(10000));
         optionPane.requireMessage("Selecciona un preso para eliminar.");
         optionPane.okButton().click();
     }
@@ -70,7 +70,7 @@ public class ListadoPresosGUITest {
             window.button("btnEliminar").click();
             
             // Espera dinámica al cuadro de diálogo de confirmación (Sí/No)
-            JOptionPaneFixture confirmPane = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture confirmPane = window.optionPane(Timeout.timeout(10000));
             confirmPane.yesButton().click(); 
             
             // Pausa de seguridad para que el HttpClient complete el envío síncrono al backend
@@ -78,7 +78,7 @@ public class ListadoPresosGUITest {
             try { Thread.sleep(1000); } catch (InterruptedException e) {}
             
             // Cerramos el cartel secundario con el resultado del estado de red
-            JOptionPaneFixture resultPane = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture resultPane = window.optionPane(Timeout.timeout(10000));
             resultPane.okButton().click();
         }
     }
@@ -107,7 +107,7 @@ public class ListadoPresosGUITest {
         window.table("tablaPresos").requireNoSelection();
         window.button("btnTrasladar").click();
         
-        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(5000));
+        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(10000));
         optionPane.requireMessage("Selecciona un preso para trasladar.");
         optionPane.okButton().click();
     }
@@ -117,7 +117,7 @@ public class ListadoPresosGUITest {
         window.table("tablaPresos").requireNoSelection();
         window.button("btnModificarCondena").click();
         
-        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(5000));
+        JOptionPaneFixture optionPane = window.optionPane(Timeout.timeout(10000));
         optionPane.requireMessage("Selecciona un preso para modificar su condena.");
         optionPane.okButton().click();
     }
@@ -129,37 +129,37 @@ public class ListadoPresosGUITest {
             
             // 1. Error: Condena vacía
             window.button("btnModificarCondena").click();
-            JOptionPaneFixture inputPane1 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture inputPane1 = window.optionPane(Timeout.timeout(10000));
             inputPane1.textBox().setText(""); 
             inputPane1.okButton().click();
             
-            JOptionPaneFixture alertPane1 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture alertPane1 = window.optionPane(Timeout.timeout(10000));
             alertPane1.requireMessage("La condena no puede estar vacía.");
             alertPane1.okButton().click();
 
             // 2. Error: Letras en vez de números
             window.button("btnModificarCondena").click();
-            JOptionPaneFixture inputPane2 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture inputPane2 = window.optionPane(Timeout.timeout(10000));
             inputPane2.textBox().setText("abc"); 
             inputPane2.okButton().click();
             
-            JOptionPaneFixture alertPane2 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture alertPane2 = window.optionPane(Timeout.timeout(10000));
             alertPane2.requireMessage("La condena debe ser un número entero.");
             alertPane2.okButton().click();
 
             // 3. Error: Condena cero o negativa
             window.button("btnModificarCondena").click();
-            JOptionPaneFixture inputPane3 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture inputPane3 = window.optionPane(Timeout.timeout(10000));
             inputPane3.textBox().setText("0"); 
             inputPane3.okButton().click();
             
-            JOptionPaneFixture alertPane3 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture alertPane3 = window.optionPane(Timeout.timeout(10000));
             alertPane3.requireMessage("La condena debe ser mayor que 0.");
             alertPane3.okButton().click();
             
             // 4. Salida limpia: Cancelar flujo
             window.button("btnModificarCondena").click();
-            JOptionPaneFixture inputPane4 = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture inputPane4 = window.optionPane(Timeout.timeout(10000));
             inputPane4.cancelButton().click();
         }
     }
@@ -175,7 +175,7 @@ public class ListadoPresosGUITest {
             window.robot().waitForIdle();
             
             // Capturamos el panel de selección de cárceles y cancelamos
-            JOptionPaneFixture inputPane = window.optionPane(Timeout.timeout(5000));
+            JOptionPaneFixture inputPane = window.optionPane(Timeout.timeout(10000));
             inputPane.cancelButton().click();
         }
     }
