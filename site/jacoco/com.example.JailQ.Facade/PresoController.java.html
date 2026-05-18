@@ -154,22 +154,22 @@ import com.example.JailQ.Service.PresoService;
      */
     @PostMapping(&quot;/trasladar/{id}/{nombreCarcel}&quot;)
     public ResponseEntity&lt;?&gt; trasladarPreso(@PathVariable Integer id, @PathVariable String nombreCarcel) {
-<span class="nc" id="L157">        logger.info(&quot;Recibida petición POST en /preso/trasladar/{}/{}&quot;, id, nombreCarcel);</span>
+<span class="fc" id="L157">        logger.info(&quot;Recibida petición POST en /preso/trasladar/{}/{}&quot;, id, nombreCarcel);</span>
         try {
             // Llamada al servicio para ejecutar la lógica de negocio del traslado
-<span class="nc" id="L160">            presoService.trasladarPreso(id, nombreCarcel);</span>
+<span class="fc" id="L160">            presoService.trasladarPreso(id, nombreCarcel);</span>
             
-<span class="nc" id="L162">            logger.info(&quot;Traslado exitoso: Preso ID {} enviado a {}&quot;, id, nombreCarcel);</span>
-<span class="nc" id="L163">            return new ResponseEntity&lt;&gt;(&quot;Traslado realizado correctamente a &quot; + nombreCarcel, HttpStatus.OK);</span>
+<span class="fc" id="L162">            logger.info(&quot;Traslado exitoso: Preso ID {} enviado a {}&quot;, id, nombreCarcel);</span>
+<span class="fc" id="L163">            return new ResponseEntity&lt;&gt;(&quot;Traslado realizado correctamente a &quot; + nombreCarcel, HttpStatus.OK);</span>
 
-<span class="nc" id="L165">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L165">        } catch (IllegalArgumentException e) {</span>
             // Se lanza si el preso no existe o la cárcel es inválida
-<span class="nc" id="L167">            logger.warn(&quot;Petición de traslado rechazada (400 Bad Request): {}&quot;, e.getMessage());</span>
-<span class="nc" id="L168">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L167">            logger.warn(&quot;Petición de traslado rechazada (400 Bad Request): {}&quot;, e.getMessage());</span>
+<span class="fc" id="L168">            return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L170">        } catch (Exception e) {</span>
-<span class="nc" id="L171">            logger.error(&quot;Error interno (500) al trasladar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L172">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor al procesar el traslado&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L170">        } catch (Exception e) {</span>
+<span class="fc" id="L171">            logger.error(&quot;Error interno (500) al trasladar el preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L172">            return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor al procesar el traslado&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
         }
     }
     /**
@@ -185,23 +185,23 @@ import com.example.JailQ.Service.PresoService;
  */
 @GetMapping(&quot;/filtrar/delito/{delito}&quot;)
 public ResponseEntity&lt;?&gt; filtrarPresosPorDelito(@PathVariable String delito) {
-<span class="nc" id="L188">    logger.info(&quot;Recibida petición GET en /preso/filtrar/delito/{}&quot;, delito);</span>
+<span class="fc" id="L188">    logger.info(&quot;Recibida petición GET en /preso/filtrar/delito/{}&quot;, delito);</span>
 
     try {
-<span class="nc" id="L191">        Delito delitoEnum = Delito.valueOf(delito.toUpperCase());</span>
+<span class="fc" id="L191">        Delito delitoEnum = Delito.valueOf(delito.toUpperCase());</span>
 
-<span class="nc" id="L193">        return new ResponseEntity&lt;&gt;(</span>
-<span class="nc" id="L194">                presoService.filtrarPorDelito(delitoEnum),</span>
+<span class="fc" id="L193">        return new ResponseEntity&lt;&gt;(</span>
+<span class="fc" id="L194">                presoService.filtrarPorDelito(delitoEnum),</span>
                 HttpStatus.OK
         );
 
-<span class="nc" id="L198">    } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L199">        logger.warn(&quot;Delito no válido al filtrar presos: {}&quot;, delito);</span>
-<span class="nc" id="L200">        return new ResponseEntity&lt;&gt;(&quot;Delito no válido: &quot; + delito, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L198">    } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L199">        logger.warn(&quot;Delito no válido al filtrar presos: {}&quot;, delito);</span>
+<span class="fc" id="L200">        return new ResponseEntity&lt;&gt;(&quot;Delito no válido: &quot; + delito, HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L202">    } catch (Exception e) {</span>
-<span class="nc" id="L203">        logger.error(&quot;Error interno (500) al filtrar presos por delito {}: {}&quot;, delito, e.getMessage(), e);</span>
-<span class="nc" id="L204">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L202">    } catch (Exception e) {</span>
+<span class="fc" id="L203">        logger.error(&quot;Error interno (500) al filtrar presos por delito {}: {}&quot;, delito, e.getMessage(), e);</span>
+<span class="fc" id="L204">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 }
 /**
@@ -218,19 +218,19 @@ public ResponseEntity&lt;?&gt; modificarCondena(
         @PathVariable Integer id,
         @PathVariable Integer nuevaCondena) {
 
-<span class="nc" id="L221">    logger.info(&quot;Recibida petición POST en /preso/modificar-condena/{}/{}&quot;, id, nuevaCondena);</span>
+<span class="fc" id="L221">    logger.info(&quot;Recibida petición POST en /preso/modificar-condena/{}/{}&quot;, id, nuevaCondena);</span>
 
     try {
-<span class="nc" id="L224">        Preso actualizado = presoService.modificarCondena(id, nuevaCondena);</span>
-<span class="nc" id="L225">        return new ResponseEntity&lt;&gt;(actualizado, HttpStatus.OK);</span>
+<span class="fc" id="L224">        Preso actualizado = presoService.modificarCondena(id, nuevaCondena);</span>
+<span class="fc" id="L225">        return new ResponseEntity&lt;&gt;(actualizado, HttpStatus.OK);</span>
 
-<span class="nc" id="L227">    } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L228">        logger.warn(&quot;Petición rechazada al modificar condena: {}&quot;, e.getMessage());</span>
-<span class="nc" id="L229">        return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L227">    } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L228">        logger.warn(&quot;Petición rechazada al modificar condena: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L229">        return new ResponseEntity&lt;&gt;(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
 
-<span class="nc" id="L231">    } catch (Exception e) {</span>
-<span class="nc" id="L232">        logger.error(&quot;Error interno (500) al modificar condena del preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
-<span class="nc" id="L233">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L231">    } catch (Exception e) {</span>
+<span class="fc" id="L232">        logger.error(&quot;Error interno (500) al modificar condena del preso con ID {}: {}&quot;, id, e.getMessage(), e);</span>
+<span class="fc" id="L233">        return new ResponseEntity&lt;&gt;(&quot;Error interno del servidor&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 }
 }
