@@ -97,7 +97,7 @@ public class GestionPresosGUI extends JFrame {
 <span class="fc" id="L97">        btnBuscar.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, 12));</span>
 <span class="fc" id="L98">        btnBuscar.setFocusPainted(false);</span>
 <span class="fc" id="L99">        btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
-<span class="pc" id="L100">        btnBuscar.addActionListener(e -&gt; buscarPresoPorNombreApellidos());</span>
+<span class="fc" id="L100">        btnBuscar.addActionListener(e -&gt; buscarPresoPorNombreApellidos());</span>
 <span class="fc" id="L101">        panelBusqueda.add(btnBuscar);</span>
 
         // ── Panel de resultado ─────────────────────────────────────────────
@@ -133,13 +133,13 @@ public class GestionPresosGUI extends JFrame {
      * Si encuentra coincidencia, muestra todos los datos del preso.
      */
     private void buscarPresoPorNombreApellidos() {
-<span class="nc" id="L136">        String nombre    = txtBusquedaNombre.getText().trim();</span>
-<span class="nc" id="L137">        String apellidos = txtBusquedaApellidos.getText().trim();</span>
+<span class="fc" id="L136">        String nombre    = txtBusquedaNombre.getText().trim();</span>
+<span class="fc" id="L137">        String apellidos = txtBusquedaApellidos.getText().trim();</span>
 
-<span class="nc bnc" id="L139" title="All 4 branches missed.">        if (nombre.isEmpty() || apellidos.isEmpty()) {</span>
-<span class="nc" id="L140">            lblEstadoBusqueda.setForeground(Color.RED);</span>
-<span class="nc" id="L141">            lblEstadoBusqueda.setText(&quot;Introduce nombre y apellidos para buscar.&quot;);</span>
-<span class="nc" id="L142">            return;</span>
+<span class="pc bpc" id="L139" title="3 of 4 branches missed.">        if (nombre.isEmpty() || apellidos.isEmpty()) {</span>
+<span class="fc" id="L140">            lblEstadoBusqueda.setForeground(Color.RED);</span>
+<span class="fc" id="L141">            lblEstadoBusqueda.setText(&quot;Introduce nombre y apellidos para buscar.&quot;);</span>
+<span class="fc" id="L142">            return;</span>
         }
 
         try {
@@ -189,15 +189,15 @@ public class GestionPresosGUI extends JFrame {
      * @return El bloque JSON del preso encontrado, o null si no existe
      */
     private String buscarEnJson(String json, String nombre, String apellidos) {
-<span class="nc bnc" id="L192" title="All 2 branches missed.">        for (String objeto : dividirObjetos(json)) {</span>
-<span class="nc" id="L193">            String nombreJson    = extraerValorJson(objeto, &quot;nombre&quot;);</span>
-<span class="nc" id="L194">            String apellidosJson = extraerValorJson(objeto, &quot;apellidos&quot;);</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (nombreJson.equalsIgnoreCase(nombre)</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">                    &amp;&amp; apellidosJson.equalsIgnoreCase(apellidos)) {</span>
-<span class="nc" id="L197">                return objeto;</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        for (String objeto : dividirObjetos(json)) {</span>
+<span class="fc" id="L193">            String nombreJson    = extraerValorJson(objeto, &quot;nombre&quot;);</span>
+<span class="fc" id="L194">            String apellidosJson = extraerValorJson(objeto, &quot;apellidos&quot;);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            if (nombreJson.equalsIgnoreCase(nombre)</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">                    &amp;&amp; apellidosJson.equalsIgnoreCase(apellidos)) {</span>
+<span class="fc" id="L197">                return objeto;</span>
             }
-<span class="nc" id="L199">        }</span>
-<span class="nc" id="L200">        return null;</span>
+<span class="fc" id="L199">        }</span>
+<span class="fc" id="L200">        return null;</span>
     }
 
     /**
@@ -209,24 +209,24 @@ public class GestionPresosGUI extends JFrame {
      * @return Lista de bloques JSON, uno por preso
      */
     private List&lt;String&gt; dividirObjetos(String json) {
-<span class="nc" id="L212">        List&lt;String&gt; resultado = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L213">        int nivel  = 0;</span>
-<span class="nc" id="L214">        int inicio = -1;</span>
+<span class="fc" id="L212">        List&lt;String&gt; resultado = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L213">        int nivel  = 0;</span>
+<span class="fc" id="L214">        int inicio = -1;</span>
 
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        for (int i = 0; i &lt; json.length(); i++) {</span>
-<span class="nc" id="L217">            char c = json.charAt(i);</span>
-<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (c == '{') {</span>
-<span class="nc bnc" id="L219" title="All 2 branches missed.">                if (nivel == 0) inicio = i;</span>
-<span class="nc" id="L220">                nivel++;</span>
-<span class="nc bnc" id="L221" title="All 2 branches missed.">            } else if (c == '}') {</span>
-<span class="nc" id="L222">                nivel--;</span>
-<span class="nc bnc" id="L223" title="All 4 branches missed.">                if (nivel == 0 &amp;&amp; inicio != -1) {</span>
-<span class="nc" id="L224">                    resultado.add(json.substring(inicio, i + 1));</span>
-<span class="nc" id="L225">                    inicio = -1;</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        for (int i = 0; i &lt; json.length(); i++) {</span>
+<span class="fc" id="L217">            char c = json.charAt(i);</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            if (c == '{') {</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">                if (nivel == 0) inicio = i;</span>
+<span class="fc" id="L220">                nivel++;</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">            } else if (c == '}') {</span>
+<span class="fc" id="L222">                nivel--;</span>
+<span class="pc bpc" id="L223" title="2 of 4 branches missed.">                if (nivel == 0 &amp;&amp; inicio != -1) {</span>
+<span class="fc" id="L224">                    resultado.add(json.substring(inicio, i + 1));</span>
+<span class="fc" id="L225">                    inicio = -1;</span>
                 }
             }
         }
-<span class="nc" id="L229">        return resultado;</span>
+<span class="fc" id="L229">        return resultado;</span>
     }
 
     /**
@@ -433,33 +433,33 @@ public class GestionPresosGUI extends JFrame {
     private String extraerValorJson(String json, String campo) {
         // Eliminamos el bloque carcel:{...} antes de buscar para evitar
         // que el regex capture campos del objeto anidado (ej. &quot;nombre&quot;:&quot;Oiar&quot;)
-<span class="nc" id="L436">        String jsonSinCarcel = json.replaceAll(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\\}&quot;, &quot;&quot;);</span>
-<span class="nc" id="L437">        Pattern p = Pattern.compile(&quot;\&quot;&quot; + campo + &quot;\&quot;\\s*:\\s*\&quot;?([^,\&quot;\\}\\]]+)\&quot;?&quot;);</span>
-<span class="nc" id="L438">        Matcher m = p.matcher(jsonSinCarcel);</span>
-<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (m.find()) {</span>
-<span class="nc" id="L440">            return m.group(1).trim().replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
+<span class="fc" id="L436">        String jsonSinCarcel = json.replaceAll(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\\}&quot;, &quot;&quot;);</span>
+<span class="fc" id="L437">        Pattern p = Pattern.compile(&quot;\&quot;&quot; + campo + &quot;\&quot;\\s*:\\s*\&quot;?([^,\&quot;\\}\\]]+)\&quot;?&quot;);</span>
+<span class="fc" id="L438">        Matcher m = p.matcher(jsonSinCarcel);</span>
+<span class="fc bfc" id="L439" title="All 2 branches covered.">        if (m.find()) {</span>
+<span class="fc" id="L440">            return m.group(1).trim().replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
         }
-<span class="nc" id="L442">        return &quot;&quot;;</span>
+<span class="fc" id="L442">        return &quot;&quot;;</span>
     }
 
     /** Extrae el array de delitos del JSON y lo formatea separado por comas. */
     private String extraerDelitosJson(String json) {
-<span class="nc" id="L447">        Pattern p = Pattern.compile(&quot;\&quot;delitos\&quot;\\s*:\\s*\\[([^\\]]*)\\]&quot;);</span>
-<span class="nc" id="L448">        Matcher m = p.matcher(json);</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (m.find()) {</span>
-<span class="nc" id="L450">            return m.group(1).replaceAll(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;,&quot;, &quot;, &quot;).trim();</span>
+<span class="fc" id="L447">        Pattern p = Pattern.compile(&quot;\&quot;delitos\&quot;\\s*:\\s*\\[([^\\]]*)\\]&quot;);</span>
+<span class="fc" id="L448">        Matcher m = p.matcher(json);</span>
+<span class="fc bfc" id="L449" title="All 2 branches covered.">        if (m.find()) {</span>
+<span class="fc" id="L450">            return m.group(1).replaceAll(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;,&quot;, &quot;, &quot;).trim();</span>
         }
-<span class="nc" id="L452">        return &quot;—&quot;;</span>
+<span class="fc" id="L452">        return &quot;—&quot;;</span>
     }
 
     /** Extrae el nombre de la cárcel del objeto anidado &quot;carcel&quot;:{...}. */
     private String extraerNombreCarcelJson(String json) {
-<span class="nc" id="L457">        Pattern p = Pattern.compile(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\&quot;nombre\&quot;\\s*:\\s*\&quot;([^\&quot;]+)\&quot;&quot;);</span>
-<span class="nc" id="L458">        Matcher m = p.matcher(json);</span>
-<span class="nc bnc" id="L459" title="All 2 branches missed.">        if (m.find()) {</span>
-<span class="nc" id="L460">            return m.group(1);</span>
+<span class="fc" id="L457">        Pattern p = Pattern.compile(&quot;\&quot;carcel\&quot;\\s*:\\s*\\{[^}]*\&quot;nombre\&quot;\\s*:\\s*\&quot;([^\&quot;]+)\&quot;&quot;);</span>
+<span class="fc" id="L458">        Matcher m = p.matcher(json);</span>
+<span class="fc bfc" id="L459" title="All 2 branches covered.">        if (m.find()) {</span>
+<span class="fc" id="L460">            return m.group(1);</span>
         }
-<span class="nc" id="L462">        return &quot;&quot;;</span>
+<span class="fc" id="L462">        return &quot;&quot;;</span>
     }
 
     // ──────────────────────────────────────────────────────────────────────────

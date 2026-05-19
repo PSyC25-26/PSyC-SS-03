@@ -19,7 +19,7 @@ JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI.new TypeReference() {...},0
 JailQ,com.example.JailQ.GUI,SessionManager,0,53,1,5,0,18,1,9,0,7
 JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI.CarcelDatos,0,6,0,0,0,2,0,2,0,2
 JailQ,com.example.JailQ.GUI,GestionCarcelGUI,7,396,0,2,2,84,0,7,0,6
-JailQ,com.example.JailQ.GUI,GestionPresosGUI,379,797,38,10,91,164,31,13,10,10
+JailQ,com.example.JailQ.GUI,GestionPresosGUI,203,973,17,31,47,208,16,28,3,17
 JailQ,com.example.JailQ.GUI,EliminarPoliciaGUI,35,389,3,17,10,88,3,13,0,6
 JailQ,com.example.JailQ.GUI,ListadoPresosGUI.new DefaultTableModel() {...},0,13,0,0,0,2,0,2,0,2
 JailQ,com.example.JailQ.GUI,EstadisticasAvanzadasGUI,11,336,1,9,3,69,1,9,0,5
