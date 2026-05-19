@@ -410,9 +410,9 @@ public class JailQMainGUI extends JFrame {
      * - POLICIA: muestra menú completo con todas las opciones de gestión.
      */
     private void mostrarMenuPresos() {
-<span class="fc bfc" id="L413" title="All 2 branches covered.">        if (&quot;FAMILIA&quot;.equals(sesion.getTipoCuenta())) {</span>
-<span class="fc" id="L414">            abrirVentana(new GestionPresosGUI(&quot;FAMILIA&quot;));</span>
-<span class="fc" id="L415">            return;</span>
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">        if (&quot;FAMILIA&quot;.equals(sesion.getTipoCuenta())) {</span>
+<span class="nc" id="L414">            abrirVentana(new GestionPresosGUI(&quot;FAMILIA&quot;));</span>
+<span class="nc" id="L415">            return;</span>
         }
 
 <span class="fc" id="L418">        String[] opciones = {</span>
