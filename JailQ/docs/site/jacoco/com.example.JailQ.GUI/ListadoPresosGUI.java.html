@@ -196,9 +196,9 @@ public class ListadoPresosGUI extends JFrame {
 <span class="fc" id="L196">        String nombrePreso = modelo.getValueAt(fila, 1).toString();</span>
 <span class="fc" id="L197">        String carcelActual = modelo.getValueAt(fila, 4).toString();</span>
 
-<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
-<span class="nc" id="L200">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido para operar.&quot;);</span>
-<span class="nc" id="L201">            return;</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
+<span class="fc" id="L200">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido para operar.&quot;);</span>
+<span class="fc" id="L201">            return;</span>
         }
 
 <span class="fc" id="L204">        List&lt;String&gt; carceles = obtenerNombresCarceles();</span>
@@ -250,15 +250,15 @@ public class ListadoPresosGUI extends JFrame {
 
     private void ejecutarTraslado(String idPreso, String nombreCarcel) {
     try {
-<span class="nc" id="L253">        String nombreLimpio = nombreCarcel.replace(&quot; &quot;, &quot;%20&quot;);</span>
-<span class="nc" id="L254">        String urlFinal = BASE_URL + &quot;/trasladar/&quot; + idPreso + &quot;/&quot; + nombreLimpio;</span>
+<span class="fc" id="L253">        String nombreLimpio = nombreCarcel.replace(&quot; &quot;, &quot;%20&quot;);</span>
+<span class="fc" id="L254">        String urlFinal = BASE_URL + &quot;/trasladar/&quot; + idPreso + &quot;/&quot; + nombreLimpio;</span>
 
-<span class="nc" id="L256">        HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L257">                .uri(URI.create(urlFinal))</span>
-<span class="nc" id="L258">                .POST(HttpRequest.BodyPublishers.noBody())</span>
-<span class="nc" id="L259">                .build();</span>
+<span class="fc" id="L256">        HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L257">                .uri(URI.create(urlFinal))</span>
+<span class="fc" id="L258">                .POST(HttpRequest.BodyPublishers.noBody())</span>
+<span class="fc" id="L259">                .build();</span>
 
-<span class="nc" id="L261">        HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L261">        HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
 <span class="nc bnc" id="L263" title="All 2 branches missed.">        if (response.statusCode() == 200) {</span>
 <span class="nc" id="L264">            JOptionPane.showMessageDialog(this, &quot;Traslado exitoso a &quot; + nombreCarcel);</span>
@@ -266,7 +266,7 @@ public class ListadoPresosGUI extends JFrame {
         } else {
 <span class="nc" id="L267">            JOptionPane.showMessageDialog(this, &quot;Error: El servidor no encontró la cárcel [&quot; + nombreCarcel + &quot;]&quot;);</span>
         }
-<span class="nc" id="L269">    } catch (Exception ex) {</span>
+<span class="fc" id="L269">    } catch (Exception ex) {</span>
 <span class="nc" id="L270">        JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
 <span class="nc" id="L271">    }</span>
 <span class="nc" id="L272">}</span>
@@ -283,9 +283,9 @@ public class ListadoPresosGUI extends JFrame {
 <span class="fc" id="L283">        String nombrePreso = modelo.getValueAt(fila, 1).toString();</span>
 <span class="fc" id="L284">        String condenaActual = modelo.getValueAt(fila, 3).toString();</span>
 
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
-<span class="nc" id="L287">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
-<span class="nc" id="L288">            return;</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
+<span class="fc" id="L287">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
+<span class="fc" id="L288">            return;</span>
         }
 
 <span class="fc" id="L291">        String nuevaCondenaTexto = JOptionPane.showInputDialog(</span>
@@ -325,14 +325,14 @@ public class ListadoPresosGUI extends JFrame {
 
     private void ejecutarModificacionCondena(String idPreso, int nuevaCondena) {
         try {
-<span class="nc" id="L328">            String urlFinal = BASE_URL + &quot;/modificar-condena/&quot; + idPreso + &quot;/&quot; + nuevaCondena;</span>
+<span class="fc" id="L328">            String urlFinal = BASE_URL + &quot;/modificar-condena/&quot; + idPreso + &quot;/&quot; + nuevaCondena;</span>
 
-<span class="nc" id="L330">            HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L331">                    .uri(URI.create(urlFinal))</span>
-<span class="nc" id="L332">                    .POST(HttpRequest.BodyPublishers.noBody())</span>
-<span class="nc" id="L333">                    .build();</span>
+<span class="fc" id="L330">            HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L331">                    .uri(URI.create(urlFinal))</span>
+<span class="fc" id="L332">                    .POST(HttpRequest.BodyPublishers.noBody())</span>
+<span class="fc" id="L333">                    .build();</span>
 
-<span class="nc" id="L335">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L335">            HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
 <span class="nc bnc" id="L337" title="All 2 branches missed.">            if (response.statusCode() == 200) {</span>
 <span class="nc" id="L338">                JOptionPane.showMessageDialog(this, &quot;Condena modificada correctamente.&quot;);</span>
@@ -341,7 +341,7 @@ public class ListadoPresosGUI extends JFrame {
 <span class="nc" id="L341">                JOptionPane.showMessageDialog(this, &quot;No se pudo modificar la condena: &quot; + response.body());</span>
             }
 
-<span class="nc" id="L344">        } catch (Exception ex) {</span>
+<span class="fc" id="L344">        } catch (Exception ex) {</span>
 <span class="nc" id="L345">            JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
 <span class="nc" id="L346">        }</span>
 <span class="nc" id="L347">    }</span>
