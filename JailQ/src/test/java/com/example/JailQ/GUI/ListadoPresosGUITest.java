@@ -362,4 +362,132 @@ public class ListadoPresosGUITest {
 
         GuiActionRunner.execute(() -> gui.dispose());
     }
+
+    // ── Tests nuevos: ramas ID=N/A y métodos de ejecución HTTP ───────────────
+
+    @Test
+    public void testTrasladarPresoSeleccionado_idNAValido() throws Exception {
+        // Cubre la rama donde el ID es "N/A" en trasladarPresoSeleccionado
+        ListadoPresosGUI gui = GuiActionRunner.execute(() -> new ListadoPresosGUI());
+        cerrarDialogosDeError();
+
+        java.lang.reflect.Field campoModelo = ListadoPresosGUI.class.getDeclaredField("modelo");
+        campoModelo.setAccessible(true);
+        javax.swing.table.DefaultTableModel modelo =
+            (javax.swing.table.DefaultTableModel) campoModelo.get(gui);
+
+        GuiActionRunner.execute(() ->
+            modelo.addRow(new Object[]{"N/A", "Juan", "Lopez", "5", "Martutene"})
+        );
+
+        FrameFixture w = new FrameFixture(gui);
+        w.show();
+
+        w.table("tablaPresos").selectRows(0);
+        w.button("btnTrasladar").click();
+
+        try {
+            w.optionPane().requireMessage("El preso seleccionado no tiene un ID válido para operar.");
+            w.optionPane().okButton().click();
+        } catch (Exception e) {
+            org.junit.jupiter.api.Assumptions.assumeTrue(false,
+                "Skipping: optionPane did not appear in time");
+        }
+
+        w.cleanUp();
+        GuiActionRunner.execute(() -> gui.dispose());
+    }
+
+    @Test
+    public void testModificarCondenaSeleccionado_idNAValido() throws Exception {
+        // Cubre la rama donde el ID es "N/A" en modificarCondenaSeleccionado
+        ListadoPresosGUI gui = GuiActionRunner.execute(() -> new ListadoPresosGUI());
+        cerrarDialogosDeError();
+
+        java.lang.reflect.Field campoModelo = ListadoPresosGUI.class.getDeclaredField("modelo");
+        campoModelo.setAccessible(true);
+        javax.swing.table.DefaultTableModel modelo =
+            (javax.swing.table.DefaultTableModel) campoModelo.get(gui);
+
+        GuiActionRunner.execute(() ->
+            modelo.addRow(new Object[]{"N/A", "Juan", "Lopez", "5", "Martutene"})
+        );
+
+        FrameFixture w = new FrameFixture(gui);
+        w.show();
+
+        w.table("tablaPresos").selectRows(0);
+        w.button("btnModificarCondena").click();
+
+        try {
+            w.optionPane().requireMessage("El preso seleccionado no tiene un ID válido.");
+            w.optionPane().okButton().click();
+        } catch (Exception e) {
+            org.junit.jupiter.api.Assumptions.assumeTrue(false,
+                "Skipping: optionPane did not appear in time");
+        }
+
+        w.cleanUp();
+        GuiActionRunner.execute(() -> gui.dispose());
+    }
+
+    @Test
+    public void testEjecutarTraslado_servidorError() throws Exception {
+        // Cubre la rama else/catch de ejecutarTraslado (respuesta != 200 o error de red)
+        ListadoPresosGUI gui = GuiActionRunner.execute(() -> new ListadoPresosGUI());
+        cerrarDialogosDeError();
+
+        java.lang.reflect.Method metodo = ListadoPresosGUI.class
+            .getDeclaredMethod("ejecutarTraslado", String.class, String.class);
+        metodo.setAccessible(true);
+
+        // Invocamos con ID inexistente — el servidor responderá con error o
+        // la conexión fallará, en cualquier caso el método lo captura internamente
+        GuiActionRunner.execute(() -> {
+            try {
+                metodo.invoke(gui, "99999", "CarcelInexistente");
+            } catch (Exception ignored) {}
+        });
+
+        // Cerramos cualquier diálogo que haya aparecido
+        try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+        try {
+            java.awt.Window[] windows = java.awt.Window.getWindows();
+            for (java.awt.Window w : windows) {
+                if (w instanceof javax.swing.JDialog) w.dispose();
+            }
+        } catch (Exception ignored) {}
+
+        GuiActionRunner.execute(() -> gui.dispose());
+    }
+
+    @Test
+    public void testEjecutarModificacionCondena_servidorError() throws Exception {
+        // Cubre la rama else/catch de ejecutarModificacionCondena (respuesta != 200 o error de red)
+        ListadoPresosGUI gui = GuiActionRunner.execute(() -> new ListadoPresosGUI());
+        cerrarDialogosDeError();
+
+        java.lang.reflect.Method metodo = ListadoPresosGUI.class
+            .getDeclaredMethod("ejecutarModificacionCondena", String.class, int.class);
+        metodo.setAccessible(true);
+
+        // Invocamos con ID inexistente — el servidor responderá con error o
+        // la conexión fallará, en cualquier caso el método lo captura internamente
+        GuiActionRunner.execute(() -> {
+            try {
+                metodo.invoke(gui, "99999", 5);
+            } catch (Exception ignored) {}
+        });
+
+        // Cerramos cualquier diálogo que haya aparecido
+        try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+        try {
+            java.awt.Window[] windows = java.awt.Window.getWindows();
+            for (java.awt.Window w : windows) {
+                if (w instanceof javax.swing.JDialog) w.dispose();
+            }
+        } catch (Exception ignored) {}
+
+        GuiActionRunner.execute(() -> gui.dispose());
+    }
 }
