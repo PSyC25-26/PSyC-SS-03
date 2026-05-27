@@ -283,41 +283,41 @@ public class ListadoPresosGUI extends JFrame {
 <span class="fc" id="L283">        String nombrePreso = modelo.getValueAt(fila, 1).toString();</span>
 <span class="fc" id="L284">        String condenaActual = modelo.getValueAt(fila, 3).toString();</span>
 
-<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (idPreso.equals(&quot;N/A&quot;)) {</span>
 <span class="fc" id="L287">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
 <span class="fc" id="L288">            return;</span>
         }
 
-<span class="fc" id="L291">        String nuevaCondenaTexto = JOptionPane.showInputDialog(</span>
+<span class="nc" id="L291">        String nuevaCondenaTexto = JOptionPane.showInputDialog(</span>
                 this,
                 &quot;Introduce la nueva condena para &quot; + nombrePreso + &quot;:\nCondena actual: &quot; + condenaActual + &quot; años&quot;,
                 &quot;Modificar condena&quot;,
                 JOptionPane.QUESTION_MESSAGE
         );
 
-<span class="fc bfc" id="L298" title="All 2 branches covered.">        if (nuevaCondenaTexto == null) {</span>
-<span class="fc" id="L299">            return;</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        if (nuevaCondenaTexto == null) {</span>
+<span class="nc" id="L299">            return;</span>
         }
 
-<span class="fc" id="L302">        nuevaCondenaTexto = nuevaCondenaTexto.trim();</span>
+<span class="nc" id="L302">        nuevaCondenaTexto = nuevaCondenaTexto.trim();</span>
 
-<span class="fc bfc" id="L304" title="All 2 branches covered.">        if (nuevaCondenaTexto.isEmpty()) {</span>
-<span class="fc" id="L305">            JOptionPane.showMessageDialog(this, &quot;La condena no puede estar vacía.&quot;);</span>
-<span class="fc" id="L306">            return;</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (nuevaCondenaTexto.isEmpty()) {</span>
+<span class="nc" id="L305">            JOptionPane.showMessageDialog(this, &quot;La condena no puede estar vacía.&quot;);</span>
+<span class="nc" id="L306">            return;</span>
         }
 
         int nuevaCondena;
 
         try {
-<span class="fc" id="L312">            nuevaCondena = Integer.parseInt(nuevaCondenaTexto);</span>
-<span class="fc" id="L313">        } catch (NumberFormatException e) {</span>
-<span class="fc" id="L314">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser un número entero.&quot;);</span>
-<span class="fc" id="L315">            return;</span>
-<span class="fc" id="L316">        }</span>
+<span class="nc" id="L312">            nuevaCondena = Integer.parseInt(nuevaCondenaTexto);</span>
+<span class="nc" id="L313">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L314">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser un número entero.&quot;);</span>
+<span class="nc" id="L315">            return;</span>
+<span class="nc" id="L316">        }</span>
 
-<span class="pc bpc" id="L318" title="1 of 2 branches missed.">        if (nuevaCondena &lt;= 0) {</span>
-<span class="fc" id="L319">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser mayor que 0.&quot;);</span>
-<span class="fc" id="L320">            return;</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (nuevaCondena &lt;= 0) {</span>
+<span class="nc" id="L319">            JOptionPane.showMessageDialog(this, &quot;La condena debe ser mayor que 0.&quot;);</span>
+<span class="nc" id="L320">            return;</span>
         }
 
 <span class="nc" id="L323">        ejecutarModificacionCondena(idPreso, nuevaCondena);</span>
@@ -349,45 +349,45 @@ public class ListadoPresosGUI extends JFrame {
     private void eliminarPresoSeleccionado() {
 <span class="fc" id="L350">        int fila = tablaPresos.getSelectedRow();</span>
 
-<span class="fc bfc" id="L352" title="All 2 branches covered.">        if (fila == -1) {</span>
+<span class="pc bpc" id="L352" title="1 of 2 branches missed.">        if (fila == -1) {</span>
 <span class="fc" id="L353">            JOptionPane.showMessageDialog(this, &quot;Selecciona un preso para eliminar.&quot;);</span>
 <span class="fc" id="L354">            return;</span>
         }
 
-<span class="fc" id="L357">        String id = modelo.getValueAt(fila, 0).toString();</span>
+<span class="nc" id="L357">        String id = modelo.getValueAt(fila, 0).toString();</span>
 
-<span class="pc bpc" id="L359" title="1 of 2 branches missed.">        if (id.equals(&quot;N/A&quot;)) {</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">        if (id.equals(&quot;N/A&quot;)) {</span>
 <span class="nc" id="L360">            JOptionPane.showMessageDialog(this, &quot;El preso seleccionado no tiene un ID válido.&quot;);</span>
 <span class="nc" id="L361">            return;</span>
         }
 
-<span class="fc" id="L364">        int confirm = JOptionPane.showConfirmDialog(</span>
+<span class="nc" id="L364">        int confirm = JOptionPane.showConfirmDialog(</span>
                 this,
                 &quot;¿Eliminar preso con ID &quot; + id + &quot;?&quot;,
                 &quot;Confirmar eliminación&quot;,
                 JOptionPane.YES_NO_OPTION
         );
 
-<span class="pc bpc" id="L371" title="1 of 2 branches missed.">        if (confirm == JOptionPane.YES_OPTION) {</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (confirm == JOptionPane.YES_OPTION) {</span>
             try {
-<span class="fc" id="L373">                HttpRequest request = HttpRequest.newBuilder()</span>
-<span class="fc" id="L374">                        .uri(URI.create(BASE_URL + &quot;/eliminar/&quot; + id))</span>
-<span class="fc" id="L375">                        .DELETE()</span>
-<span class="fc" id="L376">                        .build();</span>
+<span class="nc" id="L373">                HttpRequest request = HttpRequest.newBuilder()</span>
+<span class="nc" id="L374">                        .uri(URI.create(BASE_URL + &quot;/eliminar/&quot; + id))</span>
+<span class="nc" id="L375">                        .DELETE()</span>
+<span class="nc" id="L376">                        .build();</span>
 
-<span class="fc" id="L378">                HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="nc" id="L378">                HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="pc bpc" id="L380" title="1 of 2 branches missed.">                if (response.statusCode() == 200) {</span>
-<span class="fc" id="L381">                    JOptionPane.showMessageDialog(this, &quot;Preso eliminado correctamente.&quot;);</span>
-<span class="fc" id="L382">                    cargarPresos();</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">                if (response.statusCode() == 200) {</span>
+<span class="nc" id="L381">                    JOptionPane.showMessageDialog(this, &quot;Preso eliminado correctamente.&quot;);</span>
+<span class="nc" id="L382">                    cargarPresos();</span>
                 } else {
 <span class="nc" id="L384">                    JOptionPane.showMessageDialog(this, &quot;No se pudo eliminar: &quot; + response.body());</span>
                 }
 
 <span class="nc" id="L387">            } catch (Exception ex) {</span>
 <span class="nc" id="L388">                JOptionPane.showMessageDialog(this, &quot;Error de red: &quot; + ex.getMessage());</span>
-<span class="fc" id="L389">            }</span>
+<span class="nc" id="L389">            }</span>
         }
-<span class="fc" id="L391">    }</span>
+<span class="nc" id="L391">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
