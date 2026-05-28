@@ -374,9 +374,9 @@ public class GestionPresosGUI extends JFrame {
 <span class="fc" id="L374">            String nombreCarcel = (String) cbCarcel.getSelectedItem();</span>
 <span class="fc" id="L375">            Integer idCarcel = mapaCarceles.get(nombreCarcel);</span>
 
-<span class="fc bfc" id="L377" title="All 2 branches covered.">            if (idCarcel == null) {</span>
-<span class="fc" id="L378">                txtConsola.setText(&quot;Error: Selecciona una cárcel válida.&quot;);</span>
-<span class="fc" id="L379">                return;</span>
+<span class="pc bpc" id="L377" title="1 of 2 branches missed.">            if (idCarcel == null) {</span>
+<span class="nc" id="L378">                txtConsola.setText(&quot;Error: Selecciona una cárcel válida.&quot;);</span>
+<span class="nc" id="L379">                return;</span>
             }
 
 <span class="fc" id="L382">            ObjectMapper mapper = new ObjectMapper();</span>
