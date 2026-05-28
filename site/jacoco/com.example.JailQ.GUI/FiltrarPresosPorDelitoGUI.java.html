@@ -238,9 +238,9 @@ public class FiltrarPresosPorDelitoGUI extends JFrame {
         try {
 <span class="fc" id="L239">            JsonNode presos = objectMapper.readTree(json);</span>
 
-<span class="pc bpc" id="L241" title="2 of 4 branches missed.">            if (!presos.isArray() || presos.size() == 0) {</span>
-<span class="nc" id="L242">                areaResultados.setText(&quot;No se encontraron presos con ese delito.&quot;);</span>
-<span class="nc" id="L243">                return;</span>
+<span class="pc bpc" id="L241" title="1 of 4 branches missed.">            if (!presos.isArray() || presos.size() == 0) {</span>
+<span class="fc" id="L242">                areaResultados.setText(&quot;No se encontraron presos con ese delito.&quot;);</span>
+<span class="fc" id="L243">                return;</span>
             }
 
 <span class="fc" id="L246">            StringBuilder sb = new StringBuilder();</span>
