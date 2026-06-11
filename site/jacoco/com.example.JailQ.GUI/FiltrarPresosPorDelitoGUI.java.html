@@ -238,69 +238,69 @@ public class FiltrarPresosPorDelitoGUI extends JFrame {
         try {
 <span class="fc" id="L239">            JsonNode presos = objectMapper.readTree(json);</span>
 
-<span class="pc bpc" id="L241" title="1 of 4 branches missed.">            if (!presos.isArray() || presos.size() == 0) {</span>
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">            if (!presos.isArray() || presos.size() == 0) {</span>
 <span class="fc" id="L242">                areaResultados.setText(&quot;No se encontraron presos con ese delito.&quot;);</span>
 <span class="fc" id="L243">                return;</span>
             }
 
-<span class="fc" id="L246">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L246">            StringBuilder sb = new StringBuilder();</span>
 
-<span class="fc" id="L248">            sb.append(&quot;Presos encontrados: &quot;)</span>
-<span class="fc" id="L249">                    .append(presos.size())</span>
-<span class="fc" id="L250">                    .append(&quot;\n&quot;);</span>
+<span class="nc" id="L248">            sb.append(&quot;Presos encontrados: &quot;)</span>
+<span class="nc" id="L249">                    .append(presos.size())</span>
+<span class="nc" id="L250">                    .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L252">            sb.append(&quot;============================================================\n\n&quot;);</span>
+<span class="nc" id="L252">            sb.append(&quot;============================================================\n\n&quot;);</span>
 
-<span class="fc bfc" id="L254" title="All 2 branches covered.">            for (JsonNode preso : presos) {</span>
-<span class="fc" id="L255">                sb.append(&quot;ID: &quot;)</span>
-<span class="pc bpc" id="L256" title="1 of 2 branches missed.">                        .append(preso.has(&quot;id&quot;) ? preso.get(&quot;id&quot;).asText() : &quot;Sin ID&quot;)</span>
-<span class="fc" id="L257">                        .append(&quot;\n&quot;);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            for (JsonNode preso : presos) {</span>
+<span class="nc" id="L255">                sb.append(&quot;ID: &quot;)</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">                        .append(preso.has(&quot;id&quot;) ? preso.get(&quot;id&quot;).asText() : &quot;Sin ID&quot;)</span>
+<span class="nc" id="L257">                        .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L259">                sb.append(&quot;Nombre: &quot;)</span>
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">                        .append(preso.has(&quot;nombre&quot;) ? preso.get(&quot;nombre&quot;).asText() : &quot;&quot;)</span>
-<span class="fc" id="L261">                        .append(&quot;\n&quot;);</span>
+<span class="nc" id="L259">                sb.append(&quot;Nombre: &quot;)</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">                        .append(preso.has(&quot;nombre&quot;) ? preso.get(&quot;nombre&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L261">                        .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L263">                sb.append(&quot;Apellidos: &quot;)</span>
-<span class="pc bpc" id="L264" title="1 of 2 branches missed.">                        .append(preso.has(&quot;apellidos&quot;) ? preso.get(&quot;apellidos&quot;).asText() : &quot;&quot;)</span>
-<span class="fc" id="L265">                        .append(&quot;\n&quot;);</span>
+<span class="nc" id="L263">                sb.append(&quot;Apellidos: &quot;)</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">                        .append(preso.has(&quot;apellidos&quot;) ? preso.get(&quot;apellidos&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L265">                        .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L267">                sb.append(&quot;Fecha nacimiento: &quot;)</span>
-<span class="pc bpc" id="L268" title="1 of 2 branches missed.">                        .append(preso.has(&quot;fechaNacimiento&quot;) ? preso.get(&quot;fechaNacimiento&quot;).asText() : &quot;&quot;)</span>
-<span class="fc" id="L269">                        .append(&quot;\n&quot;);</span>
+<span class="nc" id="L267">                sb.append(&quot;Fecha nacimiento: &quot;)</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">                        .append(preso.has(&quot;fechaNacimiento&quot;) ? preso.get(&quot;fechaNacimiento&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L269">                        .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L271">                sb.append(&quot;Condena: &quot;)</span>
-<span class="pc bpc" id="L272" title="1 of 2 branches missed.">                        .append(preso.has(&quot;condena&quot;) ? preso.get(&quot;condena&quot;).asText() : &quot;&quot;)</span>
-<span class="fc" id="L273">                        .append(&quot; años\n&quot;);</span>
+<span class="nc" id="L271">                sb.append(&quot;Condena: &quot;)</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                        .append(preso.has(&quot;condena&quot;) ? preso.get(&quot;condena&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L273">                        .append(&quot; años\n&quot;);</span>
 
-<span class="fc" id="L275">                sb.append(&quot;Fecha ingreso: &quot;)</span>
-<span class="pc bpc" id="L276" title="1 of 2 branches missed.">                        .append(preso.has(&quot;fechaIngreso&quot;) ? preso.get(&quot;fechaIngreso&quot;).asText() : &quot;&quot;)</span>
-<span class="fc" id="L277">                        .append(&quot;\n&quot;);</span>
+<span class="nc" id="L275">                sb.append(&quot;Fecha ingreso: &quot;)</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                        .append(preso.has(&quot;fechaIngreso&quot;) ? preso.get(&quot;fechaIngreso&quot;).asText() : &quot;&quot;)</span>
+<span class="nc" id="L277">                        .append(&quot;\n&quot;);</span>
 
-<span class="fc" id="L279">                sb.append(&quot;Delitos: &quot;);</span>
+<span class="nc" id="L279">                sb.append(&quot;Delitos: &quot;);</span>
 
-<span class="pc bpc" id="L281" title="2 of 4 branches missed.">                if (preso.has(&quot;delitos&quot;) &amp;&amp; preso.get(&quot;delitos&quot;).isArray()) {</span>
-<span class="fc bfc" id="L282" title="All 2 branches covered.">                    for (JsonNode delito : preso.get(&quot;delitos&quot;)) {</span>
-<span class="fc" id="L283">                        sb.append(delito.asText()).append(&quot; &quot;);</span>
-<span class="fc" id="L284">                    }</span>
+<span class="nc bnc" id="L281" title="All 4 branches missed.">                if (preso.has(&quot;delitos&quot;) &amp;&amp; preso.get(&quot;delitos&quot;).isArray()) {</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">                    for (JsonNode delito : preso.get(&quot;delitos&quot;)) {</span>
+<span class="nc" id="L283">                        sb.append(delito.asText()).append(&quot; &quot;);</span>
+<span class="nc" id="L284">                    }</span>
                 }
 
-<span class="fc" id="L287">                sb.append(&quot;\n&quot;);</span>
+<span class="nc" id="L287">                sb.append(&quot;\n&quot;);</span>
 
-<span class="pc bpc" id="L289" title="2 of 4 branches missed.">                if (preso.has(&quot;carcel&quot;) &amp;&amp; preso.get(&quot;carcel&quot;).has(&quot;nombre&quot;)) {</span>
-<span class="fc" id="L290">                    sb.append(&quot;Cárcel: &quot;)</span>
-<span class="fc" id="L291">                            .append(preso.get(&quot;carcel&quot;).get(&quot;nombre&quot;).asText())</span>
-<span class="fc" id="L292">                            .append(&quot;\n&quot;);</span>
+<span class="nc bnc" id="L289" title="All 4 branches missed.">                if (preso.has(&quot;carcel&quot;) &amp;&amp; preso.get(&quot;carcel&quot;).has(&quot;nombre&quot;)) {</span>
+<span class="nc" id="L290">                    sb.append(&quot;Cárcel: &quot;)</span>
+<span class="nc" id="L291">                            .append(preso.get(&quot;carcel&quot;).get(&quot;nombre&quot;).asText())</span>
+<span class="nc" id="L292">                            .append(&quot;\n&quot;);</span>
                 }
 
-<span class="fc" id="L295">                sb.append(&quot;\n------------------------------------------------------------\n\n&quot;);</span>
-<span class="fc" id="L296">            }</span>
+<span class="nc" id="L295">                sb.append(&quot;\n------------------------------------------------------------\n\n&quot;);</span>
+<span class="nc" id="L296">            }</span>
 
-<span class="fc" id="L298">            areaResultados.setText(sb.toString());</span>
-<span class="fc" id="L299">            areaResultados.setCaretPosition(0);</span>
+<span class="nc" id="L298">            areaResultados.setText(sb.toString());</span>
+<span class="nc" id="L299">            areaResultados.setCaretPosition(0);</span>
 
 <span class="nc" id="L301">        } catch (Exception e) {</span>
 <span class="nc" id="L302">            areaResultados.setText(&quot;Error al procesar la respuesta del servidor.\n\nRespuesta recibida:\n&quot; + json);</span>
-<span class="fc" id="L303">        }</span>
-<span class="fc" id="L304">    }</span>
+<span class="nc" id="L303">        }</span>
+<span class="nc" id="L304">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
